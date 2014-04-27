@@ -1,0 +1,26 @@
+{
+    "name": "yandex-qatools/allure-phpunit",
+    "keywords":["phpunit", "testing", "report", "steps", "attachments", "cases", "allure"],
+    "description": "A PHPUnit adapter for Allure report.",
+    "homepage": "http://allure.qatools.ru/",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Ivan Krutov",
+            "email": "vania-pooh@yandex-team.ru",
+	        "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "allure@yandex-team.ru",
+        "source": "https://github.com/allure-framework"
+    },
+    "require": {
+	    "php": ">=5.4.0",
+        "phpunit/phpunit": ">=4.0.0",
+        "jms/serializer": "0.16.0",
+        "rhumsaa/uuid": "~2.7",
+        "moontoast/math": "~1.1"
+    },
+    "autoload": {}
+}
