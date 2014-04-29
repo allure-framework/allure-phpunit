@@ -19,10 +19,7 @@ const DEFAULT_OUTPUT_DIRECTORY = "allure-report";
 
 class AllureAdapter implements PHPUnit_Framework_TestListener {
 
-    /**
-     * @var Model\TestSuite
-     */
-    private $testSuite;
+    private $testSuites;
 
     private $outputDirectory;
 
@@ -42,6 +39,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
             }
         }
         $this->outputDirectory = $outputDirectory;
+        $this->testSuites = array();
     }
 
     /**
@@ -135,7 +133,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
                 }
             }
         }
-        $this->testSuite = $testSuite;
+        $this->pushTestSuite($testSuite);
     }
 
     /**
@@ -147,13 +145,15 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
     public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
     {
         $suiteStop = self::getTimestamp();
-        $testSuite = $this->getTestSuite();
+        $testSuite = $this->popTestSuite();
         if ($testSuite instanceof Model\TestSuite){
             $testSuite->setStop($suiteStop);
-            $xml = $testSuite->serialize();
-            $fileName = self::getUUID().'-testsuite.xml';
-            $filePath = $this->getOutputDirectory().DIRECTORY_SEPARATOR.$fileName;
-            file_put_contents($filePath, $xml);
+            if ($testSuite->size() > 0) {
+                $xml = $testSuite->serialize();
+                $fileName = self::getUUID() . '-testsuite.xml';
+                $filePath = $this->getOutputDirectory() . DIRECTORY_SEPARATOR . $fileName;
+                file_put_contents($filePath, $xml);
+            }
         }
     }
 
@@ -190,7 +190,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
                 $testCase->setSeverity($annotation->level);
             }
         }
-        $this->getTestSuite()->addTestCase($testCase);
+        $this->getCurrentTestSuite()->addTestCase($testCase);
     }
 
     /**
@@ -205,7 +205,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
         $testInstance = self::getTestInstance($test);
         $testName = $testInstance->getName();
         $testStop = self::getTimestamp();
-        $testCase = $this->getTestSuite()->getTestCase($testName);
+        $testCase = $this->getCurrentTestSuite()->getTestCase($testName);
         if ($testCase instanceof Model\TestCase){
             $testCase->setStop($testStop);
             foreach ($this->getAnnotations($testInstance) as $annotation){
@@ -240,17 +240,25 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
     /**
      * @param Model\TestSuite $testSuite
      */
-    public function setTestSuite(Model\TestSuite $testSuite)
+    public function pushTestSuite(Model\TestSuite $testSuite)
     {
-        $this->testSuite = $testSuite;
+        array_push($this->testSuites, $testSuite);
     }
 
     /**
      * @return Model\TestSuite
      */
-    public function getTestSuite()
+    public function getCurrentTestSuite()
     {
-        return $this->testSuite;
+        return end($this->testSuites);
+    }
+
+    /**
+     * @return Model\TestSuite
+     */
+    public function popTestSuite()
+    {
+        return array_pop($this->testSuites);
     }
 
     /**

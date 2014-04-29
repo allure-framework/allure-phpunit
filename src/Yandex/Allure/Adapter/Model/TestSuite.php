@@ -188,6 +188,15 @@ class TestSuite implements \Serializable {
     }
 
     /**
+     * Return total count of child elements (test cases or test suites)
+     * @return int
+     */
+    public function size()
+    {
+        return count($this->testCases);
+    }
+
+    /**
      * @param \Yandex\Allure\Adapter\Model\Label $label
      */
     public function addLabel(Label $label)
