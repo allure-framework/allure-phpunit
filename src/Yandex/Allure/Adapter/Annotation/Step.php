@@ -8,5 +8,8 @@ namespace Yandex\Allure\Adapter\Annotation;
  * @package Yandex\Allure\Adapter\Annotation
  */
 class Step {
+    /**
+     * @var string
+     */
     public $name;
 }

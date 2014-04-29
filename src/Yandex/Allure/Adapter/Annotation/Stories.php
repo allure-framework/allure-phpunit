@@ -11,5 +11,19 @@ class Stories {
     /**
      * @var array
      */
-    public $stories;
+    private $stories;
+
+    function __construct(array $stories)
+    {
+        $this->stories = $stories;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStories()
+    {
+        return $this->stories;
+    }
+
 }

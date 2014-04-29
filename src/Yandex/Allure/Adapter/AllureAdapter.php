@@ -115,7 +115,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
         $suiteName = $suite->getName();
         $suiteStart = self::getTimestamp();
         $testSuite = new Model\TestSuite($suiteName, $suiteStart);
-        foreach ($this->getAnnotations($suite) as $annotation){
+        foreach ($this->getClassAnnotations($suite) as $annotation){
             if ($annotation instanceof Annotation\Title){
                 $testSuite->setTitle($annotation->value);
             } else if ($annotation instanceof Annotation\Description){
@@ -124,11 +124,11 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
                     $annotation->value
                 ));
             } else if ($annotation instanceof Annotation\Features){
-                foreach ($annotation->featureNames as $featureName){
+                foreach ($annotation->getFeatureNames() as $featureName){
                     $testSuite->addLabel(new Model\Feature($featureName));
                 }
             } else if ($annotation instanceof Annotation\Stories) {
-                foreach ($annotation->stories as $storyName){
+                foreach ($annotation->getStories() as $storyName){
                     $testSuite->addLabel(new Model\Story($storyName));
                 }
             }
@@ -168,7 +168,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
         $testName = $testInstance->getName();
         $testStart = self::getTimestamp();
         $testCase = new Model\TestCase($testName, $testStart);
-        foreach ($this->getAnnotations($testInstance) as $annotation){
+        foreach ($this->getMethodAnnotations($testInstance, $testName) as $annotation){
             if ($annotation instanceof Annotation\Title){
                 $testCase->setTitle($annotation->value);
             } else if ($annotation instanceof Annotation\Description){
@@ -177,11 +177,11 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
                     $annotation->value
                 ));
             } else if ($annotation instanceof Annotation\Features){
-                foreach ($annotation->featureNames as $featureName){
+                foreach ($annotation->getFeatureNames() as $featureName){
                     $testCase->addLabel(new Model\Feature($featureName));
                 }
             } else if ($annotation instanceof Annotation\Stories) {
-                foreach ($annotation->stories as $storyName){
+                foreach ($annotation->getStories() as $storyName){
                     $testCase->addLabel(new Model\Story($storyName));
                 }
             } else if ($annotation instanceof Annotation\Step) {
@@ -208,7 +208,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
         $testCase = $this->getCurrentTestSuite()->getTestCase($testName);
         if ($testCase instanceof Model\TestCase){
             $testCase->setStop($testStop);
-            foreach ($this->getAnnotations($testInstance) as $annotation){
+            foreach ($this->getMethodAnnotations($testInstance, $testName) as $annotation){
                 if ($annotation instanceof Annotation\Attachment){
                     $path = $annotation->path;
                     $type = $annotation->type;
@@ -266,13 +266,33 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
      * @param $instance
      * @return array
      */
-    private function getAnnotations($instance)
+    private function getClassAnnotations($instance)
+    {
+        $ref = new \ReflectionClass($instance);
+        return $this->getAnnotationsReader()->getClassAnnotations($ref);
+    }
+
+    /**
+     * Returns a list of method annotations
+     * @param $instance
+     * @param $methodName
+     * @return array
+     */
+    private function getMethodAnnotations($instance, $methodName)
+    {
+        $ref = new \ReflectionMethod($instance, $methodName);
+        return $this->getAnnotationsReader()->getMethodAnnotations($ref);
+    }
+
+    /**
+     * @return IndexedReader
+     */
+    private function getAnnotationsReader()
     {
         if (!isset($this->annotationsReader)){
             $this->annotationsReader = new IndexedReader(new AnnotationReader());
         }
-        $ref = new \ReflectionClass($instance);
-        return $this->annotationsReader->getClassAnnotations($ref);
+        return $this->annotationsReader;
     }
 
     /**

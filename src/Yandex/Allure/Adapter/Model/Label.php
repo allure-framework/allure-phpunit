@@ -2,22 +2,44 @@
 
 namespace Yandex\Allure\Adapter\Model;
 use JMS\Serializer\Annotation\XmlRoot;
-
+use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\Discriminator;
 
 /**
  * @package Yandex\Allure\Adapter\Model
  * @XmlRoot("label")
+ * @Discriminator(field = "value", map = {"story": "Story", "feature": "Feature"})
  */
-interface Label {
+abstract class Label {
+
+    /**
+     * @var string
+     * @XmlAttribute
+     */
+    private $name;
+
+    /**
+     * @var string
+     * @XmlAttribute
+     */
+    private $value;
 
     /**
      * @return string
+     *
      */
-    function getName();
+    public function getName()
+    {
+        return $this->name;
+    }
 
     /**
      * @return string
+     *
      */
-    function getValue();
+    public function getValue()
+    {
+        return $this->value;
+    }
     
 }
