@@ -23,8 +23,8 @@
         "moontoast/math": "~1.1"
     },
     "autoload": {
-        "psr-4": {
-            "Yandex\\": "src/Yandex"
+        "psr-0": {
+            "Yandex": "src/"
         }
     }
 }

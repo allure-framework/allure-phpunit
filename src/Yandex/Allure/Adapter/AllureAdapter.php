@@ -33,7 +33,6 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
         if (!file_exists($outputDirectory)){
             mkdir($outputDirectory, 0755, true);
         }
-        $this->testSuites = array();
         $this->outputDirectory = $outputDirectory;
     }
 
