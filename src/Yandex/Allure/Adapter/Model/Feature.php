@@ -1,12 +1,41 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Model;
+use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\XmlRoot;
 
-class Feature extends Label {
+/**
+ * @package Yandex\Allure\Adapter\Model
+ * @XmlRoot("label")
+ */
+class Feature implements Label {
 
+    /**
+     * @Type("string")
+     * @XmlAttribute
+     */
+    private $value;
+
+    function __construct($value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string
+     */
     function getName()
     {
-        return LabelName::FEATURE;
+        return 'feature';
     }
 
 }

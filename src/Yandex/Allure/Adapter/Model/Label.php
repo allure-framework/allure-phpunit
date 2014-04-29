@@ -1,8 +1,6 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Model;
-use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlRoot;
 
 
@@ -10,30 +8,16 @@ use JMS\Serializer\Annotation\XmlRoot;
  * @package Yandex\Allure\Adapter\Model
  * @XmlRoot("label")
  */
-abstract class Label {
-    /**
-     * @Type("string")
-     * @XmlAttribute
-     */
-    private $value;
-
-    function __construct($value)
-    {
-        $this->value = $value;
-    }
+interface Label {
 
     /**
      * @return string
      */
-    public function getValue()
-    {
-        return $this->value;
-    }
+    function getName();
 
     /**
      * @return string
-     * @XmlAttribute
      */
-    abstract function getName();
-
+    function getValue();
+    
 }

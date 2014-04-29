@@ -28,10 +28,18 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
 
     private $annotationsReader;
 
-    function __construct($outputDirectory = DEFAULT_OUTPUT_DIRECTORY)
+    function __construct($outputDirectory = DEFAULT_OUTPUT_DIRECTORY, $deletePreviousResults = false)
     {
         if (!file_exists($outputDirectory)){
             mkdir($outputDirectory, 0755, true);
+        }
+        if ($deletePreviousResults){
+            $files = glob($outputDirectory . DIRECTORY_SEPARATOR . '{,.}*', GLOB_BRACE);
+            foreach($files as $file){
+                if(is_file($file)){
+                    unlink($file);
+                }
+            }
         }
         $this->outputDirectory = $outputDirectory;
     }

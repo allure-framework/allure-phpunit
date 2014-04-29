@@ -4,6 +4,7 @@ namespace Yandex\Allure\Adapter\Model;
 
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlAttribute;
+use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Annotation\XmlList;
 use JMS\Serializer\Annotation\XmlRoot;
 
@@ -30,18 +31,21 @@ class TestCase {
     /**
      * @var string
      * @Type("string")
+     * @XmlElement(cdata=false)
      */
     private $name;
 
     /**
      * @var string
      * @Type("string")
+     * @XmlElement(cdata=false)
      */
     private $severity = SeverityLevel::NORMAL;
 
     /**
      * @var string
      * @Type("string")
+     * @XmlElement(cdata=false)
      */
     private $title;
 
@@ -60,27 +64,27 @@ class TestCase {
     /**
      * @var array
      * @Type("array<Yandex\Allure\Adapter\Model\Step>")
-     * @XmlList(inline = true, entry = "step")
+     * @XmlList(entry = "step")
      */
     private $steps;
 
     /**
      * @var array
      * @Type("array<Yandex\Allure\Adapter\Model\Attachment>")
-     * @XmlList(inline = true, entry = "attachment")
+     * @XmlList(entry = "attachment")
      */
     private $attachments;
 
     /**
      * @Type("array<Yandex\Allure\Adapter\Model\Label>")
-     * @XmlList(inline = true, entry = "label")
+     * @XmlList(entry = "label")
      */
     private $labels;
 
     /**
      * @var array
      * @Type("array<Yandex\Allure\Adapter\Model\Parameter>")
-     * @XmlList(inline = true, entry = "parameter")
+     * @XmlList(entry = "parameter")
      */
     private $parameters;
 

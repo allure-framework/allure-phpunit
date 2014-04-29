@@ -3,6 +3,7 @@
 namespace Yandex\Allure\Adapter\Model;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use JMS\Serializer\Annotation\XmlElement;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Annotation\Exclude;
@@ -49,12 +50,14 @@ class TestSuite implements \Serializable {
     /**
      * @var string
      * @Type("string")
+     * @XmlElement(cdata=false)
      */
     private $name;
 
     /**
      * @var string
      * @Type("string")
+     * @XmlElement(cdata=false)
      */
     private $title;
 
@@ -67,7 +70,7 @@ class TestSuite implements \Serializable {
     /**
      * @var array
      * @Type("array<Yandex\Allure\Adapter\Model\TestCase>")
-     * @XmlList(inline = true, entry = "test-case")
+     * @XmlList(entry = "test-case")
      * @SerializedName("test-cases")
      */
     private $testCases;
@@ -75,7 +78,7 @@ class TestSuite implements \Serializable {
     /**
      * @var array
      * @Type("array<Yandex\Allure\Adapter\Model\Label>")
-     * @XmlList(inline = true, entry = "label")
+     * @XmlList(entry = "label")
      */
     private $labels;
 
