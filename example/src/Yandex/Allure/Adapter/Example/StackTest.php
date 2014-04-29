@@ -1,6 +1,6 @@
 <?php
 
-namespace src;
+namespace Yandex\Allure\Adapter\Example;
 
 use PHPUnit_Framework_TestCase;
 use Yandex\Allure\Adapter\Annotation\Features;

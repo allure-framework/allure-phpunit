@@ -11,14 +11,14 @@
          syntaxCheck="false"
         >
     <testsuites>
-        <testsuite name="Allure PHPUnit Example Test">
-            <directory>./</directory>
+        <testsuite name="Allure PHPUnit Example Tests">
+            <directory>src/Yandex/Allure/Adapter/Example/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="false">
-            <directory suffix=".php">src</directory>
+            <directory suffix=".php">src/Yandex/Allure/Adapter/Example/</directory>
         </whitelist>
     </filter>
 

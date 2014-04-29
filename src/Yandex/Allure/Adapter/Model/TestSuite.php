@@ -16,7 +16,12 @@ use JMS\Serializer\Annotation\XmlRoot;
 
 AnnotationRegistry::registerAutoloadNamespace(
     'JMS\Serializer\Annotation',
-    dirname(__FILE__)."/../../../../../vendor/jms/serializer/src"
+    __DIR__."/../../../../../vendor/jms/serializer/src"
+);
+
+AnnotationRegistry::registerAutoloadNamespace(
+    'Yandex\Allure\Adapter\Annotation',
+    __DIR__."/../../../../../src"
 );
 
 /**
