@@ -1,6 +1,7 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Annotation;
+use Doctrine\Common\Annotations\Annotation\Required;
 
 /**
  * @Annotation
@@ -10,13 +11,9 @@ namespace Yandex\Allure\Adapter\Annotation;
 class Features {
     /**
      * @var array
+     * @Required
      */
-    private $featureNames;
-
-    function __construct(array $featureNames)
-    {
-        $this->featureNames = $featureNames;
-    }
+    public $featureNames;
 
     /**
      * @return array

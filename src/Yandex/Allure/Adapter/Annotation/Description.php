@@ -1,6 +1,7 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Annotation;
+use Doctrine\Common\Annotations\Annotation\Required;
 use Yandex\Allure\Adapter\Model\DescriptionType;
 
 /**
@@ -11,6 +12,7 @@ use Yandex\Allure\Adapter\Model\DescriptionType;
 class Description {
     /**
      * @var string
+     * @Required
      */
     public $value;
 

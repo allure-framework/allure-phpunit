@@ -125,11 +125,11 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
                 ));
             } else if ($annotation instanceof Annotation\Features){
                 foreach ($annotation->getFeatureNames() as $featureName){
-                    $testSuite->addLabel(new Model\Feature($featureName));
+                    $testSuite->addLabel(Model\Label::feature($featureName));
                 }
             } else if ($annotation instanceof Annotation\Stories) {
                 foreach ($annotation->getStories() as $storyName){
-                    $testSuite->addLabel(new Model\Story($storyName));
+                    $testSuite->addLabel(Model\Label::story($storyName));
                 }
             }
         }
@@ -178,11 +178,11 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
                 ));
             } else if ($annotation instanceof Annotation\Features){
                 foreach ($annotation->getFeatureNames() as $featureName){
-                    $testCase->addLabel(new Model\Feature($featureName));
+                    $testCase->addLabel(Model\Label::feature($featureName));
                 }
             } else if ($annotation instanceof Annotation\Stories) {
                 foreach ($annotation->getStories() as $storyName){
-                    $testCase->addLabel(new Model\Story($storyName));
+                    $testCase->addLabel(Model\Label::story($storyName));
                 }
             } else if ($annotation instanceof Annotation\Step) {
                 //TODO: to be implemented!

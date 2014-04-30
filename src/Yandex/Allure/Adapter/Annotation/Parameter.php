@@ -1,6 +1,7 @@
 <?php
 
 namespace Yandex\Allure\Adapter\Annotation;
+use Doctrine\Common\Annotations\Annotation\Required;
 use Yandex\Allure\Adapter\Model\ParameterKind;
 
 /**
@@ -11,11 +12,13 @@ use Yandex\Allure\Adapter\Model\ParameterKind;
 class Parameter {
     /**
      * @var string
+     * @Required
      */
     public $name;
 
     /**
      * @var string
+     * @Required
      */
     public $value;
 

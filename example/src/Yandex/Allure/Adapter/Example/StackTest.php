@@ -5,6 +5,7 @@ namespace Yandex\Allure\Adapter\Example;
 use PHPUnit_Framework_TestCase;
 use Yandex\Allure\Adapter\Annotation\Features;
 use Yandex\Allure\Adapter\Annotation\Step;
+use Yandex\Allure\Adapter\Annotation\Stories;
 use Yandex\Allure\Adapter\Annotation\Title;
 
 /**
@@ -18,6 +19,7 @@ class StackTest extends PHPUnit_Framework_TestCase
      * @Title("Stack creation test")
      * @Step("Core operations")
      * @Features({"Initialization"})
+     * @Stories({"Stack should be a LIFO data structure"})
      */
     public function testCreate()
     {
@@ -29,6 +31,7 @@ class StackTest extends PHPUnit_Framework_TestCase
      * @Title("Stack push operation test")
      * @Step("Core operations")
      * @Features({"Write operation"})
+     * @Stories({"Stack should be a LIFO data structure"})
      */
     public function testPush()
     {
@@ -42,6 +45,7 @@ class StackTest extends PHPUnit_Framework_TestCase
      * @Title("Stack pop operation test")
      * @Step("Core operations")
      * @Features({"Read operation"})
+     * @Stories({"Stack should be a LIFO data structure"})
      */
     public function testPop()
     {
