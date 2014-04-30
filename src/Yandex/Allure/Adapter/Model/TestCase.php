@@ -27,6 +27,13 @@ class TestCase {
      * @XmlAttribute
      */
     private $stop;
+    
+    /**
+     * @var string
+     * @Type("string")
+     * @XmlAttribute
+     */
+    private $status = Status::PASSED;
 
     /**
      * @var string
@@ -156,6 +163,22 @@ class TestCase {
     }
 
     /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeverity()
+    {
+        return $this->severity;
+    }
+
+    /**
      * @return \Yandex\Allure\Adapter\Model\Description
      */
     public function getDescription()
@@ -184,7 +207,7 @@ class TestCase {
      */
     public function setSeverity($severity)
     {
-        $this->severity = ConstantChecker::validate('SeverityLevel', $severity);
+        $this->severity = ConstantChecker::validate('Yandex\Allure\Adapter\Model\SeverityLevel', $severity);
     }
 
     /**
@@ -193,6 +216,14 @@ class TestCase {
     public function setStop($stop)
     {
         $this->stop = $stop;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = ConstantChecker::validate('Yandex\Allure\Adapter\Model\Status', $status);
     }
 
     /**

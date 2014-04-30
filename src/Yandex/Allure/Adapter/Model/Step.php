@@ -60,7 +60,7 @@ class Step {
         $this->name = $name;
         $this->start = $start;
         $this->stop = $stop;
-        $this->status = ConstantChecker::validate('Status', $status);
+        $this->status = ConstantChecker::validate('Yandex\Allure\Adapter\Model\Status', $status);
         $this->steps = array();
         $this->attachments = array();
     }

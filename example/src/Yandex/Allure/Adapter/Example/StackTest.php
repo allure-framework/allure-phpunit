@@ -9,8 +9,7 @@ use Yandex\Allure\Adapter\Annotation\Stories;
 use Yandex\Allure\Adapter\Annotation\Title;
 
 /**
- * Class StackTest
- * @package src
+ * @package Yandex\Allure\Adapter\Example
  * @Title("Stack Test")
  */
 class StackTest extends PHPUnit_Framework_TestCase

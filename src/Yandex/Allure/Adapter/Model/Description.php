@@ -26,7 +26,7 @@ class Description {
 
     function __construct($type, $value)
     {
-        $this->type = ConstantChecker::validate('DescriptionType', $type);
+        $this->type = ConstantChecker::validate('Yandex\Allure\Adapter\Model\DescriptionType', $type);
         $this->value = $value;
     }
 

@@ -30,7 +30,7 @@ class Parameter {
 
     function __construct($name, $value, $kind)
     {
-        $this->kind = ConstantChecker::validate('ParameterKind', $kind);
+        $this->kind = ConstantChecker::validate('Yandex\Allure\Adapter\Model\ParameterKind', $kind);
         $this->name = $name;
         $this->value = $value;
     }

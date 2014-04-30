@@ -12,6 +12,7 @@ use PHPUnit_Framework_TestSuite;
 use Rhumsaa\Uuid\Uuid;
 use Yandex\Allure\Adapter\Annotation;
 use Yandex\Allure\Adapter\Model;
+use Yandex\Allure\Adapter\Model\Status;
 
 require_once(dirname(__FILE__).'/../../../../vendor/autoload.php');
 
@@ -51,7 +52,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
      */
     public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
-        // TODO: Implement addError() method.
+        $this->handleUnsuccessfulTest($test, $e, Status::BROKEN);
     }
 
     /**
@@ -63,7 +64,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
      */
     public function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
     {
-        // TODO: Implement addFailure() method.
+        $this->handleUnsuccessfulTest($test, $e, Status::FAILED);
     }
 
     /**
@@ -75,7 +76,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
      */
     public function addIncompleteTest(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
-        // TODO: Implement addIncompleteTest() method.
+        $this->addError($test, $e, $time);
     }
 
     /**
@@ -88,7 +89,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
      */
     public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
-        // TODO: Implement addRiskyTest() method.
+        $this->addError($test, $e, $time);
     }
 
     /**
@@ -101,7 +102,17 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
      */
     public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
-        // TODO: Implement addSkippedTest() method.
+        $this->handleUnsuccessfulTest($test, $e, Status::SKIPPED);
+    }
+    
+    private function handleUnsuccessfulTest(PHPUnit_Framework_Test $test, Exception $e, $status)
+    {
+        $this->doIfTestIsValid($test, function(Model\TestCase $testCase) use ($e, $status) {
+            $failure = new Model\Failure($e->getMessage());
+            $failure->setStackTrace($e->getTraceAsString());
+            $testCase->setStatus($status);
+            $testCase->setFailure($failure);
+        });
     }
 
     /**
@@ -164,33 +175,35 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
      */
     public function startTest(PHPUnit_Framework_Test $test)
     {
-        $testInstance = self::getTestInstance($test);
-        $testName = $testInstance->getName();
-        $testStart = self::getTimestamp();
-        $testCase = new Model\TestCase($testName, $testStart);
-        foreach ($this->getMethodAnnotations($testInstance, $testName) as $annotation){
-            if ($annotation instanceof Annotation\Title){
-                $testCase->setTitle($annotation->value);
-            } else if ($annotation instanceof Annotation\Description){
-                $testCase->setDescription(new Model\Description(
-                    $annotation->type,
-                    $annotation->value
-                ));
-            } else if ($annotation instanceof Annotation\Features){
-                foreach ($annotation->getFeatureNames() as $featureName){
-                    $testCase->addLabel(Model\Label::feature($featureName));
+        $testInstance = self::validateTestInstance($test);
+        if (!is_null($testInstance)) {
+            $testName = $testInstance->getName();
+            $testStart = self::getTimestamp();
+            $testCase = new Model\TestCase($testName, $testStart);
+            foreach ($this->getMethodAnnotations($testInstance, $testName) as $annotation) {
+                if ($annotation instanceof Annotation\Title) {
+                    $testCase->setTitle($annotation->value);
+                } else if ($annotation instanceof Annotation\Description) {
+                    $testCase->setDescription(new Model\Description(
+                        $annotation->type,
+                        $annotation->value
+                    ));
+                } else if ($annotation instanceof Annotation\Features) {
+                    foreach ($annotation->getFeatureNames() as $featureName) {
+                        $testCase->addLabel(Model\Label::feature($featureName));
+                    }
+                } else if ($annotation instanceof Annotation\Stories) {
+                    foreach ($annotation->getStories() as $storyName) {
+                        $testCase->addLabel(Model\Label::story($storyName));
+                    }
+                } else if ($annotation instanceof Annotation\Step) {
+                    //TODO: to be implemented!
+                } else if ($annotation instanceof Annotation\Severity) {
+                    $testCase->setSeverity($annotation->level);
                 }
-            } else if ($annotation instanceof Annotation\Stories) {
-                foreach ($annotation->getStories() as $storyName){
-                    $testCase->addLabel(Model\Label::story($storyName));
-                }
-            } else if ($annotation instanceof Annotation\Step) {
-                //TODO: to be implemented!
-            } else if ($annotation instanceof Annotation\Severity){
-                $testCase->setSeverity($annotation->level);
             }
+            $this->getCurrentTestSuite()->addTestCase($testCase);
         }
-        $this->getCurrentTestSuite()->addTestCase($testCase);
     }
 
     /**
@@ -202,27 +215,29 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
      */
     public function endTest(PHPUnit_Framework_Test $test, $time)
     {
-        $testInstance = self::getTestInstance($test);
-        $testName = $testInstance->getName();
-        $testStop = self::getTimestamp();
-        $testCase = $this->getCurrentTestSuite()->getTestCase($testName);
-        if ($testCase instanceof Model\TestCase){
-            $testCase->setStop($testStop);
-            foreach ($this->getMethodAnnotations($testInstance, $testName) as $annotation){
-                if ($annotation instanceof Annotation\Attachment){
-                    $path = $annotation->path;
-                    $type = $annotation->type;
-                    if ($type != Model\AttachmentType::OTHER && file_exists($path)){
-                        $newFileName =
-                            $this->getOutputDirectory().DIRECTORY_SEPARATOR.
-                            self::getUUID().$annotation->name.'-attachment.'.$type;
-                        $attachment = new Model\Attachment($annotation->name, $newFileName, $annotation->type);
-                        if (!copy($path, $newFileName)){
-                            throw new Exception("Failed to copy attachment from $path to $newFileName.");
+        $testInstance = self::validateTestInstance($test);
+        if (!is_null($testInstance)) {
+            $testName = $testInstance->getName();
+            $testStop = self::getTimestamp();
+            $testCase = $this->getCurrentTestSuite()->getTestCase($testName);
+            if ($testCase instanceof Model\TestCase) {
+                $testCase->setStop($testStop);
+                foreach ($this->getMethodAnnotations($testInstance, $testName) as $annotation) {
+                    if ($annotation instanceof Annotation\Attachment) {
+                        $path = $annotation->path;
+                        $type = $annotation->type;
+                        if ($type != Model\AttachmentType::OTHER && file_exists($path)) {
+                            $newFileName =
+                                $this->getOutputDirectory() . DIRECTORY_SEPARATOR .
+                                self::getUUID() . $annotation->name . '-attachment.' . $type;
+                            $attachment = new Model\Attachment($annotation->name, $newFileName, $annotation->type);
+                            if (!copy($path, $newFileName)) {
+                                throw new Exception("Failed to copy attachment from $path to $newFileName.");
+                            }
+                            $testCase->addAttachment($attachment);
+                        } else {
+                            throw new Exception("Attachment $path doesn't exist.");
                         }
-                        $testCase->addAttachment($attachment);
-                    } else {
-                        throw new Exception("Attachment $path doesn't exist.");
                     }
                 }
             }
@@ -294,17 +309,33 @@ class AllureAdapter implements PHPUnit_Framework_TestListener {
         }
         return $this->annotationsReader;
     }
-
+    
     /**
      * @param PHPUnit_Framework_Test $test
      * @return \PHPUnit_Framework_TestCase|void
      */
-    private static function getTestInstance(PHPUnit_Framework_Test $test){
+    private static function validateTestInstance(PHPUnit_Framework_Test $test){
         if ($test instanceof \PHPUnit_Framework_TestCase){
             return $test;
         }
         echo("Warning: skipping test $test as it doesn't inherit from PHPUnit_Framework_TestCase.");
         return null;
+    }
+
+    /**
+     * @param PHPUnit_Framework_Test $test
+     * @param $action
+     */
+    private function doIfTestIsValid(PHPUnit_Framework_Test $test, $action)
+    {
+        $testInstance = self::validateTestInstance($test);
+        if (!is_null($testInstance)){
+            $testCase = $this->getCurrentTestSuite()->getTestCase($testInstance->getName());
+            if (isset($testCase)){
+                $action($testCase);
+            }
+        }
+
     }
 
     public static function getTimestamp()
