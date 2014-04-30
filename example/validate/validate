@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+
+<?php
+
+if (count($argv) != 3){
+    usage();
+    exit(0);
+}
+
+$xsdPath = $argv[1];
+$xmlPath = $argv[2];
+
+$xml = new DOMDocument();
+$xml->load($xmlPath);
+$status = $xml->schemaValidate($xsdPath);
+
+echo "$xmlPath is " . ($status ? 'valid' : 'invalid') . "\n";
+
+function usage()
+{
+    echo "validate schema.xsd filename.xml";
+}
+ 

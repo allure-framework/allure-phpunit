@@ -27,8 +27,8 @@ AnnotationRegistry::registerAutoloadNamespace(
 
 /**
  * @package Yandex\Allure\Adapter\Model
- * @XmlNamespace(uri="urn:model.allure.qatools.yandex.ru")
- * @XmlRoot("test-suite")
+ * @XmlNamespace(uri="urn:model.allure.qatools.yandex.ru", prefix="alr")
+ * @XmlRoot(name="alr:test-suite")
  * @ExclusionPolicy("none")
  */
 class TestSuite implements \Serializable {

@@ -45,7 +45,7 @@ class TestCase {
     /**
      * @var string
      * @Type("string")
-     * @XmlElement(cdata=false)
+     * @XmlAttribute
      */
     private $severity = SeverityLevel::NORMAL;
 
