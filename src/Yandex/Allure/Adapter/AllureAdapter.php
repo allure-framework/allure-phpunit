@@ -192,6 +192,12 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
                     }
                 } else if ($annotation instanceof Annotation\Severity) {
                     $testCase->setSeverity($annotation->level);
+                } else if ($annotation instanceof Annotation\Parameter) {
+                    $testCase->addParameter(new Model\Parameter(
+                        $annotation->name,
+                        $annotation->value,
+                        $annotation->kind
+                    ));
                 }
             }
             Model\Provider::getCurrentTestSuite()->addTestCase($testCase);

@@ -2,8 +2,8 @@
 
 namespace Yandex\Allure\Adapter\Example;
 
+use Exception;
 use PHPUnit_Framework_TestCase;
-use Rhumsaa\Uuid\Console\Exception;
 use Yandex\Allure\Adapter\Support\StepSupport;
 use Yandex\Allure\Adapter\Support;
 
