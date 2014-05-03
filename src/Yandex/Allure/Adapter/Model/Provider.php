@@ -2,7 +2,8 @@
 
 namespace Yandex\Allure\Adapter\Model;
 
-class Provider {
+class Provider
+{
 
     /**
      * @var array

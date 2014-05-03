@@ -2,7 +2,7 @@
 
 <?php
 
-if (count($argv) != 3){
+if (count($argv) != 3) {
     usage();
     exit(0);
 }

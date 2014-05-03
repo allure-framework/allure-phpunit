@@ -6,7 +6,8 @@ namespace Yandex\Allure\Adapter\Model;
  * Severity level
  * @package Yandex\Allure\Adapter\Model
  */
-final class SeverityLevel {
+final class SeverityLevel
+{
     const BLOCKER = 'blocker';
     const CRITICAL = 'critical';
     const NORMAL = 'normal';

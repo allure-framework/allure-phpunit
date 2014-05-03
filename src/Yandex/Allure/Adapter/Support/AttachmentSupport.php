@@ -4,13 +4,14 @@ namespace Yandex\Allure\Adapter\Support;
 
 
 use Exception;
-use ReflectionClass;
-use TokenReflection\ReflectionMethod;
 use Yandex\Allure\Adapter\Model;
-use Yandex\Allure\Adapter\Model\AttachmentType;
-use Yandex\Allure\Adapter\Model\Provider;
 
-trait AttachmentSupport {
+/**
+ * Use this trait in order to add Allure attachments support in your tests
+ * @package Yandex\Allure\Adapter\Support
+ */
+trait AttachmentSupport
+{
 
     /**
      * Adds a new attachment to report
@@ -19,13 +20,13 @@ trait AttachmentSupport {
      * @param $type
      * @throws \Exception
      */
-    public function addAttachment($filePathOrContents, $caption, $type = AttachmentType::OTHER)
+    public function addAttachment($filePathOrContents, $caption, $type = Model\AttachmentType::OTHER)
     {
-        if ($this instanceof \PHPUnit_Framework_TestCase){
-            $testInstance = Provider::getCurrentTestSuite();
-            if (isset($testInstance) && $testInstance instanceof Model\TestSuite){
+        if ($this instanceof \PHPUnit_Framework_TestCase) {
+            $testInstance = Model\Provider::getCurrentTestSuite();
+            if (isset($testInstance) && $testInstance instanceof Model\TestSuite) {
                 $testCase = $testInstance->getCurrentTestCase();
-                if (isset($testInstance) && $testCase instanceof Model\TestCase){
+                if (isset($testInstance) && $testCase instanceof Model\TestCase) {
                     $newFileName = self::getAttachmentFileName($filePathOrContents, $type);
                     $attachment = new Model\Attachment($caption, $newFileName, $type);
                     $testCase->addAttachment($attachment);

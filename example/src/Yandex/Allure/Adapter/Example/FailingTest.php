@@ -9,8 +9,9 @@ use Yandex\Allure\Adapter\Annotation\Title;
  * @package Yandex\Allure\Adapter\Example
  * @Title("A set of failing tests")
  */
-class FailingTest extends PHPUnit_Framework_TestCase {
-    
+class FailingTest extends PHPUnit_Framework_TestCase
+{
+
     /**
      * @Title("Assertion error example")
      */

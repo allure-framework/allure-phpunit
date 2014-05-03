@@ -6,7 +6,8 @@ namespace Yandex\Allure\Adapter\Model;
 /**
  * @package Yandex\Allure\Adapter\Model
  */
-class ConstantChecker {
+class ConstantChecker
+{
 
     /**
      * Checks whether constant with the specified value is present. If it's present it's returned. An
@@ -20,7 +21,7 @@ class ConstantChecker {
     {
         $ref = new \ReflectionClass($className);
         foreach ($ref->getConstants() as $constantValue) {
-            if ($constantValue === $value){
+            if ($constantValue === $value) {
                 return $value;
             }
         }

@@ -8,7 +8,8 @@ use JMS\Serializer\Annotation\XmlAttribute;
 /**
  * @package Yandex\Allure\Adapter\Model
  */
-class Attachment {
+class Attachment
+{
 
     /**
      * @var string

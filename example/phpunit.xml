@@ -20,8 +20,10 @@
     <listeners>
         <listener class="Yandex\Allure\Adapter\AllureAdapter" file="../src/Yandex/Allure/Adapter/AllureAdapter.php">
             <arguments>
-                <string>allure-report-data</string> <!-- Output directory -->
-                <boolean>true</boolean> <!-- Whether to delete previous results on rerun -->
+                <string>allure-report-data</string>
+                <!-- Output directory -->
+                <boolean>true</boolean>
+                <!-- Whether to delete previous results on rerun -->
             </arguments>
         </listener>
     </listeners>

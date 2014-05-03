@@ -6,7 +6,8 @@ use JMS\Serializer\Annotation\SerializedName;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlElement;
 
-class Failure {
+class Failure
+{
     /**
      * @var string
      * @Type("string")

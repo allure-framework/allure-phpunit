@@ -5,7 +5,8 @@ namespace Yandex\Allure\Adapter\Model;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlAttribute;
 
-class Parameter {
+class Parameter
+{
 
     /**
      * @var string

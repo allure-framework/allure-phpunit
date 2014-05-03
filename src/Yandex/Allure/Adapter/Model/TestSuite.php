@@ -17,12 +17,12 @@ use JMS\Serializer\Annotation\XmlRoot;
 
 AnnotationRegistry::registerAutoloadNamespace(
     'JMS\Serializer\Annotation',
-    __DIR__."/../../../../../vendor/jms/serializer/src"
+    __DIR__ . "/../../../../../vendor/jms/serializer/src"
 );
 
 AnnotationRegistry::registerAutoloadNamespace(
     'Yandex\Allure\Adapter\Annotation',
-    __DIR__."/../../../../../src"
+    __DIR__ . "/../../../../../src"
 );
 
 /**
@@ -31,7 +31,8 @@ AnnotationRegistry::registerAutoloadNamespace(
  * @XmlRoot(name="alr:test-suite")
  * @ExclusionPolicy("none")
  */
-class TestSuite implements \Serializable {
+class TestSuite implements \Serializable
+{
 
     /**
      * @var int
@@ -249,7 +250,7 @@ class TestSuite implements \Serializable {
      */
     private function getSerializer()
     {
-        if (!isset($this->serializer)){
+        if (!isset($this->serializer)) {
             $this->serializer = SerializerBuilder::create()->build();
         }
         return $this->serializer;

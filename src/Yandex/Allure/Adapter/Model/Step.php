@@ -5,8 +5,10 @@ namespace Yandex\Allure\Adapter\Model;
 use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\XmlAttribute;
 use JMS\Serializer\Annotation\XmlList;
+use JMS\Serializer\Annotation\XmlElement;
 
-class Step {
+class Step
+{
 
     /**
      * @var int
@@ -25,26 +27,28 @@ class Step {
     /**
      * @var string
      * @Type("string")
+     * @XmlElement(cdata=false)
      */
     private $name;
 
     /**
      * @var string
      * @Type("string")
+     * @XmlElement(cdata=false)
      */
     private $title;
 
     /**
      * @var array
      * @Type("array<Yandex\Allure\Adapter\Model\Step>")
-     * @XmlList(inline = true, entry = "step")
+     * @XmlList(entry = "step")
      */
     private $steps;
 
     /**
      * @var array
      * @Type("array<Yandex\Allure\Adapter\Model\Attachment>")
-     * @XmlList(inline = true, entry = "attachment")
+     * @XmlList(entry = "attachment")
      */
     private $attachments;
 

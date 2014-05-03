@@ -5,7 +5,8 @@ namespace Yandex\Allure\Adapter\Annotation;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\IndexedReader;
 
-class AnnotationProvider {
+class AnnotationProvider
+{
 
     private static $annotationsReader;
 
@@ -37,7 +38,7 @@ class AnnotationProvider {
      */
     private static function getAnnotationsReader()
     {
-        if (!isset(self::$annotationsReader)){
+        if (!isset(self::$annotationsReader)) {
             self::$annotationsReader = new IndexedReader(new AnnotationReader());
         }
         return self::$annotationsReader;

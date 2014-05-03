@@ -12,7 +12,8 @@ use JMS\Serializer\Annotation\XmlRoot;
  * @package Yandex\Allure\Adapter\Model
  * @XmlRoot("test-case")
  */
-class TestCase {
+class TestCase
+{
 
     /**
      * @var int
@@ -27,7 +28,7 @@ class TestCase {
      * @XmlAttribute
      */
     private $stop;
-    
+
     /**
      * @var string
      * @Type("string")

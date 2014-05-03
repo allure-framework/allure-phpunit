@@ -9,7 +9,8 @@ use JMS\Serializer\Annotation\XmlRoot;
  * @package Yandex\Allure\Adapter\Model
  * @XmlRoot("label")
  */
-class Label {
+class Label
+{
 
     /**
      * @var string
@@ -24,7 +25,7 @@ class Label {
      * @XmlAttribute
      */
     private $value;
-    
+
     function __construct($name, $value)
     {
         $this->name = $name;

@@ -9,7 +9,8 @@ use Yandex\Allure\Adapter\Model\ParameterKind;
  * @Target({"METHOD"})
  * @package Yandex\Allure\Adapter\Annotation
  */
-class Parameter {
+class Parameter
+{
     /**
      * @var string
      * @Required

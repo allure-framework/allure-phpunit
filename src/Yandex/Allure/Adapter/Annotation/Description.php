@@ -9,7 +9,8 @@ use Yandex\Allure\Adapter\Model\DescriptionType;
  * @Target({"CLASS", "METHOD"})
  * @package Yandex\Allure\Adapter\Annotation
  */
-class Description {
+class Description
+{
     /**
      * @var string
      * @Required

@@ -8,7 +8,8 @@ use Yandex\Allure\Adapter\Model\SeverityLevel;
  * @Target({"METHOD"})
  * @package Yandex\Allure\Adapter\Annotation
  */
-class Severity {
+class Severity
+{
     /**
      * @var string
      */

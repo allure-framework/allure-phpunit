@@ -8,7 +8,8 @@ use Doctrine\Common\Annotations\Annotation\Required;
  * @Target({"CLASS", "METHOD"})
  * @package Yandex\Allure\Adapter\Annotation
  */
-class Stories {
+class Stories
+{
     /**
      * @var array
      * @Required
