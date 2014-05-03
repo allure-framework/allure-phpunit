@@ -19,12 +19,6 @@ class Attachment {
 
     /**
      * @var string
-     * @Required
-     */
-    public $path;
-
-    /**
-     * @var string
      */
     public $type = AttachmentType::OTHER;
 

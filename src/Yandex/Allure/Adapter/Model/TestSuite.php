@@ -88,6 +88,13 @@ class TestSuite implements \Serializable {
      */
     private $serializer;
 
+    /**
+     * @var TestCase
+     * @Type("Yandex\Allure\Adapter\Model\TestCase")
+     * @Exclude
+     */
+    private $currentTestCase;
+
     function __construct($name, $start)
     {
         $this->name = $name;
@@ -185,6 +192,22 @@ class TestSuite implements \Serializable {
     public function getTestCase($name)
     {
         return $this->testCases[$name];
+    }
+
+    /**
+     * @param \Yandex\Allure\Adapter\Model\TestCase $currentTestCase
+     */
+    public function setCurrentTestCase($currentTestCase)
+    {
+        $this->currentTestCase = $currentTestCase;
+    }
+
+    /**
+     * @return \Yandex\Allure\Adapter\Model\TestCase
+     */
+    public function getCurrentTestCase()
+    {
+        return $this->currentTestCase;
     }
 
     /**
