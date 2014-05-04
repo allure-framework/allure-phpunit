@@ -1,5 +1,5 @@
 {
-    "name": "yandex-qatools/allure-phpunit",
+    "name": "allure-framework/allure-phpunit",
     "keywords":["phpunit", "testing", "report", "steps", "attachments", "cases", "allure"],
     "description": "A PHPUnit adapter for Allure report.",
     "homepage": "http://allure.qatools.ru/",
@@ -13,7 +13,7 @@
     ],
     "support": {
         "email": "allure@yandex-team.ru",
-        "source": "https://github.com/allure-framework"
+        "source": "https://github.com/allure-framework/allure-phpunit"
     },
     "require": {
 	    "php": ">=5.4.0",
