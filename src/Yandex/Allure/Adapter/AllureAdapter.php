@@ -8,14 +8,14 @@ use PHPUnit_Framework_Test;
 use PHPUnit_Framework_TestListener;
 use PHPUnit_Framework_TestSuite;
 use Yandex\Allure\Adapter\Annotation;
-use Yandex\Allure\Adapter\Event\Storage\TestCaseBrokenEvent;
-use Yandex\Allure\Adapter\Event\Storage\TestCaseCanceledEvent;
-use Yandex\Allure\Adapter\Event\Storage\TestCaseFailedEvent;
-use Yandex\Allure\Adapter\Event\Storage\TestCaseFinishedEvent;
-use Yandex\Allure\Adapter\Event\Storage\TestCasePendingEvent;
-use Yandex\Allure\Adapter\Event\Storage\TestCaseStartedEvent;
-use Yandex\Allure\Adapter\Event\Storage\TestSuiteFinishedEvent;
-use Yandex\Allure\Adapter\Event\Storage\TestSuiteStartedEvent;
+use Yandex\Allure\Adapter\Event\TestCaseBrokenEvent;
+use Yandex\Allure\Adapter\Event\TestCaseCanceledEvent;
+use Yandex\Allure\Adapter\Event\TestCaseFailedEvent;
+use Yandex\Allure\Adapter\Event\TestCaseFinishedEvent;
+use Yandex\Allure\Adapter\Event\TestCasePendingEvent;
+use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
+use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
+use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model;
 use Yandex\Allure\Adapter\Support\Utils;
 
@@ -23,8 +23,6 @@ const DEFAULT_OUTPUT_DIRECTORY = "allure-report";
 
 class AllureAdapter implements PHPUnit_Framework_TestListener
 {
-
-    use Utils;
 
     //NOTE: here we implicitly assume that PHPUnit runs in single-threaded mode
     private $uuid;
@@ -135,7 +133,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      */
     public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
     {
-        Allure::lifecycle()->fire(new TestSuiteFinishedEvent());
+        Allure::lifecycle()->fire(new TestSuiteFinishedEvent($this->uuid));
     }
 
     /**
