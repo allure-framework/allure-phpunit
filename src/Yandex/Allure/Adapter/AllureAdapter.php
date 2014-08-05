@@ -55,7 +55,8 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      */
     public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
-        Allure::lifecycle()->fire(new TestCaseBrokenEvent());
+        $event = new TestCaseBrokenEvent();
+        Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
     }
 
     /**
@@ -67,7 +68,8 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      */
     public function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
     {
-        Allure::lifecycle()->fire(new TestCaseFailedEvent());
+        $event = new TestCaseFailedEvent();
+        Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
     }
 
     /**
@@ -79,7 +81,8 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      */
     public function addIncompleteTest(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
-        Allure::lifecycle()->fire(new TestCasePendingEvent());
+        $event = new TestCasePendingEvent();
+        Allure::lifecycle()->fire($event->withException($e));
     }
 
     /**
@@ -92,7 +95,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      */
     public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
-        Allure::lifecycle()->fire(new TestCasePendingEvent());
+        $this->addIncompleteTest($test, $e, $time);
     }
 
     /**
@@ -105,7 +108,8 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      */
     public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
-        Allure::lifecycle()->fire(new TestCaseCanceledEvent());
+        $event = new TestCaseCanceledEvent();
+        Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
     }
 
     /**
@@ -146,7 +150,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         if ($test instanceof \PHPUnit_Framework_TestCase) {
             $suiteName = $this->suiteName;
             $methodName = $test->getName();
-            $event = new TestCaseStartedEvent($this->uuid, get_class($test));
+            $event = new TestCaseStartedEvent($this->uuid, get_class($test) . T_DOUBLE_COLON . $methodName);
             $annotationManager = new Annotation\AnnotationManager(Annotation\AnnotationProvider::getMethodAnnotations($suiteName, $methodName));
             $annotationManager->updateTestCaseEvent($event);
             Allure::lifecycle()->fire($event);
