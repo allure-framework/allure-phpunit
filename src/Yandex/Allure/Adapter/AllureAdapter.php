@@ -18,7 +18,6 @@ use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model;
-use Yandex\Allure\Adapter\Support\Utils;
 
 const DEFAULT_OUTPUT_DIRECTORY = "allure-report";
 
@@ -29,7 +28,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     private $uuid;
     private $suiteName;
 
-    function __construct($outputDirectory = DEFAULT_OUTPUT_DIRECTORY, $deletePreviousResults = false)
+    public function __construct($outputDirectory = DEFAULT_OUTPUT_DIRECTORY, $deletePreviousResults = false)
     {
         if (!file_exists($outputDirectory)) {
             mkdir($outputDirectory, 0755, true);
@@ -136,7 +135,9 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         $event = new TestSuiteStartedEvent($suiteName);
         $this->uuid = $event->getUuid();
         $this->suiteName = $suiteName;
-        $annotationManager = new Annotation\AnnotationManager(Annotation\AnnotationProvider::getClassAnnotations($suite));
+        $annotationManager = new Annotation\AnnotationManager(
+            Annotation\AnnotationProvider::getClassAnnotations($suite)
+        );
         $annotationManager->updateTestSuiteEvent($event);
         Allure::lifecycle()->fire($event);
     }
@@ -163,7 +164,9 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
             $suiteName = $this->suiteName;
             $methodName = $test->getName();
             $event = new TestCaseStartedEvent($this->uuid, get_class($test) . T_DOUBLE_COLON . $methodName);
-            $annotationManager = new Annotation\AnnotationManager(Annotation\AnnotationProvider::getMethodAnnotations($suiteName, $methodName));
+            $annotationManager = new Annotation\AnnotationManager(
+                Annotation\AnnotationProvider::getMethodAnnotations($suiteName, $methodName)
+            );
             $annotationManager->updateTestCaseEvent($event);
             Allure::lifecycle()->fire($event);
         }
@@ -182,5 +185,4 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
             Allure::lifecycle()->fire(new TestCaseFinishedEvent());
         }
     }
-
 }
