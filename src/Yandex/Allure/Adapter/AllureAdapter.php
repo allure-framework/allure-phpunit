@@ -4,6 +4,7 @@ namespace Yandex\Allure\Adapter;
 
 use Exception;
 use PHPUnit_Framework_AssertionFailedError;
+use PHPUnit_Framework_ExpectationFailedException;
 use PHPUnit_Framework_Test;
 use PHPUnit_Framework_TestListener;
 use PHPUnit_Framework_TestSuite;
@@ -69,7 +70,18 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     public function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
     {
         $event = new TestCaseFailedEvent();
-        Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
+
+        $message = $e->getMessage();
+
+        // Append comparison diff for errors of type ExpectationFailedException (and is subclasses)
+        if (($e instanceof PHPUnit_Framework_ExpectationFailedException
+            || is_subclass_of($e, '\PHPUnit_Framework_ExpectationFailedException'))
+            && !empty($e->getComparisonFailure())
+        ) {
+            $message .= $e->getComparisonFailure()->getDiff();
+        }
+
+        Allure::lifecycle()->fire($event->withException($e)->withMessage($message));
     }
 
     /**
