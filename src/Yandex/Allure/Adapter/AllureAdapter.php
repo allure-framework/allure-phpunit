@@ -4,6 +4,7 @@ namespace Yandex\Allure\Adapter;
 
 use Exception;
 use PHPUnit_Framework_AssertionFailedError;
+use PHPUnit_Framework_ExpectationFailedException;
 use PHPUnit_Framework_Test;
 use PHPUnit_Framework_TestListener;
 use PHPUnit_Framework_TestSuite;
@@ -17,7 +18,6 @@ use Yandex\Allure\Adapter\Event\TestCaseStartedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model;
-use Yandex\Allure\Adapter\Support\Utils;
 
 const DEFAULT_OUTPUT_DIRECTORY = "allure-report";
 
@@ -28,7 +28,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     private $uuid;
     private $suiteName;
 
-    function __construct($outputDirectory = DEFAULT_OUTPUT_DIRECTORY, $deletePreviousResults = false)
+    public function __construct($outputDirectory = DEFAULT_OUTPUT_DIRECTORY, $deletePreviousResults = false)
     {
         if (!file_exists($outputDirectory)) {
             mkdir($outputDirectory, 0755, true);
@@ -69,7 +69,18 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     public function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
     {
         $event = new TestCaseFailedEvent();
-        Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
+
+        $message = $e->getMessage();
+
+        // Append comparison diff for errors of type ExpectationFailedException (and is subclasses)
+        if (($e instanceof PHPUnit_Framework_ExpectationFailedException
+            || is_subclass_of($e, '\PHPUnit_Framework_ExpectationFailedException'))
+            && !empty($e->getComparisonFailure())
+        ) {
+            $message .= $e->getComparisonFailure()->getDiff();
+        }
+
+        Allure::lifecycle()->fire($event->withException($e)->withMessage($message));
     }
 
     /**
@@ -124,7 +135,9 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         $event = new TestSuiteStartedEvent($suiteName);
         $this->uuid = $event->getUuid();
         $this->suiteName = $suiteName;
-        $annotationManager = new Annotation\AnnotationManager(Annotation\AnnotationProvider::getClassAnnotations($suite));
+        $annotationManager = new Annotation\AnnotationManager(
+            Annotation\AnnotationProvider::getClassAnnotations($suite)
+        );
         $annotationManager->updateTestSuiteEvent($event);
         Allure::lifecycle()->fire($event);
     }
@@ -151,7 +164,9 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
             $suiteName = $this->suiteName;
             $methodName = $test->getName();
             $event = new TestCaseStartedEvent($this->uuid, get_class($test) . T_DOUBLE_COLON . $methodName);
-            $annotationManager = new Annotation\AnnotationManager(Annotation\AnnotationProvider::getMethodAnnotations($suiteName, $methodName));
+            $annotationManager = new Annotation\AnnotationManager(
+                Annotation\AnnotationProvider::getMethodAnnotations($suiteName, $methodName)
+            );
             $annotationManager->updateTestCaseEvent($event);
             Allure::lifecycle()->fire($event);
         }
@@ -170,5 +185,4 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
             Allure::lifecycle()->fire(new TestCaseFinishedEvent());
         }
     }
-
 }
