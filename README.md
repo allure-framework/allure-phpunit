@@ -26,12 +26,11 @@ Then add Allure test listener in **phpunit.xml** file:
         <arguments>
             <string>allure-report-data</string> <!-- XML files output directory -->
             <boolean>true</boolean> <!-- Whether to delete previous results on rerun -->
-	    <array> <!-- A list of custom annotations to ignore (optional) -->
+			<array> <!-- A list of custom annotations to ignore (optional) -->
                 <element key="0">
                     <string>someCustomAnnotation</string>
                 </element>
             </array>
-
         </arguments>
     </listener>
 </listeners>
