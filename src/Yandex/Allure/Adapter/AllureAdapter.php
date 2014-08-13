@@ -28,8 +28,29 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     private $uuid;
     private $suiteName;
 
-    public function __construct($outputDirectory = DEFAULT_OUTPUT_DIRECTORY, $deletePreviousResults = false)
-    {
+    /**
+     * Annotations that should be ignored by the annotaions parser (especially PHPUnit annotations)
+     * @var array
+     */
+    private $ignoredAnnotations = [
+        'after', 'afterClass', 'backupGlobals', 'backupStaticAttributes', 'before', 'beforeClass',
+        'codeCoverageIgnore', 'codeCoverageIgnoreStart', 'codeCoverageIgnoreEnd', 'covers',
+        'coversDefaultClass', 'coversNothing', 'dataProvider', 'depends', 'expectedException',
+        'expectedExceptionCode', 'expectedExceptionMessage', 'group', 'large', 'medium',
+        'preserveGlobalState', 'requires', 'runTestsInSeparateProcesses', 'runInSeparateProcess',
+        'small', 'test', 'testdox', 'ticket', 'uses',
+    ];
+
+    /**
+     * @param string $outputDirectory XML files output directory
+     * @param bool $deletePreviousResults Whether to delete previous results on return
+     * @param array $ignoredAnnotations Extra annotaions to ignore in addition to standard PHPUnit annotations
+     */
+    public function __construct(
+        $outputDirectory = DEFAULT_OUTPUT_DIRECTORY,
+        $deletePreviousResults = false,
+        array $ignoredAnnotations = []
+    ) {
         if (!file_exists($outputDirectory)) {
             mkdir($outputDirectory, 0755, true);
         }
@@ -44,6 +65,11 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         if (is_null(Model\Provider::getOutputDirectory())) {
             Model\Provider::setOutputDirectory($outputDirectory);
         }
+
+        // Add standard PHPUnit annotations
+        Annotation\AnnotationProvider::addIgnoredAnnotations($this->ignoredAnnotations);
+        // Add custom ignored annotations
+        Annotation\AnnotationProvider::addIgnoredAnnotations($ignoredAnnotations);
     }
 
     /**
