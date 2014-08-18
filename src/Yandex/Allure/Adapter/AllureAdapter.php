@@ -101,7 +101,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         // Append comparison diff for errors of type ExpectationFailedException (and is subclasses)
         if (($e instanceof PHPUnit_Framework_ExpectationFailedException
             || is_subclass_of($e, '\PHPUnit_Framework_ExpectationFailedException'))
-            && !empty($e->getComparisonFailure())
+            && $e->getComparisonFailure()
         ) {
             $message .= $e->getComparisonFailure()->getDiff();
         }
