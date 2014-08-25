@@ -8,6 +8,9 @@ The main purpose of this adapter is to accumulate information about your tests a
 ## Example project
 Example project is located at: https://github.com/allure-framework/allure-phpunit-example
 
+## How to generate report
+This adapter only generates XML files containing information about tests. See [wiki section](https://github.com/allure-framework/allure-core/wiki#generating-report) on how to generate report.
+
 ## Installation && Usage
 **Note:** this adapter supports Allure 1.4.x only.
 In order to use this adapter you need to add a new dependency to your **composer.json** file:
