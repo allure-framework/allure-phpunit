@@ -8,7 +8,7 @@ The main purpose of this adapter is to accumulate information about your tests a
 ## Example project
 Example project is located at: https://github.com/allure-framework/allure-phpunit-example
 
-## Usage
+## Installation && Usage
 **Note:** this adapter supports Allure 1.4.x only.
 In order to use this adapter you need to add a new dependency to your **composer.json** file:
 ```
@@ -35,13 +35,13 @@ Then add Allure test listener in **phpunit.xml** file:
     </listener>
 </listeners>
 ```
-After running PHPUnit tests a new folder will be created (**allure-report-data** in the example above). This folder will contain generated XML files. See [framework help](https://github.com/allure-framework/allure-core/wiki) for details about how to generate report from XML files. By default generated report will only show a limited set of information but you can use of cool Allure features by adding a minimum of test code changes. Read next section for details.
+After running PHPUnit tests a new folder will be created (**allure-report-data** in the example above). This folder will contain generated XML files. See [framework help](https://github.com/allure-framework/allure-core/wiki) for details about how to generate report from XML files. By default generated report will only show a limited set of information but you can use cool Allure features by adding a minimum of test code changes. Read next section for details.
 
-## Advanced features
-This adapter comes with a set of PHP annotations and traits allowing to use some advanced Allure features.
+## Main features
+This adapter comes with a set of PHP annotations and traits allowing to use main Allure features.
 
 ### Human-readable test class or test method title
-In order to add such title to any test class or test case method you need to annotate it with **@Title** annotation:
+In order to add such title to any test class or [test case](https://github.com/allure-framework/allure-core/wiki/Glossary#test-case) method you need to annotate it with **@Title** annotation:
 ```php
 namespace Example\Tests;
 
@@ -64,7 +64,7 @@ class SomeTest extends PHPUnit_Framework_TestCase
 ```
 
 ### Extended test class or test method description
-Similarly you can add detailed description for each test class and test method. To add such description simply use **@Description** annotation:
+Similarly you can add detailed description for each test class and [test method](https://github.com/allure-framework/allure-core/wiki/Glossary#test-case). To add such description simply use **@Description** annotation:
 ```php
 namespace Example\Tests;
 
@@ -110,7 +110,7 @@ class SomeTest extends PHPUnit_Framework_TestCase
 ```
 
 ### Specify test parameters information
-In order to add information about test method parameters you should use **@Parameter** annotation:
+In order to add information about test method [parameters](https://github.com/allure-framework/allure-core/wiki/Glossary#parameter) you should use **@Parameter** annotation:
 ```php
 namespace Example\Tests;
 
@@ -132,7 +132,7 @@ class SomeTest extends PHPUnit_Framework_TestCase
 ```
 
 ### Map test classes and test methods to features and stories
-In some development approaches tests are classified by **stories** and **features**. If you're using this then you can annotate your test with **@Stories** and **@Features** annotations:
+In some development approaches tests are classified by [stories](https://github.com/allure-framework/allure-core/wiki/Glossary#user-story) and [features](https://github.com/allure-framework/allure-core/wiki/Glossary#feature). If you're using this then you can annotate your test with **@Stories** and **@Features** annotations:
 ```php
 namespace Example\Tests;
 
@@ -159,7 +159,7 @@ class SomeTest extends PHPUnit_Framework_TestCase
 You will then be able to filter tests by specified features and stories in generated Allure report.
 
 ### Attach files to report
-If you wish to attach some files generated during PHPUnit run (screenshots, log files, dumps and so on) to report - then you need to use **AttachmentSupport** trait in your test class:
+If you wish to [attach some files](https://github.com/allure-framework/allure-core/wiki/Glossary#attachment) generated during PHPUnit run (screenshots, log files, dumps and so on) to report - then you need to use **AttachmentSupport** trait in your test class:
 ```php
 namespace Example\Tests;
 
@@ -189,10 +189,10 @@ class SomeTest extends PHPUnit_Framework_TestCase
 
 }
 ```
-In order to create an attachment simply call **AttachmentSupport::addAttachment()** method. This method accepts attachment type, human-readable name and a string either storing full path to the file we need to attach or file contents.
+In order to create an [attachment](https://github.com/allure-framework/allure-core/wiki/Glossary#attachment) simply call **AttachmentSupport::addAttachment()** method. This method accepts attachment type, human-readable name and a string either storing full path to the file we need to attach or file contents.
 
 ### Divide test methods into steps
-Allure framework also supports very useful feature called **steps**. Consider a test method which has complex logic inside and several assertions. When an exception is thrown or one of assertions fails sometimes it's very difficult to determine which one caused the failure. Allure steps allow to divide test method logic into several isolated pieces having independent run statuses such as **passed** or **failed**. This allows to have much more cleaner understanding of what really happens. In order to use steps simply import **StepSupport** trait in your test class:
+Allure framework also supports very useful feature called [steps](https://github.com/allure-framework/allure-core/wiki/Glossary#test-step). Consider a test method which has complex logic inside and several assertions. When an exception is thrown or one of assertions fails sometimes it's very difficult to determine which one caused the failure. Allure steps allow to divide test method logic into several isolated pieces having independent run statuses such as **passed** or **failed**. This allows to have much more cleaner understanding of what really happens. In order to use steps simply import **StepSupport** trait in your test class:
 ```php
 namespace Example\Tests;
 
