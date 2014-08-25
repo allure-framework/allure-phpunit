@@ -2,6 +2,20 @@
 
 This an official PHPUnit adapter for Allure Framework - a flexible, lightweight and multi-language framework for writing self-documenting tests.
 
+## Table of Contents
+* [What is this for?](#what-is-this-for)
+* [Example Project](#example-project)
+* [How to Generate Report](#how-to-generate-report)
+* [Installation and Usage](#installation-and-usage)
+* [Main Features](#main-features)
+  * [Title](#human-readable-test-class-or-test-method-title)
+  * [Description](#extended-test-class-or-test-method-description)
+  * [Test severity](#set-test-severity)
+  * [Test parameters](#specify-test-parameters-information)
+  * [Features and Stories](#map-test-classes-and-test-methods-to-features-and-stories)
+  * [Attachments](#attach-files-to-report)
+  * [Steps](#divide-test-methods-into-steps)
+
 ## What is this for?
 The main purpose of this adapter is to accumulate information about your tests and write it out to a set of XML files: one for each test class. Then you can use a standalone command line tool or a plugin for popular continuous integration systems to generate an HTML page showing your tests in a good form.
 
