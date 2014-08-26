@@ -51,6 +51,17 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         $deletePreviousResults = false,
         array $ignoredAnnotations = []
     ) {
+
+        $this->prepareOutputDirectory($outputDirectory, $deletePreviousResults);
+        
+        // Add standard PHPUnit annotations
+        Annotation\AnnotationProvider::addIgnoredAnnotations($this->ignoredAnnotations);
+        // Add custom ignored annotations
+        Annotation\AnnotationProvider::addIgnoredAnnotations($ignoredAnnotations);
+    }
+
+    public function prepareOutputDirectory($outputDirectory, $deletePreviousResults)
+    {
         if (!file_exists($outputDirectory)) {
             mkdir($outputDirectory, 0755, true);
         }
@@ -65,13 +76,8 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         if (is_null(Model\Provider::getOutputDirectory())) {
             Model\Provider::setOutputDirectory($outputDirectory);
         }
-
-        // Add standard PHPUnit annotations
-        Annotation\AnnotationProvider::addIgnoredAnnotations($this->ignoredAnnotations);
-        // Add custom ignored annotations
-        Annotation\AnnotationProvider::addIgnoredAnnotations($ignoredAnnotations);
     }
-
+    
     /**
      * An error occurred.
      *
