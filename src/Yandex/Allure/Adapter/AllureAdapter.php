@@ -19,8 +19,6 @@ use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model;
 
-const DEFAULT_OUTPUT_DIRECTORY = "allure-report";
-
 class AllureAdapter implements PHPUnit_Framework_TestListener
 {
 
@@ -47,10 +45,13 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      * @param array $ignoredAnnotations Extra annotaions to ignore in addition to standard PHPUnit annotations
      */
     public function __construct(
-        $outputDirectory = DEFAULT_OUTPUT_DIRECTORY,
+        $outputDirectory,
         $deletePreviousResults = false,
         array $ignoredAnnotations = []
     ) {
+        if (!isset($outputDirectory)){
+            $outputDirectory = 'build' . DIRECTORY_SEPARATOR . 'allure-results';
+        }
 
         $this->prepareOutputDirectory($outputDirectory, $deletePreviousResults);
         
