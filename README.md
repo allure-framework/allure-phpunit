@@ -52,7 +52,7 @@ Then add Allure test listener in **phpunit.xml** file:
     </listener>
 </listeners>
 ```
-After running PHPUnit tests a new folder will be created (**allure-report-data** in the example above). This folder will contain generated XML files. See [framework help](https://github.com/allure-framework/allure-core/wiki) for details about how to generate report from XML files. By default generated report will only show a limited set of information but you can use cool Allure features by adding a minimum of test code changes. Read next section for details.
+After running PHPUnit tests a new folder will be created (**build/allure-results** in the example above). This folder will contain generated XML files. See [framework help](https://github.com/allure-framework/allure-core/wiki) for details about how to generate report from XML files. By default generated report will only show a limited set of information but you can use cool Allure features by adding a minimum of test code changes. Read next section for details.
 
 ## Main features
 This adapter comes with a set of PHP annotations and traits allowing to use main Allure features.
