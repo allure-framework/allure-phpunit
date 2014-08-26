@@ -41,7 +41,7 @@ Then add Allure test listener in **phpunit.xml** file:
 <listeners>
     <listener class="Yandex\Allure\Adapter\AllureAdapter" file="vendor/allure-framework/allure-phpunit/src/Yandex/Allure/Adapter/AllureAdapter.php">
         <arguments>
-            <string>allure-report-data</string> <!-- XML files output directory -->
+            <string>build/allure-results</string> <!-- XML files output directory -->
             <boolean>true</boolean> <!-- Whether to delete previous results on rerun -->
 			<array> <!-- A list of custom annotations to ignore (optional) -->
                 <element key="0">
@@ -181,7 +181,6 @@ If you wish to [attach some files](https://github.com/allure-framework/allure-co
 namespace Example\Tests;
 
 use PHPUnit_Framework_TestCase;
-use Yandex\Allure\Adapter\Model\AttachmentType;
 use Yandex\Allure\Adapter\Support\AttachmentSupport;
 
 class SomeTest extends PHPUnit_Framework_TestCase
@@ -193,7 +192,7 @@ class SomeTest extends PHPUnit_Framework_TestCase
     {
         //Some implementation here...
         $filePath = $this->outputSomeContentToTemporaryFile();
-        $this->addAttachment($filePath, 'Attachment human-readable name', AttachmentType::TXT);
+        $this->addAttachment($filePath, 'Attachment human-readable name', 'text/plain');
         //Some implementation here...
     }
 
