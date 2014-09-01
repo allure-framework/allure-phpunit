@@ -25,6 +25,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     //NOTE: here we implicitly assume that PHPUnit runs in single-threaded mode
     private $uuid;
     private $suiteName;
+    private $methodName;
 
     /**
      * Annotations that should be ignored by the annotaions parser (especially PHPUnit annotations)
@@ -152,8 +153,21 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      */
     public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
     {
+        $shouldCreateStartStopEvents = false;
+        if ($test instanceof \PHPUnit_Framework_TestCase){
+            $methodName = $test->getName();
+            if ($methodName !== $this->methodName){
+                $shouldCreateStartStopEvents = true;
+                $this->startTest($test);
+            }
+        }
+
         $event = new TestCaseCanceledEvent();
         Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
+
+        if ($shouldCreateStartStopEvents && $test instanceof \PHPUnit_Framework_TestCase){
+            $this->endTest($test, 0);
+        }
     }
 
     /**
@@ -200,11 +214,14 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         if ($test instanceof \PHPUnit_Framework_TestCase) {
             $suiteName = $this->suiteName;
             $methodName = $test->getName();
+            $this->methodName = $methodName;
             $event = new TestCaseStartedEvent($this->uuid, get_class($test) . T_DOUBLE_COLON . $methodName);
-            $annotationManager = new Annotation\AnnotationManager(
-                Annotation\AnnotationProvider::getMethodAnnotations($suiteName, $methodName)
-            );
-            $annotationManager->updateTestCaseEvent($event);
+            if (class_exists($suiteName, false) && method_exists($suiteName, $methodName)) {
+                $annotationManager = new Annotation\AnnotationManager(
+                    Annotation\AnnotationProvider::getMethodAnnotations($suiteName, $methodName)
+                );
+                $annotationManager->updateTestCaseEvent($event);
+            }
             Allure::lifecycle()->fire($event);
         }
     }
