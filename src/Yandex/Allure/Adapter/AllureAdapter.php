@@ -215,7 +215,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
             $suiteName = $this->suiteName;
             $methodName = $test->getName();
             $this->methodName = $methodName;
-            $event = new TestCaseStartedEvent($this->uuid, get_class($test) . T_DOUBLE_COLON . $methodName);
+            $event = new TestCaseStartedEvent($this->uuid, get_class($test) . "::" . $methodName);
             if (class_exists($suiteName, false) && method_exists($suiteName, $methodName)) {
                 $annotationManager = new Annotation\AnnotationManager(
                     Annotation\AnnotationProvider::getMethodAnnotations($suiteName, $methodName)
