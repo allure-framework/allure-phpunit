@@ -24,7 +24,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
 
     //NOTE: here we implicitly assume that PHPUnit runs in single-threaded mode
     private $uuid;
-    private $suiteName;
+    private $suiteNameStack;
     private $methodName;
 
     /**
@@ -55,6 +55,8 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         }
 
         $this->prepareOutputDirectory($outputDirectory, $deletePreviousResults);
+        
+        $this->suiteNameStack = new \SplStack();
         
         // Add standard PHPUnit annotations
         Annotation\AnnotationProvider::addIgnoredAnnotations($this->ignoredAnnotations);
@@ -181,7 +183,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         $suiteName = $suite->getName();
         $event = new TestSuiteStartedEvent($suiteName);
         $this->uuid = $event->getUuid();
-        $this->suiteName = $suiteName;
+        $this->suiteNameStack->push($suiteName);
 
         if (class_exists($suiteName, false)) {
             $annotationManager = new Annotation\AnnotationManager(
@@ -212,7 +214,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     public function startTest(PHPUnit_Framework_Test $test)
     {
         if ($test instanceof \PHPUnit_Framework_TestCase) {
-            $suiteName = $this->suiteName;
+            $suiteName = $this->suiteNameStack->pop();
             $methodName = $test->getName();
             $this->methodName = $methodName;
             $event = new TestCaseStartedEvent($this->uuid, get_class($test) . "::" . $methodName);

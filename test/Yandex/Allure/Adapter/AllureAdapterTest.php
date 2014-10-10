@@ -103,15 +103,17 @@ class AllureAdapterTest extends \PHPUnit_Framework_TestCase
     {
         $exception = $this->getException();
         $time = $this->getTime();
+        $this->getAllureAdapter()->startTestSuite($this->getTestSuite());
         $this->getAllureAdapter()->addSkippedTest($this, $exception, $time);
         $events = $this->getMockedLifecycle()->getEvents();
         $event = new TestCaseCanceledEvent();
         $event->withException($exception)->withMessage(EXCEPTION_MESSAGE);
-        $this->assertEquals(3, sizeof($events));
-        $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseStartedEvent', $events[0]);
-        $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseCanceledEvent', $events[1]);
-        $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseFinishedEvent', $events[2]);
-        $this->assertEquals($event, $events[1]);
+        $this->assertEquals(4, sizeof($events));
+        $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestSuiteStartedEvent', $events[0]);
+        $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseStartedEvent', $events[1]);
+        $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseCanceledEvent', $events[2]);
+        $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseFinishedEvent', $events[3]);
+        $this->assertEquals($event, $events[2]);
     }
 
     public function testStartTestSuite()
