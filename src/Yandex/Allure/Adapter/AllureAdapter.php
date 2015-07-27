@@ -178,6 +178,10 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      */
     public function startTestSuite(PHPUnit_Framework_TestSuite $suite)
     {
+        if ($suite instanceof \PHPUnit_Framework_TestSuite_DataProvider) {
+            return;
+        }
+
         $suiteName = $suite->getName();
         $event = new TestSuiteStartedEvent($suiteName);
         $this->uuid = $event->getUuid();
@@ -201,6 +205,10 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
      */
     public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
     {
+        if ($suite instanceof \PHPUnit_Framework_TestSuite_DataProvider) {
+            return;
+        }
+
         Allure::lifecycle()->fire(new TestSuiteFinishedEvent($this->uuid));
     }
 
@@ -212,14 +220,13 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     public function startTest(PHPUnit_Framework_Test $test)
     {
         if ($test instanceof \PHPUnit_Framework_TestCase) {
-            $suiteName = $this->suiteName;
             $testName = $test->getName();
             $methodName = $this->methodName = $test->getName(false);
 
             $event = new TestCaseStartedEvent($this->uuid, $testName);
-            if (class_exists($suiteName, false) && method_exists($suiteName, $methodName)) {
+            if (method_exists($test, $methodName)) {
                 $annotationManager = new Annotation\AnnotationManager(
-                    Annotation\AnnotationProvider::getMethodAnnotations($suiteName, $methodName)
+                    Annotation\AnnotationProvider::getMethodAnnotations(get_class($test), $methodName)
                 );
                 $annotationManager->updateTestCaseEvent($event);
             }
