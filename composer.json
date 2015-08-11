@@ -7,7 +7,7 @@
     ],
     "config":{
       "github-oauth":{
-        "github.com":"fb8faa881809431012d1be2d3e09f22eea5f8a83"
+        "github.com":"81375fb8acb976124c68b151d590b2a06465ceaf"
       }
     },
     "name": "allure-framework/allure-phpunit",
