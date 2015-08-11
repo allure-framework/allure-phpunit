@@ -1,4 +1,10 @@
 {
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:cryptton2004/allure-phpunit.git"
+    }
+  ],
     "name": "allure-framework/allure-phpunit",
     "keywords":["phpunit", "testing", "report", "steps", "attachments", "cases", "allure"],
     "description": "A PHPUnit adapter for Allure report.",
@@ -19,7 +25,7 @@
 	    "php": ">=5.4.0",
         "phpunit/phpunit": ">=4.0.0",
         "mikey179/vfsStream": "1.*",
-        "allure-framework/allure-php-api": "~1.1.0"
+        "allure-framework/allure-php-api": "dev-dev-sel-patch"
     },
     "autoload": {
         "psr-0": {
