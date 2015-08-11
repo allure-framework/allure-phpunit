@@ -2,7 +2,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "git@github.com:cryptton2004/allure-phpunit.git"
+      "url": "https://github.com/cryptton2004/allure-php-api"
     }
   ],
     "name": "allure-framework/allure-phpunit",
