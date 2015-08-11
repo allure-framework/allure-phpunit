@@ -5,11 +5,6 @@
         "url": "https://github.com/cryptton2004/allure-php-api"
       }
     ],
-    "config":{
-      "github-oauth":{
-        "github.com":"81375fb8acb976124c68b151d590b2a06465ceaf"
-      }
-    },
     "name": "allure-framework/allure-phpunit",
     "keywords":["phpunit", "testing", "report", "steps", "attachments", "cases", "allure"],
     "description": "A PHPUnit adapter for Allure report.",
