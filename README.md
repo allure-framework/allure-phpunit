@@ -32,7 +32,7 @@ In order to use this adapter you need to add a new dependency to your **composer
 {
     "require": {
 	    "php": ">=5.4.0",
-	    "allure-framework/allure-phpunit": "~1.1.0"
+	    "allure-framework/allure-phpunit": "~1.2.0"
     }
 }
 ```
