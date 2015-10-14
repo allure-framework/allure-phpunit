@@ -183,18 +183,18 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         }
 
         $suiteName = $suite->getName();
-        $event = new TestSuiteStartedEvent($suiteName);
-        $this->uuid = $event->getUuid();
-        $this->suiteName = $suiteName;
-
         if (class_exists($suiteName, false)) {
+            $event = new TestSuiteStartedEvent($suiteName);
+            $this->uuid = $event->getUuid();
+            $this->suiteName = $suiteName;
             $annotationManager = new Annotation\AnnotationManager(
                 Annotation\AnnotationProvider::getClassAnnotations($suiteName)
             );
             $annotationManager->updateTestSuiteEvent($event);
+            Allure::lifecycle()->fire($event);
         }
 
-        Allure::lifecycle()->fire($event);
+
     }
 
     /**
