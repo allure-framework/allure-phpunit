@@ -3,11 +3,14 @@
 namespace Yandex\Allure\Adapter;
 
 use Exception;
-use PHPUnit_Framework_AssertionFailedError;
-use PHPUnit_Framework_ExpectationFailedException;
-use PHPUnit_Framework_Test;
-use PHPUnit_Framework_TestListener;
-use PHPUnit_Framework_TestSuite;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\Test;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestListener;
+use PHPUnit\Framework\TestSuite;
+use PHPUnit\Framework\DataProviderTestSuite;
+use PHPUnit\Framework\Warning;
 use Yandex\Allure\Adapter\Annotation;
 use Yandex\Allure\Adapter\Event\TestCaseBrokenEvent;
 use Yandex\Allure\Adapter\Event\TestCaseCanceledEvent;
@@ -19,7 +22,7 @@ use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model;
 
-class AllureAdapter implements PHPUnit_Framework_TestListener
+class AllureAdapter implements TestListener
 {
 
     //NOTE: here we implicitly assume that PHPUnit runs in single-threaded mode
@@ -28,7 +31,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     private $methodName;
 
     /**
-     * Annotations that should be ignored by the annotaions parser (especially PHPUnit annotations)
+     * Annotations that should be ignored by the annotations parser (especially PHPUnit annotations)
      * @var array
      */
     private $ignoredAnnotations = [
@@ -43,7 +46,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     /**
      * @param string $outputDirectory XML files output directory
      * @param bool $deletePreviousResults Whether to delete previous results on return
-     * @param array $ignoredAnnotations Extra annotaions to ignore in addition to standard PHPUnit annotations
+     * @param array $ignoredAnnotations Extra annotations to ignore in addition to standard PHPUnit annotations
      */
     public function __construct(
         $outputDirectory,
@@ -83,32 +86,44 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     /**
      * An error occurred.
      *
-     * @param PHPUnit_Framework_Test $test
+     * @param Test $test
      * @param Exception $e
      * @param float $time
      */
-    public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addError(Test $test, Exception $e, $time)
     {
         $event = new TestCaseBrokenEvent();
         Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
     }
 
     /**
-     * A failure occurred.
+     * A warning occurred.
      *
-     * @param PHPUnit_Framework_Test $test
-     * @param PHPUnit_Framework_AssertionFailedError $e
+     * @param \PHPUnit\Framework\Test $test
+     * @param \PHPUnit\Framework\Warning $e
      * @param float $time
      */
-    public function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
+    public function addWarning(Test $test, Warning $e, $time)
+    {
+        // TODO: Implement addWarning() method.
+    }
+
+    /**
+     * A failure occurred.
+     *
+     * @param Test $test
+     * @param AssertionFailedError $e
+     * @param float $time
+     */
+    public function addFailure(Test $test, AssertionFailedError $e, $time)
     {
         $event = new TestCaseFailedEvent();
 
         $message = $e->getMessage();
 
         // Append comparison diff for errors of type ExpectationFailedException (and is subclasses)
-        if (($e instanceof PHPUnit_Framework_ExpectationFailedException
-            || is_subclass_of($e, '\PHPUnit_Framework_ExpectationFailedException'))
+        if (($e instanceof ExpectationFailedException
+            || is_subclass_of($e, 'PHPUnit\Framework\ExpectationFailedException'))
             && $e->getComparisonFailure()
         ) {
             $message .= $e->getComparisonFailure()->getDiff();
@@ -120,11 +135,11 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     /**
      * Incomplete test.
      *
-     * @param PHPUnit_Framework_Test $test
+     * @param Test $test
      * @param Exception $e
      * @param float $time
      */
-    public function addIncompleteTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addIncompleteTest(Test $test, Exception $e, $time)
     {
         $event = new TestCasePendingEvent();
         Allure::lifecycle()->fire($event->withException($e));
@@ -133,12 +148,12 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     /**
      * Risky test.
      *
-     * @param PHPUnit_Framework_Test $test
+     * @param Test $test
      * @param Exception $e
      * @param float $time
      * @since  Method available since Release 4.0.0
      */
-    public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addRiskyTest(Test $test, Exception $e, $time)
     {
         $this->addIncompleteTest($test, $e, $time);
     }
@@ -146,15 +161,15 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     /**
      * Skipped test.
      *
-     * @param PHPUnit_Framework_Test $test
+     * @param Test $test
      * @param Exception $e
      * @param float $time
      * @since  Method available since Release 3.0.0
      */
-    public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
+    public function addSkippedTest(Test $test, Exception $e, $time)
     {
         $shouldCreateStartStopEvents = false;
-        if ($test instanceof \PHPUnit_Framework_TestCase){
+        if ($test instanceof TestCase){
             $methodName = $test->getName();
             if ($methodName !== $this->methodName){
                 $shouldCreateStartStopEvents = true;
@@ -165,7 +180,7 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
         $event = new TestCaseCanceledEvent();
         Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
 
-        if ($shouldCreateStartStopEvents && $test instanceof \PHPUnit_Framework_TestCase){
+        if ($shouldCreateStartStopEvents && $test instanceof TestCase){
             $this->endTest($test, 0);
         }
     }
@@ -173,12 +188,12 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     /**
      * A test suite started.
      *
-     * @param PHPUnit_Framework_TestSuite $suite
+     * @param TestSuite $suite
      * @since  Method available since Release 2.2.0
      */
-    public function startTestSuite(PHPUnit_Framework_TestSuite $suite)
+    public function startTestSuite(TestSuite $suite)
     {
-        if ($suite instanceof \PHPUnit_Framework_TestSuite_DataProvider) {
+        if ($suite instanceof DataProviderTestSuite) {
             return;
         }
 
@@ -200,12 +215,12 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     /**
      * A test suite ended.
      *
-     * @param PHPUnit_Framework_TestSuite $suite
+     * @param TestSuite $suite
      * @since  Method available since Release 2.2.0
      */
-    public function endTestSuite(PHPUnit_Framework_TestSuite $suite)
+    public function endTestSuite(TestSuite $suite)
     {
-        if ($suite instanceof \PHPUnit_Framework_TestSuite_DataProvider) {
+        if ($suite instanceof DataProviderTestSuite) {
             return;
         }
 
@@ -215,11 +230,11 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     /**
      * A test started.
      *
-     * @param PHPUnit_Framework_Test $test
+     * @param Test $test
      */
-    public function startTest(PHPUnit_Framework_Test $test)
+    public function startTest(Test $test)
     {
-        if ($test instanceof \PHPUnit_Framework_TestCase) {
+        if ($test instanceof TestCase) {
             $testName = $test->getName();
             $methodName = $this->methodName = $test->getName(false);
 
@@ -237,13 +252,13 @@ class AllureAdapter implements PHPUnit_Framework_TestListener
     /**
      * A test ended.
      *
-     * @param PHPUnit_Framework_Test $test
+     * @param Test $test
      * @param float $time
      * @throws \Exception
      */
-    public function endTest(PHPUnit_Framework_Test $test, $time)
+    public function endTest(Test $test, $time)
     {
-        if ($test instanceof \PHPUnit_Framework_TestCase) {
+        if ($test instanceof TestCase) {
             Allure::lifecycle()->fire(new TestCaseFinishedEvent());
         }
     }
