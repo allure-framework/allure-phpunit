@@ -31,7 +31,7 @@ In order to use this adapter you need to add a new dependency to your **composer
 ```
 {
     "require": {
-	    "php": ">=5.4.0",
+	    "php": ">=7.0.0",
 	    "allure-framework/allure-phpunit": "~1.2.0"
     }
 }
@@ -62,13 +62,13 @@ In order to add such title to any test class or [test case](https://github.com/a
 ```php
 namespace Example\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Annotation\Title;
 
 /**
  * @Title("Human-readable test class title")
  */
-class SomeTest extends PHPUnit_Framework_TestCase
+class SomeTest extends TestCase
 {
     /**
      * @Title("Human-readable test method title")
@@ -85,14 +85,14 @@ Similarly you can add detailed description for each test class and [test method]
 ```php
 namespace Example\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Annotation\Description;
 use Yandex\Allure\Adapter\Model\DescriptionType;
 
 /**
  * @Description("Detailed description for test class")
  */
-class SomeTest extends PHPUnit_Framework_TestCase
+class SomeTest extends TestCase
 {
     /**
      * @Description(value = "Detailed description for <b>test class</b>.", type = DescriptionType::HTML)
@@ -110,11 +110,11 @@ Description can be added in plain text, HTML or Markdown format - simply assign 
 ```php
 namespace Example\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Annotation\Severity;
 use Yandex\Allure\Adapter\Model\SeverityLevel;
 
-class SomeTest extends PHPUnit_Framework_TestCase
+class SomeTest extends TestCase
 {
     /**
      * @Severity(level = SeverityLevel::MINOR)
@@ -131,11 +131,11 @@ In order to add information about test method [parameters](https://github.com/al
 ```php
 namespace Example\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Annotation\Parameter;
 use Yandex\Allure\Adapter\Model\ParameterKind;
 
-class SomeTest extends PHPUnit_Framework_TestCase
+class SomeTest extends TestCase
 {
     /**
      * @Parameter(name = "param1", value = "value1")
@@ -153,7 +153,7 @@ In some development approaches tests are classified by [stories](https://github.
 ```php
 namespace Example\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Annotation\Features;
 use Yandex\Allure\Adapter\Annotation\Stories;
 
@@ -161,7 +161,7 @@ use Yandex\Allure\Adapter\Annotation\Stories;
  * @Stories({"story1", "story2"})
  * @Features({"feature1", "feature2", "feature3"})
  */
-class SomeTest extends PHPUnit_Framework_TestCase
+class SomeTest extends TestCase
 {
     /**
      * @Features({"feature2"})
@@ -180,10 +180,10 @@ If you wish to [attach some files](https://github.com/allure-framework/allure-co
 ```php
 namespace Example\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Support\AttachmentSupport;
 
-class SomeTest extends PHPUnit_Framework_TestCase
+class SomeTest extends TestCase
 {
 
     use AttachmentSupport;
@@ -212,10 +212,10 @@ Allure framework also supports very useful feature called [steps](https://github
 ```php
 namespace Example\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Support\StepSupport;
 
-class SomeTest extends PHPUnit_Framework_TestCase
+class SomeTest extends TestCase
 {
 
     use StepSupport;
