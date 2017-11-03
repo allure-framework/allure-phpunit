@@ -2,7 +2,9 @@
 
 namespace Yandex\Allure\Adapter;
 
-
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestSuite;
 use Exception;
 use org\bovigo\vfs\vfsStream;
 use Yandex\Allure\Adapter\Event\TestCaseBrokenEvent;
@@ -15,7 +17,7 @@ const EXCEPTION_MESSAGE = 'test-exception-message';
 const ROOT_DIRECTORY = 'test-root-directory';
 const TEST_DIRECTORY = 'test-directory';
 
-class AllureAdapterTest extends \PHPUnit_Framework_TestCase
+class AllureAdapterTest extends TestCase
 {
 
     /**
@@ -62,7 +64,7 @@ class AllureAdapterTest extends \PHPUnit_Framework_TestCase
 
     public function testAddFailure()
     {
-        $exception = new \PHPUnit_Framework_AssertionFailedError(EXCEPTION_MESSAGE);
+        $exception = new AssertionFailedError(EXCEPTION_MESSAGE);
         $time = $this->getTime();
         $this->getAllureAdapter()->addFailure($this, $exception, $time);
         $events = $this->getMockedLifecycle()->getEvents();
@@ -170,7 +172,7 @@ class AllureAdapterTest extends \PHPUnit_Framework_TestCase
     
     private function getTestSuite()
     {
-        return new \PHPUnit_Framework_TestSuite(__CLASS__);
+        return new TestSuite(__CLASS__);
     }
 
-} 
+}
