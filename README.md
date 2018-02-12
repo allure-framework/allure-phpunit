@@ -31,8 +31,8 @@ In order to use this adapter you need to add a new dependency to your **composer
 ```
 {
     "require": {
-	    "php": ">=7.0.0",
-	    "allure-framework/allure-phpunit": "~1.2.0"
+        "php": ">=7.0.0",
+        "allure-framework/allure-phpunit": "~1.2.0"
     }
 }
 ```
@@ -43,7 +43,7 @@ Then add Allure test listener in **phpunit.xml** file:
         <arguments>
             <string>build/allure-results</string> <!-- XML files output directory -->
             <boolean>true</boolean> <!-- Whether to delete previous results on rerun -->
-			<array> <!-- A list of custom annotations to ignore (optional) -->
+            <array> <!-- A list of custom annotations to ignore (optional) -->
                 <element key="0">
                     <string>someCustomAnnotation</string>
                 </element>
