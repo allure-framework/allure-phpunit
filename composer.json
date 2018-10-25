@@ -16,8 +16,8 @@
         "source": "https://github.com/allure-framework/allure-phpunit"
     },
     "require": {
-	    "php": ">=7.0.0",
-        "phpunit/phpunit": ">=6.0.0",
+	    "php": ">=7.1.0",
+        "phpunit/phpunit": ">=7.0.0",
         "mikey179/vfsStream": "1.*",
         "allure-framework/allure-php-api": "~1.1.0"
     },
