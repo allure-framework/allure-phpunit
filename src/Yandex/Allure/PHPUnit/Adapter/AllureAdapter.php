@@ -1,6 +1,6 @@
 <?php
 
-namespace Yandex\Allure\Adapter;
+namespace Yandex\Allure\PHPUnit\Adapter;
 
 use Exception;
 use PHPUnit\Framework\AssertionFailedError;
@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestListener;
 use PHPUnit\Framework\TestSuite;
 use PHPUnit\Framework\DataProviderTestSuite;
 use PHPUnit\Framework\Warning;
+use Yandex\Allure\Adapter\Allure;
 use Yandex\Allure\Adapter\Annotation;
 use Yandex\Allure\Adapter\Event\TestCaseBrokenEvent;
 use Yandex\Allure\Adapter\Event\TestCaseCanceledEvent;
