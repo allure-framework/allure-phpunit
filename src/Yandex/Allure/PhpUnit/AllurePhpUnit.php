@@ -1,6 +1,6 @@
 <?php
 
-namespace Yandex\Allure\PHPUnit\Adapter;
+namespace Yandex\Allure\PhpUnit;
 
 use Exception;
 use PHPUnit\Framework\AssertionFailedError;
@@ -23,7 +23,7 @@ use Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent;
 use Yandex\Allure\Adapter\Event\TestSuiteStartedEvent;
 use Yandex\Allure\Adapter\Model;
 
-class AllureAdapter implements TestListener
+class AllurePhpUnit implements TestListener
 {
 
     //NOTE: here we implicitly assume that PHPUnit runs in single-threaded mode
