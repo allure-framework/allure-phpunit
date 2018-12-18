@@ -39,7 +39,7 @@ In order to use this adapter you need to add a new dependency to your **composer
 Then add Allure test listener in **phpunit.xml** file:
 ```xml
 <listeners>
-    <listener class="Yandex\Allure\Adapter\AllureAdapter" file="vendor/allure-framework/allure-phpunit/src/Yandex/Allure/Adapter/AllureAdapter.php">
+    <listener class="Yandex\Allure\PhpUnit\AllurePhpUnit" file="vendor/allure-framework/allure-phpunit/src/Yandex/Allure/PhpUnit/AllurePhpUnit.php">
         <arguments>
             <string>build/allure-results</string> <!-- XML files output directory -->
             <boolean>true</boolean> <!-- Whether to delete previous results on rerun -->
