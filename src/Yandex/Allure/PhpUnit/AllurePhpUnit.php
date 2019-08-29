@@ -72,7 +72,7 @@ class AllurePhpUnit implements TestListener
             mkdir($outputDirectory, 0755, true);
         }
         if ($deletePreviousResults) {
-            $files = glob($outputDirectory . DIRECTORY_SEPARATOR . '{,.}*', GLOB_BRACE);
+            $files = scandir($outputDirectory);
             foreach ($files as $file) {
                 if (is_file($file)) {
                     unlink($file);
