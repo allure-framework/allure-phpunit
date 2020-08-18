@@ -41,7 +41,7 @@ class AllurePhpUnit implements TestListener
         'coversDefaultClass', 'coversNothing', 'dataProvider', 'depends', 'expectedException',
         'expectedExceptionCode', 'expectedExceptionMessage', 'group', 'large', 'medium',
         'preserveGlobalState', 'requires', 'runTestsInSeparateProcesses', 'runInSeparateProcess',
-        'small', 'test', 'testdox', 'ticket', 'uses',
+        'small', 'test', 'testWith', 'testdox', 'ticket', 'uses',
     ];
 
     /**
