@@ -19,7 +19,7 @@
 	    "php": ">=7.1.0",
         "phpunit/phpunit": ">=7.0.0",
         "mikey179/vfsStream": "1.*",
-        "allure-framework/allure-php-api": "~1.1.0"
+        "allure-framework/allure-php-api": "~1.2.0"
     },
     "autoload": {
         "psr-0": {
