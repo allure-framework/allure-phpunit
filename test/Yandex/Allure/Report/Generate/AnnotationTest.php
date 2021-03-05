@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yandex\Allure\System;
+namespace Yandex\Allure\Report\Generate;
 
 use PHPUnit\Framework\TestCase;
 use Yandex\Allure\Adapter\Annotation\Description;

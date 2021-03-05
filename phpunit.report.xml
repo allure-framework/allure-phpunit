@@ -3,10 +3,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.2/phpunit.xsd"
         colors="true"
-        defaultTestSuite="system">
+        defaultTestSuite="generate-report">
     <testsuites>
-        <testsuite name="system">
-            <directory>test/Yandex/Allure/System/</directory>
+        <testsuite name="generate-report">
+            <directory>test/Yandex/Allure/Report/Generate</directory>
         </testsuite>
     </testsuites>
     <listeners>
