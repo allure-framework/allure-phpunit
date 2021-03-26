@@ -7,18 +7,20 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\TestSuite;
 use Exception;
 use org\bovigo\vfs\vfsStream;
+use Throwable;
 use Yandex\Allure\Adapter\Event\TestCaseBrokenEvent;
 use Yandex\Allure\Adapter\Event\TestCaseCanceledEvent;
 use Yandex\Allure\Adapter\Event\TestCaseFailedEvent;
 use Yandex\Allure\Adapter\Event\TestCasePendingEvent;
 use Yandex\Allure\Adapter\Support\MockedLifecycle;
-
-const EXCEPTION_MESSAGE = 'test-exception-message';
-const ROOT_DIRECTORY = 'test-root-directory';
-const TEST_DIRECTORY = 'test-directory';
+use Yandex\Allure\PhpUnit\AllurePhpUnit;
 
 class AllureAdapterTest extends TestCase
 {
+
+    private const EXCEPTION_MESSAGE = 'test-exception-message';
+    private const ROOT_DIRECTORY = 'test-root-directory';
+    private const TEST_DIRECTORY = 'test-directory';
 
     /**
      * @var MockedLifecycle
@@ -26,56 +28,56 @@ class AllureAdapterTest extends TestCase
     private $mockedLifecycle;
 
     /**
-     * @var AllureAdapter
+     * @var AllurePhpUnit
      */
     private $allureAdapter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        parent::setUp();
+        date_default_timezone_set('UTC');
         $this->mockedLifecycle = new MockedLifecycle();
         Allure::setLifecycle($this->getMockedLifecycle());
-        $this->allureAdapter = new AllureAdapter('test-output-directory', true);
+        $this->allureAdapter = new AllurePhpUnit('test-output-directory', true);
     }
 
-    public function testPrepareOutputDirectory()
+    public function testPrepareOutputDirectory(): void
     {
-        $rootDirectory = vfsStream::setup(ROOT_DIRECTORY);
-        $this->assertFalse($rootDirectory->hasChild(TEST_DIRECTORY));
-        $newDirectoryPath = vfsStream::url(ROOT_DIRECTORY) . DIRECTORY_SEPARATOR . TEST_DIRECTORY;
+        $rootDirectory = vfsStream::setup(self::ROOT_DIRECTORY);
+        $this->assertFalse($rootDirectory->hasChild(self::TEST_DIRECTORY));
+        $newDirectoryPath = vfsStream::url(self::ROOT_DIRECTORY) . DIRECTORY_SEPARATOR . self::TEST_DIRECTORY;
         Model\Provider::setOutputDirectory(null);
-        new AllureAdapter($newDirectoryPath, true);
-        $this->assertTrue($rootDirectory->hasChild(TEST_DIRECTORY));
+        new AllurePhpUnit($newDirectoryPath, true);
+        $this->assertTrue($rootDirectory->hasChild(self::TEST_DIRECTORY));
         $this->assertEquals($newDirectoryPath, Model\Provider::getOutputDirectory());
     }
 
-    public function testAddError()
+    public function testAddError(): void
     {
         $exception = $this->getException();
         $time = $this->getTime();
         $this->getAllureAdapter()->addError($this, $exception, $time);
         $events = $this->getMockedLifecycle()->getEvents();
         $event = new TestCaseBrokenEvent();
-        $event->withException($exception)->withMessage(EXCEPTION_MESSAGE);
+        $event->withException($exception)->withMessage(self::EXCEPTION_MESSAGE);
         $this->assertEquals(1, sizeof($events));
         $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseBrokenEvent', $events[0]);
         $this->assertEquals($event, $events[0]);
     }
 
-    public function testAddFailure()
+    public function testAddFailure(): void
     {
-        $exception = new AssertionFailedError(EXCEPTION_MESSAGE);
+        $exception = new AssertionFailedError(self::EXCEPTION_MESSAGE);
         $time = $this->getTime();
         $this->getAllureAdapter()->addFailure($this, $exception, $time);
         $events = $this->getMockedLifecycle()->getEvents();
         $event = new TestCaseFailedEvent();
-        $event->withException($exception)->withMessage(EXCEPTION_MESSAGE);
+        $event->withException($exception)->withMessage(self::EXCEPTION_MESSAGE);
         $this->assertEquals(1, sizeof($events));
         $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseFailedEvent', $events[0]);
         $this->assertEquals($event, $events[0]);
     }
 
-    public function testAddIncompleteTest()
+    public function testAddIncompleteTest(): void
     {
         $exception = $this->getException();
         $time = $this->getTime();
@@ -83,7 +85,7 @@ class AllureAdapterTest extends TestCase
         $this->pendingTestCaseEventAssertions($exception);
     }
 
-    private function pendingTestCaseEventAssertions(\Exception $exception)
+    private function pendingTestCaseEventAssertions(\Exception $exception): void
     {
         $events = $this->getMockedLifecycle()->getEvents();
         $event = new TestCasePendingEvent();
@@ -93,7 +95,7 @@ class AllureAdapterTest extends TestCase
         $this->assertEquals($event, $events[0]);
     }
 
-    public function testAddRiskyTest()
+    public function testAddRiskyTest(): void
     {
         $exception = $this->getException();
         $time = $this->getTime();
@@ -101,14 +103,14 @@ class AllureAdapterTest extends TestCase
         $this->pendingTestCaseEventAssertions($exception);
     }
 
-    public function testAddSkippedTest()
+    public function testAddSkippedTest(): void
     {
         $exception = $this->getException();
         $time = $this->getTime();
         $this->getAllureAdapter()->addSkippedTest($this, $exception, $time);
         $events = $this->getMockedLifecycle()->getEvents();
         $event = new TestCaseCanceledEvent();
-        $event->withException($exception)->withMessage(EXCEPTION_MESSAGE);
+        $event->withException($exception)->withMessage(self::EXCEPTION_MESSAGE);
         $this->assertEquals(3, sizeof($events));
         $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseStartedEvent', $events[0]);
         $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseCanceledEvent', $events[1]);
@@ -116,7 +118,7 @@ class AllureAdapterTest extends TestCase
         $this->assertEquals($event, $events[1]);
     }
 
-    public function testStartTestSuite()
+    public function testStartTestSuite(): void
     {
         $this->getAllureAdapter()->startTestSuite($this->getTestSuite());
         $events = $this->getMockedLifecycle()->getEvents();
@@ -124,7 +126,7 @@ class AllureAdapterTest extends TestCase
         $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestSuiteStartedEvent', $events[0]);
     }
 
-    public function testEndTestSuite()
+    public function testEndTestSuite(): void
     {
         $this->getAllureAdapter()->endTestSuite($this->getTestSuite());
         $events = $this->getMockedLifecycle()->getEvents();
@@ -132,7 +134,7 @@ class AllureAdapterTest extends TestCase
         $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestSuiteFinishedEvent', $events[0]);
     }
 
-    public function testStartTest()
+    public function testStartTest(): void
     {
         $this->getAllureAdapter()->startTestSuite($this->getTestSuite()); //Is needed to set $adapter->suiteName field
         $this->getAllureAdapter()->startTest($this);
@@ -142,7 +144,7 @@ class AllureAdapterTest extends TestCase
         $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseStartedEvent', $events[1]);
     }
 
-    public function testEndTest()
+    public function testEndTest(): void
     {
         $this->getAllureAdapter()->endTest($this, $this->getTime());
         $events = $this->getMockedLifecycle()->getEvents();
@@ -150,29 +152,28 @@ class AllureAdapterTest extends TestCase
         $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseFinishedEvent', $events[0]);
     }
 
-    private function getMockedLifecycle()
+    private function getMockedLifecycle(): MockedLifecycle
     {
         return $this->mockedLifecycle;
     }
 
-    private function getAllureAdapter()
+    private function getAllureAdapter(): AllurePhpUnit
     {
         return $this->allureAdapter;
     }
 
-    private function getException()
+    private function getException(): Throwable
     {
-        return new Exception(EXCEPTION_MESSAGE);
+        return new Exception(self::EXCEPTION_MESSAGE);
     }
 
-    private function getTime()
+    private function getTime(): int
     {
-        return (float)time();
+        return (float) time();
     }
     
-    private function getTestSuite()
+    private function getTestSuite(): TestSuite
     {
         return new TestSuite(__CLASS__);
     }
-
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.2/phpunit.xsd"
+        colors="true"
+        defaultTestSuite="generate-report">
+    <testsuites>
+        <testsuite name="generate-report">
+            <directory>test/Yandex/Allure/Report/Generate</directory>
+        </testsuite>
+    </testsuites>
+    <listeners>
+        <listener class="Yandex\Allure\PhpUnit\AllurePhpUnit">
+            <arguments>
+                <string>build/allure-results</string>
+                <boolean>true</boolean>
+            </arguments>
+        </listener>
+    </listeners>
+</phpunit>
