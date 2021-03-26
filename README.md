@@ -1,5 +1,7 @@
 # Allure PHPUnit adapter
 
+[![Build](https://github.com/allure-framework/allure-phpunit/actions/workflows/build.yml/badge.svg)](https://github.com/allure-framework/allure-phpunit/actions/workflows/build.yml)
+
 This an official PHPUnit adapter for Allure Framework - a flexible, lightweight and multi-language framework for writing self-documenting tests.
 
 ## Table of Contents
