@@ -9,7 +9,7 @@
     "cases",
     "allure"
   ],
-  "description": "A PHPUnit adapter for Allure report.",
+  "description": "Allure PHPUNit integration",
   "homepage": "http://allure.qatools.ru/",
   "license": "Apache-2.0",
   "authors": [
@@ -20,7 +20,7 @@
     }
   ],
   "support": {
-    "email": "allure@yandex-team.ru",
+    "email": "allure@qameta.io",
     "source": "https://github.com/allure-framework/allure-phpunit"
   },
   "require": {
