@@ -1,5 +1,5 @@
 {
-  "name": "allure-framework/allure-phpunit",
+  "name": "remorhaz/allure-phpunit",
   "keywords": [
     "phpunit",
     "testing",
@@ -9,13 +9,18 @@
     "cases",
     "allure"
   ],
-  "description": "Allure PHPUNit integration",
+  "description": "Allure PHPUnit integration",
   "homepage": "http://allure.qatools.ru/",
   "license": "Apache-2.0",
   "authors": [
     {
       "name": "Ivan Krutov",
       "email": "vania-pooh@yandex-team.ru",
+      "role": "Developer"
+    },
+    {
+      "name": "Edward Surov",
+      "email": "zoohie@gmail.com",
       "role": "Developer"
     }
   ],
@@ -24,29 +29,36 @@
     "source": "https://github.com/allure-framework/allure-phpunit"
   },
   "require": {
-    "php": ">=7.1",
-    "allure-framework/allure-php-api": "^1.3",
-    "phpunit/phpunit": "^7.2 | ^8 | ^9"
+    "php": "^8",
+    "remorhaz/allure-php-commons": "dev-master as 2.0.0",
+    "phpunit/phpunit": "^9"
   },
   "require-dev": {
     "ext-dom": "*",
-    "mikey179/vfsstream": "^1"
+    "mikey179/vfsstream": "^1.6.9"
   },
   "autoload": {
     "psr-0": {
       "Yandex": "src/"
+    },
+    "psr-4": {
+      "Qameta\\Allure\\PHPUnit\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-0": {
       "Yandex": "test/"
+    },
+    "psr-4": {
+      "Qameta\\Allure\\PHPUnit\\Test\\": "test/",
+      "Qameta\\Allure\\PHPUnit\\Test\\Report\\": "test/report/"
     }
   },
   "scripts": {
     "test-unit": "vendor/bin/phpunit",
     "test-report": [
-      "vendor/bin/phpunit --configuration=phpunit.report.xml --stderr 2> /dev/null; exit 0",
-      "vendor/bin/phpunit --testsuite=report"
+      "rm -rf ./build/allure-results",
+      "vendor/bin/phpunit --configuration=phpunit.extension.xml --stderr 2> /dev/null; exit 0"
     ],
     "test": [
       "@test-unit",
