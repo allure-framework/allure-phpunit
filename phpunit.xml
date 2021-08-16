@@ -3,13 +3,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.0/phpunit.xsd"
         colors="true"
-        defaultTestSuite="adapter">
+        defaultTestSuite="unit">
     <testsuites>
-        <testsuite name="adapter">
-            <directory>test/Yandex/Allure/Adapter/</directory>
-        </testsuite>
-        <testsuite name="report">
-            <directory>test/Yandex/Allure/Report/Check/</directory>
+        <testsuite name="unit">
+            <directory>test/unit/</directory>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -1,5 +1,5 @@
 {
-  "name": "remorhaz/allure-phpunit",
+  "name": "allure-framework/allure-phpunit",
   "keywords": [
     "phpunit",
     "testing",
@@ -35,12 +35,9 @@
   },
   "require-dev": {
     "ext-dom": "*",
-    "mikey179/vfsstream": "^1.6.9"
+    "brianium/paratest": "^6.3.1"
   },
   "autoload": {
-    "psr-0": {
-      "Yandex": "src/"
-    },
     "psr-4": {
       "Qameta\\Allure\\PHPUnit\\": "src/"
     }
@@ -50,7 +47,7 @@
       "Yandex": "test/"
     },
     "psr-4": {
-      "Qameta\\Allure\\PHPUnit\\Test\\": "test/",
+      "Qameta\\Allure\\PHPUnit\\Test\\": "test/unit/",
       "Qameta\\Allure\\PHPUnit\\Test\\Report\\": "test/report/"
     }
   },
@@ -58,7 +55,9 @@
     "test-unit": "vendor/bin/phpunit",
     "test-report": [
       "rm -rf ./build/allure-results",
-      "vendor/bin/phpunit --configuration=phpunit.extension.xml --stderr 2> /dev/null; exit 0"
+      "vendor/bin/paratest --configuration=phpunit.report.xml --testsuite=positive",
+      "vendor/bin/paratest --configuration=phpunit.report.xml --testsuite=negative; exit 0",
+      "vendor/bin/paratest --configuration=phpunit.report.xml --testsuite=retries --repeat=3; exit 0"
     ],
     "test": [
       "@test-unit",

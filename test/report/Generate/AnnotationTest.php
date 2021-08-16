@@ -11,49 +11,27 @@ use Yandex\Allure\Adapter\Annotation\Features;
 use Yandex\Allure\Adapter\Annotation\Parameter;
 use Yandex\Allure\Adapter\Annotation\Severity;
 use Yandex\Allure\Adapter\Annotation\Stories;
-use Yandex\Allure\Adapter\Annotation\Title;
 use Yandex\Allure\Adapter\Model\DescriptionType;
 use Yandex\Allure\Adapter\Model\ParameterKind;
 use Yandex\Allure\Adapter\Model\SeverityLevel;
 
-/**
- * @Description ("Annotation tests for allure-phpunit")
- */
 class AnnotationTest extends TestCase
 {
 
-    /**
-     * @Title ("Test legacy title")
-     */
-    public function testLegacyTitleAnnotation(): void
-    {
-        $this->expectNotToPerformAssertions();
-    }
-
-    #[Attribute\Title('Test native title')]
-    public function testNativeTitleAnnotation(): void
-    {
-        $this->expectNotToPerformAssertions();
-    }
 
     /**
-     * @Title ("Test legacy title")
+     * @Description ("Legacy description with `markdown`", type = DescriptionType::MARKDOWN)
      */
-    #[Attribute\Title('Test native title')]
-    public function testMixedTitleAnnotation(): void
-    {
-        $this->expectNotToPerformAssertions();
-    }
-
-    /**
-     * @Description ("Test legacy description with `markdown`", type = DescriptionType::MARKDOWN)
-     */
+    #[Attribute\Title('Legacy description annotation is reported as test description')]
     public function testLegacyDescriptionAnnotation(): void
     {
         $this->expectNotToPerformAssertions();
     }
 
-    #[Attribute\Description('Test native description with `markdown`')]
+    #[
+        Attribute\Title('Native description annotation is reported as test description'),
+        Attribute\Description('Test native description with `markdown`'),
+    ]
     public function testNativeDescriptionAnnotation(): void
     {
         $this->expectNotToPerformAssertions();
@@ -71,12 +49,16 @@ class AnnotationTest extends TestCase
     /**
      * @Severity (level = SeverityLevel::MINOR)
      */
+    #[Attribute\Title('Legacy severity annotation is reported as test severity')]
     public function testLegacySeverityAnnotation(): void
     {
         $this->expectNotToPerformAssertions();
     }
 
-    #[Attribute\Severity(Attribute\Severity::CRITICAL)]
+    #[
+        Attribute\Title('Native severity annotation is reported as test severity'),
+        Attribute\Severity(Attribute\Severity::CRITICAL),
+    ]
     public function testNativeSeverityAnnotation(): void
     {
         $this->expectNotToPerformAssertions();
@@ -85,15 +67,19 @@ class AnnotationTest extends TestCase
     /**
      * @Severity (level = SeverityLevel::MINOR)
      */
-    #[Attribute\Severity(Attribute\Severity::CRITICAL)]
+    #[
+        Attribute\Title('Legacy severity annotation overrides native one'),
+        Attribute\Severity(Attribute\Severity::CRITICAL),
+    ]
     public function testMixedSeverityAnnotation(): void
     {
         $this->expectNotToPerformAssertions();
     }
 
     /**
-     * @Parameter (name = "foo", value = "legacy foo", kind = ParameterKind::ARGUMENT)
+     * @Parameter (name = "foo", value = "legacy foo")
      */
+    #[Attribute\Title('Legacy parameter')]
     public function testLegacyParameterAnnotation(): void
     {
         $this->expectNotToPerformAssertions();

@@ -19,63 +19,58 @@ This an official PHPUnit adapter for Allure Framework - a flexible, lightweight 
   * [Steps](#divide-test-methods-into-steps)
 
 ## What is this for?
-The main purpose of this adapter is to accumulate information about your tests and write it out to a set of XML files: one for each test class. Then you can use a standalone command line tool or a plugin for popular continuous integration systems to generate an HTML page showing your tests in a good form.
+The main purpose of this adapter is to accumulate information about your tests and write it out to a set of JSON files: one for each test class. Then you can use a standalone command line tool or a plugin for popular continuous integration systems to generate an HTML page showing your tests in a good form.
 
 ## Example project
 Example project is located at: https://github.com/allure-framework/allure-phpunit-example
 
 ## How to generate report
-This adapter only generates XML files containing information about tests. See [wiki section](https://github.com/allure-framework/allure-core/wiki#generating-report) on how to generate report.
+This adapter only generates JSON files containing information about tests. See [wiki section](https://docs.qameta.io/allure/#_reporting) on how to generate report.
 
 ## Installation && Usage
-**Note:** this adapter supports Allure 1.4.x only.
+**Note:** this adapter supports Allure 2.x.x only.
 In order to use this adapter you need to add a new dependency to your **composer.json** file:
 ```
 {
     "require": {
-	    "php": ">=7.0.0",
-	    "allure-framework/allure-phpunit": "~1.2.0"
+	    "php": "^8",
+	    "allure-framework/allure-phpunit": "^2"
     }
 }
 ```
 Then add Allure test listener in **phpunit.xml** file:
 ```xml
-<listeners>
-    <listener class="Yandex\Allure\PhpUnit\AllurePhpUnit" file="vendor/allure-framework/allure-phpunit/src/Yandex/Allure/PhpUnit/AllurePhpUnit.php">
+<extensions>
+    <extension class="Qameta\Allure\PHPUnit\AllureExtension">
+        <!-- Optional arguments block; omit it if you want to use default values -->
         <arguments>
-            <string>build/allure-results</string> <!-- XML files output directory -->
-            <boolean>true</boolean> <!-- Whether to delete previous results on rerun -->
-			<array> <!-- A list of custom annotations to ignore (optional) -->
-                <element key="0">
-                    <string>someCustomAnnotation</string>
-                </element>
-            </array>
+            <!-- JSON files output directory (default is build/allure-results; you may pass null to use default value) -->
+            <string>build/allure-results</string>
+            <!-- Configurator object class (default is Qameta\Allure\PHPUnit\Setup\DefaultConfigurator; you pass null to use default value) -->
+            <string>Qameta\Allure\PHPUnit\Setup\DefaultConfigurator</string>
+            <!-- Other arguments (if any) are passed to configurator's constructor -->
         </arguments>
-    </listener>
-</listeners>
+    </extension>
+</extensions>
 ```
-After running PHPUnit tests a new folder will be created (**build/allure-results** in the example above). This folder will contain generated XML files. See [framework help](https://github.com/allure-framework/allure-core/wiki) for details about how to generate report from XML files. By default generated report will only show a limited set of information but you can use cool Allure features by adding a minimum of test code changes. Read next section for details.
+After running PHPUnit tests a new folder will be created (**build/allure-results** in the example above). This folder will contain generated JSON files. See [framework help](https://docs.qameta.io/allure/#_reporting) for details about how to generate report from JSON files. By default generated report will only show a limited set of information but you can use cool Allure features by adding a minimum of test code changes. Read next section for details.
 
 ## Main features
 This adapter comes with a set of PHP annotations and traits allowing to use main Allure features.
 
 ### Human-readable test class or test method title
-In order to add such title to any test class or [test case](https://github.com/allure-framework/allure-core/wiki/Glossary#test-case) method you need to annotate it with **@Title** annotation:
+In order to add such title to any test class or [test case](https://github.com/allure-framework/allure1/wiki/Glossary#test-case) method you need to annotate it with **#[Title]** annotation:
 ```php
 namespace Example\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Yandex\Allure\Adapter\Annotation\Title;
+use Qameta\Allure\Attribute\Title;
 
-/**
- * @Title("Human-readable test class title")
- */
+#[Title("Human-readable test class title")]
 class SomeTest extends TestCase
 {
-    /**
-     * @Title("Human-readable test method title")
-     */
-    public function testCase()
+    #[Title("Human-readable test method title")]
+    public function testCaseMethod(): void
     {
         //Some implementation here...
     }
@@ -83,45 +78,38 @@ class SomeTest extends TestCase
 ```
 
 ### Extended test class or test method description
-Similarly you can add detailed description for each test class and [test method](https://github.com/allure-framework/allure-core/wiki/Glossary#test-case). To add such description simply use **@Description** annotation:
+Similarly you can add detailed description for each test class and [test method](https://github.com/allure-framework/allure1/wiki/Glossary#test-case). To add such description simply use **#[Description]** annotation:
 ```php
 namespace Example\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Yandex\Allure\Adapter\Annotation\Description;
-use Yandex\Allure\Adapter\Model\DescriptionType;
+use Qameta\Allure\Attribute\Description;
 
-/**
- * @Description("Detailed description for test class")
- */
+#[Description("Detailed description for **test** class")]
 class SomeTest extends TestCase
 {
-    /**
-     * @Description(value = "Detailed description for <b>test class</b>.", type = DescriptionType::HTML)
-     */
-    public function testCase()
+    #[Description("Detailed description for <b>test class</b>", isHtml: true)]
+    public function testCaseMethod(): void
     {
         //Some implementation here...
     }
 }
 ```
-Description can be added in plain text, HTML or Markdown format - simply assign different **type** value.
+Description can be added in Markdown format (which is default one) or in HTML format. For HTML simply pass `true` value for optional `isHtml` argument.
 
 ### Set test severity
-**@Severity** annotation is used in order to prioritize test methods by severity:
+**#[Severity]** annotation is used in order to prioritize test methods by severity:
+
 ```php
 namespace Example\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Yandex\Allure\Adapter\Annotation\Severity;
-use Yandex\Allure\Adapter\Model\SeverityLevel;
+use Qameta\Allure\Attribute\Severity;
 
 class SomeTest extends TestCase
 {
-    /**
-     * @Severity(level = SeverityLevel::MINOR)
-     */
-    public function testCase()
+    #[Severity(Severity::MINOR)]
+    public function testCaseMethod(): void
     {
         //Some implementation here...
     }
@@ -129,47 +117,52 @@ class SomeTest extends TestCase
 ```
 
 ### Specify test parameters information
-In order to add information about test method [parameters](https://github.com/allure-framework/allure-core/wiki/Glossary#parameter) you should use **@Parameter** annotation:
+In order to add information about test method [parameters](https://github.com/allure-framework/allure-core/wiki/Glossary#parameter) you should use **#[Parameter]** annotation. You can also use static shortcut if your marameter has dynamic value:
+
 ```php
 namespace Example\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Yandex\Allure\Adapter\Annotation\Parameter;
-use Yandex\Allure\Adapter\Model\ParameterKind;
+use Qameta\Allure\Allure;
+use Qameta\Allure\Attribute\Parameter;
 
 class SomeTest extends TestCase
 {
-    /**
-     * @Parameter(name = "param1", value = "value1")
-     * @Parameter(name = "param2", value = "value2", kind = ParameterKind::SYSTEM_PROPERTY)
-     */
-    public function testCase()
+    #[
+        Parameter("param1", "value1"),
+        Parameter("param2", "value2"),
+    ]
+    public function testCaseMethod(): void
     {
         //Some implementation here...
+        Allure::parameter("param3", $someVar);
     }
 }
 ```
 
 ### Map test classes and test methods to features and stories
-In some development approaches tests are classified by [stories](https://github.com/allure-framework/allure-core/wiki/Glossary#user-story) and [features](https://github.com/allure-framework/allure-core/wiki/Glossary#feature). If you're using this then you can annotate your test with **@Stories** and **@Features** annotations:
+In some development approaches tests are classified by [stories](https://github.com/allure-framework/allure-core/wiki/Glossary#user-story) and [features](https://github.com/allure-framework/allure-core/wiki/Glossary#feature). If you're using this then you can annotate your test with **#[Story]** and **#[Feature]** annotations:
 ```php
 namespace Example\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Yandex\Allure\Adapter\Annotation\Features;
-use Yandex\Allure\Adapter\Annotation\Stories;
+use Qameta\Allure\Attribute\Feature;
+use Qameta\Allure\Attribute\Story;
 
-/**
- * @Stories({"story1", "story2"})
- * @Features({"feature1", "feature2", "feature3"})
- */
+#[
+    Story("story1"),
+    Story("story2"),
+    Feature("feature1"),
+    Feature("feature2"),
+    Feature("feature3"),
+]
 class SomeTest extends TestCase
 {
-    /**
-     * @Features({"feature2"})
-     * @Stories({"story1"})
-     */
-    public function testCase()
+    #[
+        Story("story3"),
+        Feature("feature4"),
+    ]
+    public function testCaseMethod(): void
     {
         //Some implementation here...
     }
@@ -178,82 +171,65 @@ class SomeTest extends TestCase
 You will then be able to filter tests by specified features and stories in generated Allure report.
 
 ### Attach files to report
-If you wish to [attach some files](https://github.com/allure-framework/allure-core/wiki/Glossary#attachment) generated during PHPUnit run (screenshots, log files, dumps and so on) to report - then you need to use **AttachmentSupport** trait in your test class:
+If you wish to [attach some files](https://github.com/allure-framework/allure-core/wiki/Glossary#attachment) generated during PHPUnit run (screenshots, log files, dumps and so on) to report - then you need to use static shortcuts in your test class:
 ```php
 namespace Example\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Yandex\Allure\Adapter\Support\AttachmentSupport;
+use Qameta\Allure\Allure;
 
 class SomeTest extends TestCase
 {
 
-    use AttachmentSupport;
-
-    public function testCase()
+    public function testCaseMethod()
     {
         //Some implementation here...
-        $filePath = $this->outputSomeContentToTemporaryFile();
-        $this->addAttachment($filePath, 'Attachment human-readable name', 'text/plain');
+        Allure::attachment("Attachment 1", "attachment content", 'text/plain');
+        Allure::attachmentFile("Attachment 2", "/path/to/file.png", 'image/png');
         //Some implementation here...
     }
-
-    private function outputSomeContentToTemporaryFile()
-    {
-        $tmpPath = tempnam(sys_get_temp_dir(), 'test');
-        file_put_contents($tmpPath, 'Some content to be outputted to temporary file.');
-        return $tmpPath;
-    }
-
 }
 ```
-In order to create an [attachment](https://github.com/allure-framework/allure-core/wiki/Glossary#attachment) simply call **AttachmentSupport::addAttachment()** method. This method accepts attachment type, human-readable name and a string either storing full path to the file we need to attach or file contents.
+In order to create an [attachment](https://github.com/allure-framework/allure-core/wiki/Glossary#attachment) simply call **Allure::attachment()** method. This method accepts human-readable name, string content and MIME attachment type. To attach a file, use **Allure::attachmentFile()** method that accepts file name instead of string content.
 
 ### Divide test methods into steps
-Allure framework also supports very useful feature called [steps](https://github.com/allure-framework/allure-core/wiki/Glossary#test-step). Consider a test method which has complex logic inside and several assertions. When an exception is thrown or one of assertions fails sometimes it's very difficult to determine which one caused the failure. Allure steps allow to divide test method logic into several isolated pieces having independent run statuses such as **passed** or **failed**. This allows to have much more cleaner understanding of what really happens. In order to use steps simply import **StepSupport** trait in your test class:
+Allure framework also supports very useful feature called [steps](https://github.com/allure-framework/allure-core/wiki/Glossary#test-step). Consider a test method which has complex logic inside and several assertions. When an exception is thrown or one of assertions fails sometimes it's very difficult to determine which one caused the failure. Allure steps allow dividing test method logic into several isolated pieces having independent run statuses such as **passed** or **failed**. This allows to have much cleaner understanding of what really happens. In order to use steps simply use static shortcuts:
+
 ```php
 namespace Example\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Yandex\Allure\Adapter\Support\StepSupport;
+use Qameta\Allure\Allure;
+use Qameta\Allure\Attribute\Parameter;
+use Qameta\Allure\Attribute\Title;
+use Qameta\Allure\StepContextInterface;
 
 class SomeTest extends TestCase
 {
 
-    use StepSupport;
-
-    public function testCase()
+    public function testCaseMethod(): void
     {
         //Some implementation here...
-        $this->executeStep("This is step one", function () {
-            $this->stepOne();
-        });
-
-        $this->executeStep("This is step two", function () {
-            $this-stepTwo();
-        });
-
-        $this->executeStep("This is step three", function () {
-            $this->stepThree('someArgument');
-        });
+        $x = Allure::runStep(
+            #[Title('First step')]
+            function (StepContextInterface $step): string {
+                $step->parameter('param1', $someValue);
+                
+                return 'foo';
+            },
+        );
+        Allure::runStep([$this, 'stepTwo']);
         //Some implementation here...
     }
 
-    private function stepOne()
-    {
-        //Some implementation here...
-    }
-
+    #[
+        Title("Second step"),
+        Parameter("param2", "value2"),
+    ]
     private function stepTwo()
     {
         //Some implementation here...
     }
-
-    private function stepThree($argument)
-    {
-        //Some implementation here...
-    }
-
 }
 ```
 The entire test method execution status will depend on every step but information about steps status will be stored separately.
