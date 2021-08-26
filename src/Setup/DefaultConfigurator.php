@@ -6,8 +6,8 @@ namespace Qameta\Allure\PHPUnit\Setup;
 
 use Qameta\Allure\Allure;
 use Qameta\Allure\AllureLifecycleInterface;
-use Qameta\Allure\Io\ExceptionThrowingLogger;
 use Qameta\Allure\Model\ResultFactoryInterface;
+use Qameta\Allure\PHPUnit\Internal\ThrowExceptionOnLifecycleErrorHook;
 use Qameta\Allure\PHPUnit\SharedTestStateInterface;
 use Qameta\Allure\Setup\StatusDetectorInterface;
 
@@ -24,7 +24,7 @@ final class DefaultConfigurator implements ConfiguratorInterface
         Allure::setOutputDirectory($outputDirectory);
         if ($this->loggerThrowsException) {
             Allure::getLifecycleConfigurator()
-                ->setLogger(new ExceptionThrowingLogger());
+                ->addHooks(new ThrowExceptionOnLifecycleErrorHook());
         }
     }
 

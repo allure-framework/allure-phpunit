@@ -97,6 +97,7 @@ class TestUpdater implements TestUpdaterInterface
         return [
             Label::testClass($info->getClass()),
             Label::testMethod($info->getMethod()),
+            Label::host($info->getHost()),
             Label::thread($info->getThread()),
         ];
     }

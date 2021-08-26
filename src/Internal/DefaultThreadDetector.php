@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Qameta\Allure\PHPUnit\Internal;
 
 use Qameta\Allure\PHPUnit\Setup\ThreadDetectorInterface;
+use function gethostname;
 
 /**
  * Supported parallel runners:
@@ -16,8 +17,17 @@ use Qameta\Allure\PHPUnit\Setup\ThreadDetectorInterface;
 final class DefaultThreadDetector implements ThreadDetectorInterface
 {
 
+    private string|false|null $hostName = null;
+
     public function getThread(): ?string
     {
-        return $_ENV['UNIQUE_TEST_TOKEN'] ?? null;
+        return $_ENV['TEST_TOKEN'] ?? null;
+    }
+
+    public function getHost(): ?string
+    {
+        $this->hostName ??= gethostname();
+
+        return false === $this->hostName ? null : $this->hostName;
     }
 }

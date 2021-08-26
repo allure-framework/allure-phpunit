@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Qameta\Allure\Test\Report\Generate;
+namespace Qameta\Allure\PHPUnit\Test\Report\Generate;
 
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Attribute;

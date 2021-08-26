@@ -30,7 +30,7 @@
   },
   "require": {
     "php": "^8",
-    "remorhaz/allure-php-commons": "dev-master as 2.0.0",
+    "allure-framework/allure-php-commons": "dev-main",
     "phpunit/phpunit": "^9"
   },
   "require-dev": {
@@ -53,11 +53,12 @@
   },
   "scripts": {
     "test-unit": "vendor/bin/phpunit",
+    "clear-allure-results": "rm -rf ./build/allure-results",
     "test-report": [
-      "rm -rf ./build/allure-results",
-      "vendor/bin/paratest --configuration=phpunit.report.xml --testsuite=positive",
-      "vendor/bin/paratest --configuration=phpunit.report.xml --testsuite=negative; exit 0",
-      "vendor/bin/paratest --configuration=phpunit.report.xml --testsuite=retries --repeat=3; exit 0"
+      "@clear-allure-results",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=positive",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=negative & exit 0",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=retries --repeat=3 & exit 0"
     ],
     "test": [
       "@test-unit",

@@ -8,4 +8,6 @@ interface ThreadDetectorInterface
 {
 
     public function getThread(): ?string;
+
+    public function getHost(): ?string;
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit;
 
-use Qameta\Allure\PHPUnit\SharedTestState;
 use Throwable;
 
 trait ExceptionDetailsTrait

@@ -123,7 +123,11 @@ final class AllureAdapter
         $thread = $this->threadDetector->getThread();
         $this->lifecycle->switchThread($thread);
 
-        $this->currentTest = $this->buildTestInfo($test, $thread);
+        $this->currentTest = $this->buildTestInfo(
+            $test,
+            $this->threadDetector->getHost(),
+            $thread,
+        );
 
         return $this;
     }
@@ -133,7 +137,7 @@ final class AllureAdapter
         return $this->currentTest ?? throw new RuntimeException("Current test is not set");
     }
 
-    private function buildTestInfo(string $test, ?string $thread = null): TestInfo
+    private function buildTestInfo(string $test, ?string $host = null, ?string $thread = null): TestInfo
     {
         $dataLabelMatchResult = preg_match(
             '#^([^\s]+)\s+with\s+data\s+set\s+"(.*)"\s+\(.+\)$#',
@@ -160,6 +164,7 @@ final class AllureAdapter
             class: isset($class) && class_exists($class) ? $class : null,
             method: $method,
             dataLabel: $dataLabel,
+            host: $host,
             thread: $thread,
         );
     }

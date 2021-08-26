@@ -15,6 +15,7 @@ final class TestInfo
      * @param class-string|null $class
      * @param string|null       $method
      * @param string|null       $dataLabel
+     * @param string|null       $host
      * @param string|null       $thread
      */
     public function __construct(
@@ -22,6 +23,7 @@ final class TestInfo
         private ?string $class,
         private ?string $method,
         private ?string $dataLabel,
+        private ?string $host,
         private ?string $thread,
     ) {
     }
@@ -59,6 +61,11 @@ final class TestInfo
     public function getName(): string
     {
         return $this->getFullName() ?? $this->getTest();
+    }
+
+    public function getHost(): ?string
+    {
+        return $this->host;
     }
 
     public function getThread(): ?string
