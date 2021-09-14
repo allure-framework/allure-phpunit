@@ -5,6 +5,7 @@ namespace Yandex\Allure\Adapter;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\TestSuite;
+use PHPUnit\Framework\Warning;
 use Exception;
 use org\bovigo\vfs\vfsStream;
 use Throwable;
@@ -64,6 +65,19 @@ class AllureAdapterTest extends TestCase
         $this->assertEquals($event, $events[0]);
     }
 
+    public function testAddWarning(): void
+    {
+        $warning = new Warning(self::EXCEPTION_MESSAGE);
+        $time = $this->getTime();
+        $this->getAllureAdapter()->addWarning($this, $warning, $time);
+        $events = $this->getMockedLifecycle()->getEvents();
+        $event = new TestCaseFailedEvent();
+        $event->withException($warning)->withMessage(self::EXCEPTION_MESSAGE);
+        $this->assertEquals(1, sizeof($events));
+        $this->assertInstanceOf('\Yandex\Allure\Adapter\Event\TestCaseFailedEvent', $events[0]);
+        $this->assertEquals($event, $events[0]);
+    }
+    
     public function testAddFailure(): void
     {
         $exception = new AssertionFailedError(self::EXCEPTION_MESSAGE);

@@ -134,7 +134,8 @@ class AllurePhpUnit implements TestListener
      */
     public function addWarning(Test $test, Warning $e, float $time): void
     {
-        // TODO: Implement addWarning() method.
+        $event = new TestCaseFailedEvent();
+        Allure::lifecycle()->fire($event->withException($e)->withMessage($e->getMessage()));
     }
 
     /**
