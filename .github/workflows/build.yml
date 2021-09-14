@@ -1,0 +1,66 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build71:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: shivammathur/setup-php@2.14.0
+        with:
+          php-version: '7.1.3'
+      - name: Install
+        run: composer update
+      - name: Test
+        run: composer test
+  build72:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: shivammathur/setup-php@2.14.0
+        with:
+          php-version: '7.2'
+      - name: Install
+        run: composer update
+      - name: Test
+        run: composer test
+  build73:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: shivammathur/setup-php@2.14.0
+        with:
+          php-version: '7.3'
+      - name: Install
+        run: composer update
+      - name: Test
+        run: composer test
+  build74:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: shivammathur/setup-php@2.14.0
+        with:
+          php-version: '7.4'
+      - name: Install
+        run: composer update
+      - name: Test
+        run: composer test
+  build80:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: shivammathur/setup-php@2.14.0
+        with:
+          php-version: '8.0'
+      - name: Install
+        run: composer update
+      - name: Test
+        run: composer test

@@ -4,3 +4,5 @@ vendor/*
 composer.phar
 composer.lock
 nbproject
+/build
+.phpunit.result.cache
