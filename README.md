@@ -58,6 +58,43 @@ Then add Allure test listener in **phpunit.xml** file:
 ```
 After running PHPUnit tests a new folder will be created (**build/allure-results** in the example above). This folder will contain generated JSON files. See [framework help](https://docs.qameta.io/allure/#_reporting) for details about how to generate report from JSON files. By default generated report will only show a limited set of information but you can use cool Allure features by adding a minimum of test code changes. Read next section for details.
 
+You can also use setup hook to tune or extend Allure lifecycle:
+```xml
+<extensions>
+    <extension class="Qameta\Allure\PHPUnit\AllureExtension">
+        <!-- Optional arguments block; omit it if you want to use default values -->
+        <arguments>
+            <!-- JSON files output directory (default is build/allure-results; you may pass null to use default value) -->
+            <null/>
+            <!-- Configurator object class (default is Qameta\Allure\PHPUnit\Setup\DefaultConfigurator; you pass null to use default value) -->
+            <null/>
+            <!-- For default configurator, just pass name of invokable class in this argument -->
+            <string>My\Namespace\OnSetupHook</string>
+        </arguments>
+    </extension>
+</extensions>
+```
+
+And the hook class could look like this:
+
+```php
+<?php
+
+namespace My\Namespace;
+
+use Qameta\Allure\Allure;
+
+class OnSetupHook
+{
+    public function __invoke(): void
+    {
+        Allure::getLifecycleConfigurator()->addHooks(new MyHook())
+    }
+}
+```
+
+In the above example we add some custom hook `MyHook` to Allure lifecycle.
+
 ## Main features
 This adapter comes with a set of PHP annotations and traits allowing to use main Allure features.
 
