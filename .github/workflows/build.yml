@@ -13,7 +13,6 @@ jobs:
   tests:
     name: PHP ${{ matrix.php-version }} on ${{ matrix.os }} (${{ matrix.composer-options }})
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.php-version == '8.1' }}
     strategy:
       fail-fast: false
       matrix:
@@ -43,18 +42,9 @@ jobs:
           ini-values: error_reporting=E_ALL
 
       - name: Install dependencies
-        if: ${{ matrix.php-version != '8.1' }}
         run: composer update
           --prefer-dist
           --no-progress
-          ${{ matrix.composer-options }}
-
-      - name: Install dependencies (experimental)
-        if: ${{ matrix.php-version == '8.1' }}
-        run: composer update
-          --prefer-dist
-          --no-progress
-          --ignore-platform-req=php
           ${{ matrix.composer-options }}
 
       - name: Run tests
