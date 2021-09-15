@@ -30,7 +30,7 @@
   },
   "require": {
     "php": "^8",
-    "allure-framework/allure-php-commons": "dev-main",
+    "allure-framework/allure-php-commons": "^2.0.0-rc1",
     "phpunit/phpunit": "^9"
   },
   "require-dev": {
