@@ -53,6 +53,7 @@ class NegativeTest extends TestCase
     #[Title('Test that emits warning is reported as broken')]
     public function testWarning(): void
     {
+        /** @psalm-suppress InternalMethod */
         $this->addWarning('Warning message');
     }
 

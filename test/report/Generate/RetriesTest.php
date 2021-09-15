@@ -46,6 +46,9 @@ class RetriesTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
+    /**
+     * @return iterable<string, array{string, string}>
+     */
     public function providerData(): iterable
     {
         return [

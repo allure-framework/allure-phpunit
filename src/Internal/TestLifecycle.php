@@ -9,9 +9,9 @@ use Qameta\Allure\Model\ResultFactoryInterface;
 use Qameta\Allure\Model\Status;
 use Qameta\Allure\Model\TestResult;
 use Qameta\Allure\PHPUnit\Setup\ThreadDetectorInterface;
+use Qameta\Allure\PHPUnit\AllureAdapterInterface;
 use Qameta\Allure\Setup\StatusDetectorInterface;
 use RuntimeException;
-use Throwable;
 
 use function array_pad;
 use function class_exists;
@@ -21,7 +21,7 @@ use function preg_match;
 /**
  * @internal
  */
-final class AllureAdapter
+final class TestLifecycle implements TestLifecycleInterface
 {
 
     private ?TestInfo $currentTest = null;
@@ -31,24 +31,29 @@ final class AllureAdapter
         private ResultFactoryInterface $resultFactory,
         private StatusDetectorInterface $statusDetector,
         private ThreadDetectorInterface $threadDetector,
-        private TestRegistryInterface $testRegistry,
+        private AllureAdapterInterface $adapter,
         private TestUpdaterInterface $testUpdater,
-    ) {}
+    ) {
+    }
 
-    public function createTest(): self
+    public function create(): self
     {
+        $containerResult = $this->resultFactory->createContainer();
+        $this->lifecycle->startContainer($containerResult);
+
         $testResult = $this->resultFactory->createTest();
-        $this->lifecycle->scheduleTest($testResult);
-        $this->testRegistry->registerTest($testResult, $this->getCurrentTest());
+        $this->lifecycle->scheduleTest($testResult, $containerResult->getUuid());
+
+        $this->adapter->registerStart($containerResult, $testResult, $this->getCurrentTest());
 
         return $this;
     }
 
-    public function updateInitialInfo(): self
+    public function updateInfo(): self
     {
         $this->lifecycle->updateTest(
             fn (TestResult $testResult) => $this->testUpdater->setInfo($testResult, $this->getCurrentTest()),
-            $this->testRegistry->getTestId($this->getCurrentTest()),
+            $this->adapter->getTestId($this->getCurrentTest()),
         );
 
         return $this;
@@ -57,7 +62,7 @@ final class AllureAdapter
     public function start(): self
     {
         $this->lifecycle->startTest(
-            $this->testRegistry->getTestId($this->getCurrentTest()),
+            $this->adapter->getTestId($this->getCurrentTest()),
         );
 
         return $this;
@@ -66,7 +71,10 @@ final class AllureAdapter
     public function stop(): self
     {
         $this->lifecycle->stopTest(
-            $this->testRegistry->getTestId($this->getCurrentTest()),
+            $this->adapter->getTestId($this->getCurrentTest()),
+        );
+        $this->lifecycle->stopContainer(
+            $this->adapter->getContainerId($this->getCurrentTest()),
         );
 
         return $this;
@@ -77,9 +85,9 @@ final class AllureAdapter
         $this->lifecycle->updateTest(
             fn (TestResult $testResult) => $this->testUpdater->setRunInfo(
                 $testResult,
-                $this->testRegistry->registerRun($testResult, $this->getCurrentTest()),
+                $this->adapter->registerRun($testResult, $this->getCurrentTest()),
             ),
-            $this->testRegistry->getTestId($this->getCurrentTest()),
+            $this->adapter->getTestId($this->getCurrentTest()),
         );
 
         return $this;
@@ -88,7 +96,7 @@ final class AllureAdapter
     public function write(): self
     {
         $this->lifecycle->writeTest(
-            $this->testRegistry->getTestId($this->getCurrentTest()),
+            $this->adapter->getTestId($this->getCurrentTest()),
         );
 
         return $this;
@@ -98,27 +106,32 @@ final class AllureAdapter
     {
         $this->lifecycle->updateTest(
             fn (TestResult $testResult) => $this->testUpdater->setStatus($testResult, $message, $status),
-            $this->testRegistry->getTestId($this->getCurrentTest()),
+            $this->adapter->getTestId($this->getCurrentTest()),
         );
 
         return $this;
     }
 
-    public function updateDetectedStatus(Throwable $exception): self
+    public function updateDetectedStatus(?string $message = null, ?Status $status = null): self
     {
+        $exception = $this->adapter->getLastException();
+        if (!isset($exception)) {
+            return $this->updateStatus($message, $status);
+        }
+
         $this->lifecycle->updateTest(
             fn (TestResult $testResult) => $this->testUpdater->setDetectedStatus(
                 $testResult,
                 $this->statusDetector,
                 $exception,
             ),
-            $this->testRegistry->getTestId($this->getCurrentTest()),
+            $this->adapter->getTestId($this->getCurrentTest()),
         );
 
         return $this;
     }
 
-    public function switchToTest(string $test): self
+    public function switchTo(string $test): self
     {
         $thread = $this->threadDetector->getThread();
         $this->lifecycle->switchThread($thread);
@@ -128,6 +141,13 @@ final class AllureAdapter
             $this->threadDetector->getHost(),
             $thread,
         );
+
+        return $this;
+    }
+
+    public function reset(): self
+    {
+        $this->adapter->resetLastException();
 
         return $this;
     }

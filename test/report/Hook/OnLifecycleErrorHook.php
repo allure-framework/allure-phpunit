@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Qameta\Allure\PHPUnit\Internal;
+namespace Qameta\Allure\PHPUnit\Test\Report\Hook;
 
 use Qameta\Allure\Hook\OnLifecycleErrorHookInterface;
 use Throwable;
 
-final class ThrowExceptionOnLifecycleErrorHook implements OnLifecycleErrorHookInterface
+final class OnLifecycleErrorHook implements OnLifecycleErrorHookInterface
 {
 
     /**

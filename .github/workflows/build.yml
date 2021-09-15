@@ -40,6 +40,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           extensions: pcntl, posix
           coverage: xdebug
+          ini-values: error_reporting=E_ALL
 
       - name: Install dependencies
         if: ${{ matrix.php-version != '8.1' }}
@@ -57,10 +58,19 @@ jobs:
           ${{ matrix.composer-options }}
 
       - name: Run tests
-        if: ${{ matrix.php-version != '8.1' }}
+        if: ${{ matrix.os != 'windows-latest' && matrix.php-version != '8.1' }}
         run: composer test
 
+      - name: Run tests (windows)
+        if: ${{ matrix.os == 'windows-latest' && matrix.php-version != '8.1' }}
+        run: composer test-windows
+
       - name: Run tests (experimental)
-        if: ${{ matrix.php-version == '8.1' }}
+        if: ${{ matrix.os != 'windows-latest' && matrix.php-version == '8.1' }}
         continue-on-error: true
         run: composer test
+
+      - name: Run tests (windows, experimental)
+        if: ${{ matrix.os == 'windows-latest' && matrix.php-version == '8.1' }}
+        continue-on-error: true
+        run: composer test-windows

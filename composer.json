@@ -35,7 +35,10 @@
   },
   "require-dev": {
     "ext-dom": "*",
-    "brianium/paratest": "^6.3.1"
+    "brianium/paratest": "^6.3.1",
+    "psalm/plugin-phpunit": "^0.16.1",
+    "squizlabs/php_codesniffer": "^3.6.0",
+    "vimeo/psalm": "^4.10"
   },
   "autoload": {
     "psr-4": {
@@ -47,22 +50,38 @@
       "Yandex": "test/"
     },
     "psr-4": {
-      "Qameta\\Allure\\PHPUnit\\Test\\": "test/unit/",
+      "Qameta\\Allure\\PHPUnit\\Test\\Unit\\": "test/unit/",
       "Qameta\\Allure\\PHPUnit\\Test\\Report\\": "test/report/"
     }
   },
   "scripts": {
-    "test-unit": "vendor/bin/phpunit",
+    "test-cs": "vendor/bin/phpcs -sp",
+    "test-unit": "vendor/bin/phpunit --coverage-text",
     "clear-allure-results": "rm -rf ./build/allure-results",
     "test-report": [
+      "@clear-allure-results",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=positive",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=negative; exit 0",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=retries --repeat=3; exit 0"
+    ],
+    "test-report-windows": [
       "@clear-allure-results",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=positive",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=negative & exit 0",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=retries --repeat=3 & exit 0"
     ],
+    "test-psalm": "vendor/bin/psalm",
     "test": [
+      "@test-cs",
       "@test-unit",
-      "@test-report"
+      "@test-report",
+      "@test-psalm"
+    ],
+    "test-windows": [
+      "@test-cs",
+      "@test-unit",
+      "@test-report-windows",
+      "@test-psalm"
     ]
   }
 }

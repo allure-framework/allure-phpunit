@@ -14,12 +14,10 @@ use PHPUnit\Runner\AfterTestFailureHook;
 use PHPUnit\Runner\AfterTestHook;
 use PHPUnit\Runner\AfterTestWarningHook;
 use PHPUnit\Runner\BeforeTestHook;
-use Qameta\Allure\Allure;
 use Qameta\Allure\Model\Status;
-use Qameta\Allure\PHPUnit\Internal\AllureAdapter;
-use Qameta\Allure\PHPUnit\Internal\DefaultThreadDetector;
-use Qameta\Allure\PHPUnit\Internal\TestRegistry;
-use Qameta\Allure\PHPUnit\Internal\TestUpdater;
+use Qameta\Allure\PHPUnit\Internal\TestLifecycleFactory;
+use Qameta\Allure\PHPUnit\Internal\TestLifecycleFactoryInterface;
+use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
 use Qameta\Allure\PHPUnit\Setup\ConfiguratorInterface;
 use Qameta\Allure\PHPUnit\Setup\DefaultConfigurator;
 
@@ -41,29 +39,21 @@ final class AllureExtension implements
 {
     private const DEFAULT_OUTPUT_DIRECTORY = 'build' . DIRECTORY_SEPARATOR . 'allure-results';
 
-    private SharedTestStateInterface $sharedTestState;
-
-    private AllureAdapter $adapter;
+    private TestLifecycleInterface $testLifecycle;
 
     public function __construct(
         ?string $outputDirectory = null,
-        ?string $configuratorClass = null,
+        string|ConfiguratorInterface|null $configurator = null,
         mixed ...$args,
     ) {
-        $configurator = $this->createConfigurator(
-            $configuratorClass ?? DefaultConfigurator::class,
-            ...$args,
-        );
+        if (!$configurator instanceof ConfiguratorInterface) {
+            $configurator = $this->createConfigurator(
+                $configurator ?? DefaultConfigurator::class,
+                ...$args,
+            );
+        }
         $configurator->setupAllure($outputDirectory ?? self::DEFAULT_OUTPUT_DIRECTORY);
-        $this->sharedTestState = $configurator->getSharedTestState() ?? SharedTestState::getInstance();
-        $this->adapter = new AllureAdapter(
-            $configurator->getAllureLifecycle() ?? Allure::getLifecycle(),
-            $configurator->getResultFactory() ?? Allure::getResultFactory(),
-            $configurator->getStatusDetector() ?? Allure::getStatusDetector(),
-            $configurator->getThreadDetector() ?? new DefaultThreadDetector(),
-            new TestRegistry(),
-            new TestUpdater(),
-        );
+        $this->testLifecycle = $this->createTestLifecycleInterface($configurator);
     }
 
     private function createConfigurator(string $class, mixed ...$args): ConfiguratorInterface
@@ -75,22 +65,31 @@ final class AllureExtension implements
             : throw new LogicException("Invalid configurator class: {$class}");
     }
 
+    private function createTestLifecycleInterface(ConfiguratorInterface $configurator): TestLifecycleInterface
+    {
+        $testLifecycleFactory = $configurator instanceof TestLifecycleFactoryInterface
+            ? $configurator
+            : new TestLifecycleFactory();
+
+        return $testLifecycleFactory->createTestLifecycle($configurator);
+    }
+
     public function executeBeforeTest(string $test): void
     {
-        $this->sharedTestState->reset();
         $this
-            ->adapter
-            ->switchToTest($test)
-            ->createTest()
-            ->updateInitialInfo()
+            ->testLifecycle
+            ->switchTo($test)
+            ->reset()
+            ->create()
+            ->updateInfo()
             ->start();
     }
 
     public function executeAfterTest(string $test, float $time): void
     {
         $this
-            ->adapter
-            ->switchToTest($test)
+            ->testLifecycle
+            ->switchTo($test)
             ->stop()
             ->updateRunInfo()
             ->write();
@@ -99,57 +98,56 @@ final class AllureExtension implements
     public function executeAfterTestFailure(string $test, string $message, float $time): void
     {
         $this
-            ->adapter
-            ->switchToTest($test)
-            ->updateStatus($message, Status::failed());
+            ->testLifecycle
+            ->switchTo($test)
+            ->updateDetectedStatus($message, Status::failed());
     }
 
     public function executeAfterTestError(string $test, string $message, float $time): void
     {
-        $this->adapter->switchToTest($test);
-        $exception = $this->sharedTestState->getLastException();
-        isset($exception)
-            ? $this->adapter->updateDetectedStatus($exception)
-            : $this->adapter->updateStatus($message, Status::failed());
+        $this
+            ->testLifecycle
+            ->switchTo($test)
+            ->updateDetectedStatus($message, Status::failed());
     }
 
     public function executeAfterIncompleteTest(string $test, string $message, float $time): void
     {
         $this
-            ->adapter
-            ->switchToTest($test)
+            ->testLifecycle
+            ->switchTo($test)
             ->updateStatus($message, Status::broken());
     }
 
     public function executeAfterSkippedTest(string $test, string $message, float $time): void
     {
         $this
-            ->adapter
-            ->switchToTest($test)
+            ->testLifecycle
+            ->switchTo($test)
             ->updateStatus($message, Status::skipped());
     }
 
     public function executeAfterTestWarning(string $test, string $message, float $time): void
     {
         $this
-            ->adapter
-            ->switchToTest($test)
+            ->testLifecycle
+            ->switchTo($test)
             ->updateStatus($message, Status::broken());
     }
 
     public function executeAfterRiskyTest(string $test, string $message, float $time): void
     {
         $this
-            ->adapter
-            ->switchToTest($test)
+            ->testLifecycle
+            ->switchTo($test)
             ->updateStatus($message, Status::failed());
     }
 
     public function executeAfterSuccessfulTest(string $test, float $time): void
     {
         $this
-            ->adapter
-            ->switchToTest($test)
+            ->testLifecycle
+            ->switchTo($test)
             ->updateStatus(status: Status::passed());
     }
 }

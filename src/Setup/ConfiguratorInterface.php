@@ -6,7 +6,7 @@ namespace Qameta\Allure\PHPUnit\Setup;
 
 use Qameta\Allure\AllureLifecycleInterface;
 use Qameta\Allure\Model\ResultFactoryInterface;
-use Qameta\Allure\PHPUnit\SharedTestStateInterface;
+use Qameta\Allure\PHPUnit\AllureAdapterInterface;
 use Qameta\Allure\Setup\StatusDetectorInterface;
 
 interface ConfiguratorInterface
@@ -20,7 +20,7 @@ interface ConfiguratorInterface
 
     public function getStatusDetector(): ?StatusDetectorInterface;
 
-    public function getSharedTestState(): ?SharedTestStateInterface;
+    public function getAllureAdapter(): ?AllureAdapterInterface;
 
     public function getThreadDetector(): ?ThreadDetectorInterface;
 }

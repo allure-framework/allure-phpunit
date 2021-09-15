@@ -11,7 +11,7 @@ trait ExceptionDetailsTrait
 
     protected function onNotSuccessfulTest(Throwable $t): void
     {
-        SharedTestState::getInstance()->setLastException($t);
+        AllureAdapter::getInstance()->setLastException($t);
         throw $t;
     }
 }

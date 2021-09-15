@@ -1,6 +1,9 @@
 # Allure PHPUnit adapter
 
+[![Latest Stable Version](http://poser.pugx.org/allure-framework/allure-phpunit/v)](https://packagist.org/packages/allure-framework/allure-phpunit)
 [![Build](https://github.com/allure-framework/allure-phpunit/actions/workflows/build.yml/badge.svg)](https://github.com/allure-framework/allure-phpunit/actions/workflows/build.yml)
+[![Total Downloads](http://poser.pugx.org/allure-framework/allure-phpunit/downloads)](https://packagist.org/packages/allure-framework/allure-phpunit)
+[![License](http://poser.pugx.org/allure-framework/allure-phpunit/license)](https://packagist.org/packages/allure-framework/allure-phpunit)
 
 This an official PHPUnit adapter for Allure Framework - a flexible, lightweight and multi-language framework for writing self-documenting tests.
 
