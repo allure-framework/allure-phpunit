@@ -24,8 +24,8 @@ This an official PHPUnit adapter for Allure Framework - a flexible, lightweight 
 ## What is this for?
 The main purpose of this adapter is to accumulate information about your tests and write it out to a set of JSON files: one for each test class. Then you can use a standalone command line tool or a plugin for popular continuous integration systems to generate an HTML page showing your tests in a good form.
 
-## Example project
-Example project is located at: https://github.com/allure-framework/allure-phpunit-example
+## Examples
+Please take a look at [these example tests](./test/report/Generate).
 
 ## How to generate report
 This adapter only generates JSON files containing information about tests. See [wiki section](https://docs.qameta.io/allure/#_reporting) on how to generate report.
