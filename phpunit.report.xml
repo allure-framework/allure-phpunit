@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.2/phpunit.xsd"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
         colors="true"
-        defaultTestSuite="generate-report">
+        defaultTestSuite="positive">
     <testsuites>
-        <testsuite name="generate-report">
-            <directory>test/Yandex/Allure/Report/Generate</directory>
+        <testsuite name="positive">
+            <directory>test/report/Generate</directory>
+            <exclude>test/report/Generate/NegativeTest.php</exclude>
+            <exclude>test/report/Generate/RetriesTest.php</exclude>
+        </testsuite>
+        <testsuite name="negative">
+            <file>test/report/Generate/NegativeTest.php</file>
+        </testsuite>
+        <testsuite name="retries">
+            <file>test/report/Generate/RetriesTest.php</file>
         </testsuite>
     </testsuites>
-    <listeners>
-        <listener class="Yandex\Allure\PhpUnit\AllurePhpUnit">
+    <extensions>
+        <extension class="Qameta\Allure\PHPUnit\AllureExtension">
             <arguments>
-                <string>build/allure-results</string>
-                <boolean>true</boolean>
+                <null/><!-- default output directory -->
+                <null/><!-- default configurator -->
+                <string>Qameta\Allure\PHPUnit\Test\Report\Hook\OnSetupHook</string>
             </arguments>
-        </listener>
-    </listeners>
+        </extension>
+    </extensions>
 </phpunit>

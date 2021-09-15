@@ -1,8 +1,7 @@
-*.iml
-.idea
-vendor/*
-composer.phar
-composer.lock
-nbproject
 /build
+/vendor/
+/composer.lock
+/phpunit.xml
+/phpcs.xml
+/psalm.xml
 .phpunit.result.cache
