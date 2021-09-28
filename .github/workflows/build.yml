@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.4
-      - uses: shivammathur/setup-php@2.14.0
+      - uses: shivammathur/setup-php@2.15.0
         with:
           php-version: '7.1.3'
       - name: Install
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.4
-      - uses: shivammathur/setup-php@2.14.0
+      - uses: shivammathur/setup-php@2.15.0
         with:
           php-version: '7.2'
       - name: Install
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.4
-      - uses: shivammathur/setup-php@2.14.0
+      - uses: shivammathur/setup-php@2.15.0
         with:
           php-version: '7.3'
       - name: Install
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.4
-      - uses: shivammathur/setup-php@2.14.0
+      - uses: shivammathur/setup-php@2.15.0
         with:
           php-version: '7.4'
       - name: Install
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.4
-      - uses: shivammathur/setup-php@2.14.0
+      - uses: shivammathur/setup-php@2.15.0
         with:
           php-version: '8.0'
       - name: Install
