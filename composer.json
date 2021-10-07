@@ -70,7 +70,7 @@
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=negative & exit 0",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=retries --repeat=3 & exit 0"
     ],
-    "test-psalm": "vendor/bin/psalm",
+    "test-psalm": "vendor/bin/psalm --shepherd",
     "test": [
       "@test-cs",
       "@test-unit",

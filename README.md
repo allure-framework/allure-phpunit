@@ -2,6 +2,8 @@
 
 [![Latest Stable Version](http://poser.pugx.org/allure-framework/allure-phpunit/v)](https://packagist.org/packages/allure-framework/allure-phpunit)
 [![Build](https://github.com/allure-framework/allure-phpunit/actions/workflows/build.yml/badge.svg)](https://github.com/allure-framework/allure-phpunit/actions/workflows/build.yml)
+[![Type Coverage](https://shepherd.dev/github/allure-framework/allure-phpunit/coverage.svg)](https://shepherd.dev/github/allure-framework/allure-phpunit)
+[![Psalm Level](https://shepherd.dev/github/allure-framework/allure-phpunit/level.svg)](https://shepherd.dev/github/allure-framework/allure-phpunit)
 [![Total Downloads](http://poser.pugx.org/allure-framework/allure-phpunit/downloads)](https://packagist.org/packages/allure-framework/allure-phpunit)
 [![License](http://poser.pugx.org/allure-framework/allure-phpunit/license)](https://packagist.org/packages/allure-framework/allure-phpunit)
 
