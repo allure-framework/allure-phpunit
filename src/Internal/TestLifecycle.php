@@ -98,6 +98,9 @@ final class TestLifecycle implements TestLifecycleInterface
         $this->lifecycle->writeTest(
             $this->adapter->getTestId($this->getCurrentTest()),
         );
+        $this->lifecycle->writeContainer(
+            $this->adapter->getContainerId($this->getCurrentTest()),
+        );
 
         return $this;
     }
