@@ -30,7 +30,7 @@ class TestUpdater implements TestUpdaterInterface
         $parser = $this->parseAnnotations($info);
 
         $testResult
-            ->setName($parser->getTitle() ?? $info->getName())
+            ->setName($parser->getDisplayName() ?? $info->getName())
             ->setFullName($info->getFullName())
             ->setDescriptionHtml($parser->getDescriptionHtml())
             ->setDescription($parser->getDescription())

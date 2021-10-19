@@ -12,7 +12,7 @@ use Yandex\Allure\Adapter\Annotation\Title;
  * @Title ("This test has wrong title")
  */
 #[
-    Attribute\Title('Native class-level annotation overrides legacy one if both are used'),
+    Attribute\DisplayName('Native class-level annotation overrides legacy one if both are used'),
     Attribute\Epic('Annotations'),
     Attribute\Feature('Title'),
 ]
