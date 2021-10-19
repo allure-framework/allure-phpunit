@@ -122,10 +122,14 @@ class TestUpdater implements TestUpdaterInterface
             ->setRerunOf($runInfo->getRerunOf());
     }
 
-    public function setDetectedStatus(TestResult $test, StatusDetectorInterface $statusDetector, Throwable $e): void
-    {
+    public function setDetectedStatus(
+        TestResult $test,
+        StatusDetectorInterface $statusDetector,
+        Throwable $e,
+        ?Status $overrideStatus = null,
+    ): void {
         $test
-            ->setStatus($statusDetector->getStatus($e))
+            ->setStatus($overrideStatus ?? $statusDetector->getStatus($e))
             ->setStatusDetails($statusDetector->getStatusDetails($e));
     }
 

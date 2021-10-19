@@ -35,8 +35,11 @@ final class TestTestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
-    public function updateDetectedStatus(?string $message = null, ?Status $status = null): TestLifecycleInterface
-    {
+    public function updateDetectedStatus(
+        ?string $message = null,
+        ?Status $status = null,
+        ?Status $overrideStatus = null,
+    ): TestLifecycleInterface {
         return $this;
     }
 

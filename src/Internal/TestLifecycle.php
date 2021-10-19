@@ -115,8 +115,11 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
-    public function updateDetectedStatus(?string $message = null, ?Status $status = null): self
-    {
+    public function updateDetectedStatus(
+        ?string $message = null,
+        ?Status $status = null,
+        ?Status $overrideStatus = null,
+    ): self {
         $exception = $this->adapter->getLastException();
         if (!isset($exception)) {
             return $this->updateStatus($message, $status);
@@ -127,6 +130,7 @@ final class TestLifecycle implements TestLifecycleInterface
                 $testResult,
                 $this->statusDetector,
                 $exception,
+                $overrideStatus,
             ),
             $this->adapter->getTestId($this->getCurrentTest()),
         );

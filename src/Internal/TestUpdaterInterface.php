@@ -19,7 +19,12 @@ interface TestUpdaterInterface
 
     public function setRunInfo(TestResult $testResult, TestRunInfo $runInfo): void;
 
-    public function setDetectedStatus(TestResult $test, StatusDetectorInterface $statusDetector, Throwable $e): void;
+    public function setDetectedStatus(
+        TestResult $test,
+        StatusDetectorInterface $statusDetector,
+        Throwable $e,
+        ?Status $overrideStatus = null,
+    ): void;
 
     public function setStatus(TestResult $test, ?string $message = null, ?Status $status = null): void;
 }
