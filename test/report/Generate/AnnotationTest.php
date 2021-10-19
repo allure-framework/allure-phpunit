@@ -22,14 +22,14 @@ class AnnotationTest extends TestCase
     /**
      * @Description ("Legacy description with `markdown`", type = DescriptionType::MARKDOWN)
      */
-    #[Attribute\Title('Legacy description annotation is reported as test description')]
+    #[Attribute\DisplayName('Legacy description annotation is reported as test description')]
     public function testLegacyDescriptionAnnotation(): void
     {
         $this->expectNotToPerformAssertions();
     }
 
     #[
-        Attribute\Title('Native description annotation is reported as test description'),
+        Attribute\DisplayName('Native description annotation is reported as test description'),
         Attribute\Description('Test native description with `markdown`'),
     ]
     public function testNativeDescriptionAnnotation(): void
@@ -49,14 +49,14 @@ class AnnotationTest extends TestCase
     /**
      * @Severity (level = SeverityLevel::MINOR)
      */
-    #[Attribute\Title('Legacy severity annotation is reported as test severity')]
+    #[Attribute\DisplayName('Legacy severity annotation is reported as test severity')]
     public function testLegacySeverityAnnotation(): void
     {
         $this->expectNotToPerformAssertions();
     }
 
     #[
-        Attribute\Title('Native severity annotation is reported as test severity'),
+        Attribute\DisplayName('Native severity annotation is reported as test severity'),
         Attribute\Severity(Attribute\Severity::CRITICAL),
     ]
     public function testNativeSeverityAnnotation(): void
@@ -68,7 +68,7 @@ class AnnotationTest extends TestCase
      * @Severity (level = SeverityLevel::MINOR)
      */
     #[
-        Attribute\Title('Legacy severity annotation overrides native one'),
+        Attribute\DisplayName('Legacy severity annotation overrides native one'),
         Attribute\Severity(Attribute\Severity::CRITICAL),
     ]
     public function testMixedSeverityAnnotation(): void
@@ -79,7 +79,7 @@ class AnnotationTest extends TestCase
     /**
      * @Parameter (name = "foo", value = "legacy foo")
      */
-    #[Attribute\Title('Legacy parameter')]
+    #[Attribute\DisplayName('Legacy parameter')]
     public function testLegacyParameterAnnotation(): void
     {
         $this->expectNotToPerformAssertions();

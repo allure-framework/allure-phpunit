@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Attribute;
 
 #[
-    Attribute\Title('Test without title annotation uses class-level native title annotation'),
+    Attribute\DisplayName('Test without title annotation uses class-level native title annotation'),
     Attribute\Epic('Annotations'),
     Attribute\Feature('Title'),
 ]

@@ -251,7 +251,11 @@ class AllureExtensionTest extends TestCase
             ->expects(self::once())
             ->after('switch')
             ->method('updateDetectedStatus')
-            ->with(self::identicalTo('c'), self::identicalTo(Status::failed()));
+            ->with(
+                self::identicalTo('c'),
+                self::identicalTo(Status::failed()),
+                self::identicalTo(Status::failed()),
+            );
         $extension->executeAfterTestFailure('b', 'c', 1.2);
     }
 
@@ -274,7 +278,11 @@ class AllureExtensionTest extends TestCase
             ->expects(self::once())
             ->after('switch')
             ->method('updateDetectedStatus')
-            ->with(self::identicalTo('c'), self::identicalTo(Status::failed()));
+            ->with(
+                self::identicalTo('c'),
+                self::identicalTo(Status::broken()),
+                self::identicalTo(null),
+            );
         $extension->executeAfterTestError('b', 'c', 1.2);
     }
 

@@ -31,7 +31,7 @@ class TitleTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    #[Attribute\Title('Native title annotation is reported as test title')]
+    #[Attribute\DisplayName('Native display name annotation is reported as test title')]
     public function testNativeTitleAnnotation(): void
     {
         $this->expectNotToPerformAssertions();
@@ -40,7 +40,7 @@ class TitleTest extends TestCase
     /**
      * @Title ("This is wrong title for this test")
      */
-    #[Attribute\Title('Native title annotation overrides legacy one')]
+    #[Attribute\DisplayName('Native display name annotation overrides legacy one')]
     public function testMixedTitleAnnotation(): void
     {
         $this->expectNotToPerformAssertions();

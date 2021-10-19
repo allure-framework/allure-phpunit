@@ -100,7 +100,7 @@ final class AllureExtension implements
         $this
             ->testLifecycle
             ->switchTo($test)
-            ->updateDetectedStatus($message, Status::failed());
+            ->updateDetectedStatus($message, Status::failed(), Status::failed());
     }
 
     public function executeAfterTestError(string $test, string $message, float $time): void
@@ -108,7 +108,7 @@ final class AllureExtension implements
         $this
             ->testLifecycle
             ->switchTo($test)
-            ->updateDetectedStatus($message, Status::failed());
+            ->updateDetectedStatus($message, Status::broken());
     }
 
     public function executeAfterIncompleteTest(string $test, string $message, float $time): void

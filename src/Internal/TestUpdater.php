@@ -30,7 +30,7 @@ class TestUpdater implements TestUpdaterInterface
         $parser = $this->parseAnnotations($info);
 
         $testResult
-            ->setName($parser->getTitle() ?? $info->getName())
+            ->setName($parser->getDisplayName() ?? $info->getName())
             ->setFullName($info->getFullName())
             ->setDescriptionHtml($parser->getDescriptionHtml())
             ->setDescription($parser->getDescription())
@@ -122,10 +122,14 @@ class TestUpdater implements TestUpdaterInterface
             ->setRerunOf($runInfo->getRerunOf());
     }
 
-    public function setDetectedStatus(TestResult $test, StatusDetectorInterface $statusDetector, Throwable $e): void
-    {
+    public function setDetectedStatus(
+        TestResult $test,
+        StatusDetectorInterface $statusDetector,
+        Throwable $e,
+        ?Status $overrideStatus = null,
+    ): void {
         $test
-            ->setStatus($statusDetector->getStatus($e))
+            ->setStatus($overrideStatus ?? $statusDetector->getStatus($e))
             ->setStatusDetails($statusDetector->getStatusDetails($e));
     }
 

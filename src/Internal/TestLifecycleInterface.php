@@ -23,7 +23,11 @@ interface TestLifecycleInterface
 
     public function updateStatus(?string $message = null, ?Status $status = null): TestLifecycleInterface;
 
-    public function updateDetectedStatus(?string $message = null, ?Status $status = null): TestLifecycleInterface;
+    public function updateDetectedStatus(
+        ?string $message = null,
+        ?Status $status = null,
+        ?Status $overrideStatus = null,
+    ): TestLifecycleInterface;
 
     public function switchTo(string $test): TestLifecycleInterface;
 
