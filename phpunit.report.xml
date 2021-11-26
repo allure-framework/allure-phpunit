@@ -18,12 +18,6 @@
         </testsuite>
     </testsuites>
     <extensions>
-        <extension class="Qameta\Allure\PHPUnit\AllureExtension">
-            <arguments>
-                <null/><!-- default output directory -->
-                <null/><!-- default configurator -->
-                <string>Qameta\Allure\PHPUnit\Test\Report\Hook\OnSetupHook</string>
-            </arguments>
-        </extension>
+        <extension class="Qameta\Allure\PHPUnit\AllureExtension" />
     </extensions>
 </phpunit>

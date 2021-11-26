@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Test\Unit;
 
-use LogicException;
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Allure;
 use Qameta\Allure\Model\Status;
 use Qameta\Allure\PHPUnit\AllureExtension;
+use Qameta\Allure\PHPUnit\Internal\ConfigInterface;
 use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
-use Qameta\Allure\PHPUnit\Setup\ConfiguratorInterface;
-use stdClass;
+use Qameta\Allure\Setup\LifecycleBuilderInterface;
 
 use const DIRECTORY_SEPARATOR;
-use const STDERR;
-use const STDOUT;
 
 /**
  * @covers \Qameta\Allure\PHPUnit\AllureExtension
@@ -26,22 +23,26 @@ class AllureExtensionTest extends TestCase
     public function setUp(): void
     {
         Allure::reset();
-        TestConfigurator::reset();
     }
 
     /**
      * @dataProvider providerOutputDirectory
      */
-    public function testConstruct_GivenOutputDirectory_SetupsAllureWithMatchingDirectory(
+    public function testConstruct_ConfigProvidesOutputDirectory_ConstructsResultsWriterWithWithMatchingDirectory(
         ?string $outputDirectory,
         string $expectedValue,
     ): void {
-        $configurator = $this->createMock(TestConfiguratorInterface::class);
-        $configurator
+        $builder = $this->createMock(LifecycleBuilderInterface::class);
+        Allure::setLifecycleBuilder($builder);
+        $config = $this->createStub(ConfigInterface::class);
+        $config
+            ->method('getOutputDirectory')
+            ->willReturn($outputDirectory);
+        $builder
             ->expects(self::once())
-            ->method('setupAllure')
+            ->method('createResultsWriter')
             ->with(self::identicalTo($expectedValue));
-        new AllureExtension($outputDirectory, $configurator);
+        new AllureExtension($config);
     }
 
     /**
@@ -56,81 +57,25 @@ class AllureExtensionTest extends TestCase
     }
 
     /**
-     * @dataProvider providerInvalidConfigurator
+     * @dataProvider providerOutputDirectory
      */
-    public function testConstructor_GivenInvalidConfiguratorString_ThrowsException(string $configurator): void
-    {
-        $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Invalid configurator class');
-        new AllureExtension(null, $configurator);
-    }
-
-    /**
-     * @return iterable<string, array{string}>
-     */
-    public function providerInvalidConfigurator(): iterable
-    {
-        return [
-            'Not a class' => ['a'],
-            'Class not implementing configurator' => [stdClass::class],
-        ];
-    }
-
-    /**
-     * @dataProvider providerValidConfigurator
-     */
-    public function testConstructor_GivenValidConfiguratorString_NeverThrowsException(
-        ?string $configurator,
+    public function testConstruct_ConfigDataProvidesOutputDirectory_ConstructsResultsWriterWithWithMatchingDirectory(
+        ?string $outputDirectory,
+        string $expectedValue,
     ): void {
-        $this->expectNotToPerformAssertions();
-        new AllureExtension(null, $configurator);
-    }
-
-    /**
-     * @return iterable<string, array{string|null}>
-     */
-    public function providerValidConfigurator(): iterable
-    {
-        return [
-            'Null' => [null],
-            'Default configurator' => [TestConfigurator::class],
-        ];
-    }
-
-    /**
-     * @dataProvider providerConfiguratorArgs
-     */
-    public function testConstructor_GivenValidConfiguratorStringWithArgs_PassesSameArgs(array $args): void
-    {
-        new AllureExtension(null, TestConfigurator::class, ...$args);
-        self::assertSame($args, TestConfigurator::getArgs());
-    }
-
-    /**
-     * @return iterable<string, array{array}>
-     */
-    public function providerConfiguratorArgs(): iterable
-    {
-        return [
-            'No args' => [[]],
-            'Null args' => [[null, null]],
-            'Integer args' => [[1, 2]],
-            'Float args' => [[1.2, 3.4]],
-            'String args' => [['a', 'b']],
-            'Boolean args' => [[true, false]],
-            'Array args' => [[['a' => 'b'], [1, 2]]],
-            'Object args' => [[(object) ['a' => 'b'], (object) ['c' => 'd']]],
-            'Resource args' => [[STDOUT, STDERR]],
-        ];
+        $builder = $this->createMock(LifecycleBuilderInterface::class);
+        Allure::setLifecycleBuilder($builder);
+        $builder
+            ->expects(self::once())
+            ->method('createResultsWriter')
+            ->with(self::identicalTo($expectedValue));
+        new AllureExtension(['outputDirectory' => $outputDirectory]);
     }
 
     public function testExecuteBeforeTest_Constructed_CreatesTestAfterResettingSwitchedContext(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
         $testLifecycle
             ->expects(self::once())
             ->id('switch')
@@ -154,10 +99,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteBeforeTest_Constructed_UpdatesInfoAndStartsCreatedTest(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
         $testLifecycle
             ->method('switchTo')
             ->willReturnSelf();
@@ -186,10 +128,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteAfterTest_Constructed_StopsTestAfterSwitchingContext(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
 
         $testLifecycle
             ->expects(self::once())
@@ -207,10 +146,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteAfterTest_Constructed_UpdatesRunForStoppedTestAndWritesIt(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
 
         $testLifecycle
             ->method('switchTo')
@@ -236,10 +172,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteAfterTestFailure_Constructed_SetsDetectedOrFailedStatusForSwitchedTest(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
 
         $testLifecycle
             ->expects(self::once())
@@ -263,10 +196,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteAfterTestError_Constructed_SetsDetectedOrFailedStatusForSwitchedTest(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
 
         $testLifecycle
             ->expects(self::once())
@@ -289,10 +219,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteAfterIncompleteTest_Constructed_SetsBrokenStatusForSwitchedTest(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
 
         $testLifecycle
             ->expects(self::once())
@@ -311,10 +238,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteAfterSkippedTest_Constructed_SetsSkippedStatusForSwitchedTest(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
 
         $testLifecycle
             ->expects(self::once())
@@ -333,10 +257,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteAfterTestWarning_Constructed_SetsBrokenStatusForSwitchedTest(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
 
         $testLifecycle
             ->expects(self::once())
@@ -355,10 +276,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteAfterRiskyTest_Constructed_SetsFailedStatusForSwitchedTest(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
 
         $testLifecycle
             ->expects(self::once())
@@ -377,10 +295,7 @@ class AllureExtensionTest extends TestCase
     public function testExecuteAfterSuccessfulTest_Constructed_SetsPassedStatusForSwitchedTest(): void
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
-        $extension = new AllureExtension(
-            'a',
-            $this->createConfiguratorWithTestLifecycle($testLifecycle),
-        );
+        $extension = new AllureExtension($testLifecycle);
 
         $testLifecycle
             ->expects(self::once())
@@ -394,15 +309,5 @@ class AllureExtensionTest extends TestCase
             ->method('updateStatus')
             ->with(self::identicalTo(null), self::identicalTo(Status::passed()));
         $extension->executeAfterSuccessfulTest('b', 1.2);
-    }
-
-    private function createConfiguratorWithTestLifecycle(TestLifecycleInterface $testLifecycle): ConfiguratorInterface
-    {
-        $configurator = $this->createStub(TestConfiguratorInterface::class);
-        $configurator
-            ->method('createTestLifecycle')
-            ->willReturn($testLifecycle);
-
-        return $configurator;
     }
 }

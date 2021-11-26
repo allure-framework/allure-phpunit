@@ -14,6 +14,7 @@ use Qameta\Allure\Model\Parameter;
 use Qameta\Allure\Model\Status;
 use Qameta\Allure\Model\StatusDetails;
 use Qameta\Allure\Model\TestResult;
+use Qameta\Allure\Setup\LinkTemplateCollectionInterface;
 use Qameta\Allure\Setup\StatusDetectorInterface;
 use ReflectionClass;
 use ReflectionMethod;
@@ -24,6 +25,11 @@ use Throwable;
  */
 class TestUpdater implements TestUpdaterInterface
 {
+
+    public function __construct(
+        private LinkTemplateCollectionInterface $linkTemplates,
+    ) {
+    }
 
     public function setInfo(TestResult $testResult, TestInfo $info): void
     {
@@ -53,7 +59,7 @@ class TestUpdater implements TestUpdaterInterface
     {
         $class = $info->getClass();
         if (!isset($class)) {
-            return new AttributeParser([]);
+            return new AttributeParser([], $this->linkTemplates);
         }
 
         $annotations = [];
@@ -73,7 +79,7 @@ class TestUpdater implements TestUpdaterInterface
 
         $method = $info->getMethod();
         if (!isset($method)) {
-            return new AttributeParser($annotations);
+            return new AttributeParser($annotations, $this->linkTemplates);
         }
 
         try {
@@ -86,7 +92,7 @@ class TestUpdater implements TestUpdaterInterface
             throw new LogicException("Annotations not loaded", 0, $e);
         }
 
-        return new AttributeParser($annotations);
+        return new AttributeParser($annotations, $this->linkTemplates);
     }
 
     /**

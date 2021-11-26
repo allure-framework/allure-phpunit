@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit;
 
-use LogicException;
 use PHPUnit\Runner\AfterIncompleteTestHook;
 use PHPUnit\Runner\AfterRiskyTestHook;
 use PHPUnit\Runner\AfterSkippedTestHook;
@@ -14,15 +13,19 @@ use PHPUnit\Runner\AfterTestFailureHook;
 use PHPUnit\Runner\AfterTestHook;
 use PHPUnit\Runner\AfterTestWarningHook;
 use PHPUnit\Runner\BeforeTestHook;
+use Qameta\Allure\Allure;
+use Qameta\Allure\Model\LinkType;
 use Qameta\Allure\Model\Status;
-use Qameta\Allure\PHPUnit\Internal\TestLifecycleFactory;
-use Qameta\Allure\PHPUnit\Internal\TestLifecycleFactoryInterface;
+use Qameta\Allure\PHPUnit\Internal\Config;
+use Qameta\Allure\PHPUnit\Internal\ConfigInterface;
+use Qameta\Allure\PHPUnit\Internal\DefaultThreadDetector;
+use Qameta\Allure\PHPUnit\Internal\TestLifecycle;
 use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
-use Qameta\Allure\PHPUnit\Setup\ConfiguratorInterface;
-use Qameta\Allure\PHPUnit\Setup\DefaultConfigurator;
+use Qameta\Allure\PHPUnit\Internal\TestUpdater;
+use RuntimeException;
 
-use function class_exists;
-use function is_a;
+use function file_exists;
+use function is_array;
 
 use const DIRECTORY_SEPARATOR;
 
@@ -39,41 +42,83 @@ final class AllureExtension implements
 {
     private const DEFAULT_OUTPUT_DIRECTORY = 'build' . DIRECTORY_SEPARATOR . 'allure-results';
 
+    private const DEFAULT_CONFIG_FILE = 'config' . DIRECTORY_SEPARATOR . 'allure.config.php';
+
     private TestLifecycleInterface $testLifecycle;
 
     public function __construct(
-        ?string $outputDirectory = null,
-        string|ConfiguratorInterface|null $configurator = null,
-        mixed ...$args,
+        string|array|ConfigInterface|TestLifecycleInterface|null $configOrTestLifecycle = null,
     ) {
-        if (!$configurator instanceof ConfiguratorInterface) {
-            $configurator = $this->createConfigurator(
-                $configurator ?? DefaultConfigurator::class,
-                ...$args,
+        $this->testLifecycle = $configOrTestLifecycle instanceof TestLifecycleInterface
+            ? $configOrTestLifecycle
+            : $this->createTestLifecycle($configOrTestLifecycle);
+    }
+
+    private function createTestLifecycle(string|array|ConfigInterface|null $configSource): TestLifecycleInterface
+    {
+        $config = $configSource instanceof ConfigInterface
+            ? $configSource
+            : $this->loadConfig($configSource);
+
+        $this->setupAllure($config);
+
+        return new TestLifecycle(
+            Allure::getLifecycle(),
+            Allure::getConfig()->getResultFactory(),
+            Allure::getConfig()->getStatusDetector(),
+            $config->getThreadDetector() ?? new DefaultThreadDetector(),
+            AllureAdapter::getInstance(),
+            new TestUpdater(Allure::getConfig()->getLinkTemplates()),
+        );
+    }
+
+    private function setupAllure(ConfigInterface $config): void
+    {
+        Allure::setOutputDirectory($config->getOutputDirectory() ?? self::DEFAULT_OUTPUT_DIRECTORY);
+
+        foreach ($config->getLinkTemplates() as $linkType => $linkTemplate) {
+            Allure::getLifecycleConfigurator()->addLinkTemplate(
+                LinkType::fromOptionalString($linkType),
+                $linkTemplate,
             );
         }
-        $configurator->setupAllure($outputDirectory ?? self::DEFAULT_OUTPUT_DIRECTORY);
-        $this->testLifecycle = $this->createTestLifecycleInterface($configurator);
+
+        if (!empty($config->getLifecycleHooks())) {
+            Allure::getLifecycleConfigurator()->addHooks(...$config->getLifecycleHooks());
+        }
+
+        $setupHook = $config->getSetupHook();
+        if (isset($setupHook)) {
+            $setupHook();
+        }
     }
 
-    private function createConfigurator(string $class, mixed ...$args): ConfiguratorInterface
+    private function loadConfig(string|array|null $configSource): ConfigInterface
     {
-        return
-            class_exists($class) &&
-            is_a($class, ConfiguratorInterface::class, true)
-            ? new $class(...$args)
-            : throw new LogicException("Invalid configurator class: {$class}");
+        return new Config(
+            is_array($configSource)
+                ? $configSource
+                : $this->loadConfigData($configSource),
+        );
     }
 
-    private function createTestLifecycleInterface(ConfiguratorInterface $configurator): TestLifecycleInterface
+    private function loadConfigData(?string $configFile): array
     {
-        $testLifecycleFactory = $configurator instanceof TestLifecycleFactoryInterface
-            ? $configurator
-            : new TestLifecycleFactory();
+        $fileShouldExist = isset($configFile);
+        $configFile ??= self::DEFAULT_CONFIG_FILE;
+        if (file_exists($configFile)) {
+            /** @psalm-var mixed $data */
+            $data = require $configFile;
 
-        return $testLifecycleFactory->createTestLifecycle($configurator);
+            return is_array($data)
+                ? $data
+                : throw new RuntimeException("Config file {$configFile} must return array");
+        } elseif ($fileShouldExist) {
+            throw new RuntimeException("Config file {$configFile} doesn't exist");
+        }
+
+        return [];
     }
-
     public function executeBeforeTest(string $test): void
     {
         $this
