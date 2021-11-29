@@ -30,15 +30,17 @@
   },
   "require": {
     "php": "^8",
-    "allure-framework/allure-php-commons": "2.0.0-rc3",
+    "allure-framework/allure-php-commons": "2.0.0-rc4",
     "phpunit/phpunit": "^9"
   },
   "require-dev": {
-    "ext-dom": "*",
-    "brianium/paratest": "^6.3.1",
+    "brianium/paratest": "^6.3.3",
     "psalm/plugin-phpunit": "^0.16.1",
-    "squizlabs/php_codesniffer": "^3.6.0",
-    "vimeo/psalm": "^4.10"
+    "squizlabs/php_codesniffer": "^3.6.1",
+    "vimeo/psalm": "^4.13.1"
+  },
+  "conflict": {
+    "amphp/byte-stream": "<1.5.1"
   },
   "autoload": {
     "psr-4": {
