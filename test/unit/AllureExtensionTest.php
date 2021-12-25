@@ -8,68 +8,16 @@ use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Allure;
 use Qameta\Allure\Model\Status;
 use Qameta\Allure\PHPUnit\AllureExtension;
-use Qameta\Allure\PHPUnit\Internal\ConfigInterface;
 use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
-use Qameta\Allure\Setup\LifecycleBuilderInterface;
-
-use const DIRECTORY_SEPARATOR;
 
 /**
  * @covers \Qameta\Allure\PHPUnit\AllureExtension
  */
 class AllureExtensionTest extends TestCase
 {
-
     public function setUp(): void
     {
         Allure::reset();
-    }
-
-    /**
-     * @dataProvider providerOutputDirectory
-     */
-    public function testConstruct_ConfigProvidesOutputDirectory_ConstructsResultsWriterWithWithMatchingDirectory(
-        ?string $outputDirectory,
-        string $expectedValue,
-    ): void {
-        $builder = $this->createMock(LifecycleBuilderInterface::class);
-        Allure::setLifecycleBuilder($builder);
-        $config = $this->createStub(ConfigInterface::class);
-        $config
-            ->method('getOutputDirectory')
-            ->willReturn($outputDirectory);
-        $builder
-            ->expects(self::once())
-            ->method('createResultsWriter')
-            ->with(self::identicalTo($expectedValue));
-        new AllureExtension($config);
-    }
-
-    /**
-     * @return iterable<string, array{string|null, string}>
-     */
-    public function providerOutputDirectory(): iterable
-    {
-        return [
-            'Null' => [null, 'build' . DIRECTORY_SEPARATOR . 'allure-results'],
-            'Non-null' => ['a', 'a'],
-        ];
-    }
-
-    /**
-     * @dataProvider providerOutputDirectory
-     */
-    public function testConstruct_ConfigDataProvidesOutputDirectory_ConstructsResultsWriterWithWithMatchingDirectory(
-        ?string $outputDirectory,
-        string $expectedValue,
-    ): void {
-        $builder = $this->createMock(LifecycleBuilderInterface::class);
-        Allure::setLifecycleBuilder($builder);
-        $builder
-            ->expects(self::once())
-            ->method('createResultsWriter')
-            ->with(self::identicalTo($expectedValue));
-        new AllureExtension(['outputDirectory' => $outputDirectory]);
     }
 
     public function testExecuteBeforeTest_Constructed_CreatesTestAfterResettingSwitchedContext(): void

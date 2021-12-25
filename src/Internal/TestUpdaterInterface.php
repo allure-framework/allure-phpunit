@@ -14,7 +14,6 @@ use Throwable;
  */
 interface TestUpdaterInterface
 {
-
     public function setInfo(TestResult $testResult, TestInfo $info): void;
 
     public function setRunInfo(TestResult $testResult, TestRunInfo $runInfo): void;

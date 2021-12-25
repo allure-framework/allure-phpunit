@@ -17,8 +17,6 @@ use Yandex\Allure\Adapter\Model\SeverityLevel;
 
 class AnnotationTest extends TestCase
 {
-
-
     /**
      * @Description ("Legacy description with `markdown`", type = DescriptionType::MARKDOWN)
      */

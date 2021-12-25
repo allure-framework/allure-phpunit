@@ -12,7 +12,6 @@ use Qameta\Allure\PHPUnit\Internal\TestStartInfo;
  */
 class TestStartInfoTest extends TestCase
 {
-
     public function testGetContainerId_ConstructedWithContainerId_ReturnsSameId(): void
     {
         $info = new TestStartInfo('a', 'b');

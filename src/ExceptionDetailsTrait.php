@@ -8,7 +8,6 @@ use Throwable;
 
 trait ExceptionDetailsTrait
 {
-
     protected function onNotSuccessfulTest(Throwable $t): void
     {
         AllureAdapter::getInstance()->setLastException($t);

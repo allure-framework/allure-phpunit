@@ -25,7 +25,6 @@ use Throwable;
  */
 class TestUpdater implements TestUpdaterInterface
 {
-
     public function __construct(
         private LinkTemplateCollectionInterface $linkTemplates,
     ) {

@@ -13,7 +13,6 @@ use Qameta\Allure\PHPUnit\Internal\TestRunInfo;
  */
 class TestRunInfoTest extends TestCase
 {
-
     public function testGetTestInfo_ConstructedWithTestInfo_ReturnsSameInstance(): void
     {
         $testInfo = new TestInfo(

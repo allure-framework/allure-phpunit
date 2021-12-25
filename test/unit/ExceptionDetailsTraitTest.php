@@ -16,7 +16,6 @@ use Throwable;
  */
 class ExceptionDetailsTraitTest extends TestCase
 {
-
     public function testOnNotSuccessfulTest_GivenException_ThrowsSameException(): void
     {
         $sharedState = $this->createStub(AllureAdapterInterface::class);

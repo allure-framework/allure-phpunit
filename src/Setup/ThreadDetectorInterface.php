@@ -6,7 +6,6 @@ namespace Qameta\Allure\PHPUnit\Setup;
 
 interface ThreadDetectorInterface
 {
-
     public function getThread(): ?string;
 
     public function getHost(): ?string;

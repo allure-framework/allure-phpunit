@@ -6,7 +6,6 @@ namespace Qameta\Allure\PHPUnit\Test\Unit\Setup;
 
 final class OnSetupHook
 {
-
     private static int $invocationCount = 0;
 
     public static function reset(): void

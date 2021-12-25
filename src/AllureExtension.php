@@ -74,7 +74,9 @@ final class AllureExtension implements
 
     private function setupAllure(ConfigInterface $config): void
     {
-        Allure::setOutputDirectory($config->getOutputDirectory() ?? self::DEFAULT_OUTPUT_DIRECTORY);
+        Allure::getLifecycleConfigurator()->setOutputDirectory(
+            $config->getOutputDirectory() ?? self::DEFAULT_OUTPUT_DIRECTORY,
+        );
 
         foreach ($config->getLinkTemplates() as $linkType => $linkTemplate) {
             Allure::getLifecycleConfigurator()->addLinkTemplate(

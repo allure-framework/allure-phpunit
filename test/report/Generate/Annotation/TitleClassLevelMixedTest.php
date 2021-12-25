@@ -18,7 +18,6 @@ use Yandex\Allure\Adapter\Annotation\Title;
 ]
 class TitleClassLevelMixedTest extends TestCase
 {
-
     public function testWithoutTitleAnnotation(): void
     {
         $this->expectNotToPerformAssertions();

@@ -8,7 +8,6 @@ use Qameta\Allure\Model\Status;
 
 interface TestLifecycleInterface
 {
-
     public function create(): TestLifecycleInterface;
 
     public function updateInfo(): TestLifecycleInterface;

@@ -12,7 +12,6 @@ use Qameta\Allure\PHPUnit\Internal\DefaultThreadDetector;
  */
 class DefaultThreadDetectorTest extends TestCase
 {
-
     public function testGetThread_WithoutParatestToken_ReturnsNull(): void
     {
         unset($_ENV['TEST_TOKEN']);

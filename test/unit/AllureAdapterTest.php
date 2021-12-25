@@ -23,7 +23,6 @@ use function array_map;
  */
 class AllureAdapterTest extends TestCase
 {
-
     public function setUp(): void
     {
         AllureAdapter::reset();

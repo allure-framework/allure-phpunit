@@ -9,7 +9,6 @@ namespace Qameta\Allure\PHPUnit\Internal;
  */
 final class TestInfo
 {
-
     /**
      * @param string            $test
      * @param class-string|null $class

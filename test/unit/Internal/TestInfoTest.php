@@ -13,7 +13,6 @@ use stdClass;
  */
 class TestInfoTest extends TestCase
 {
-
     public function testGetTest_ConstructedWithTest_ReturnsSameValue(): void
     {
         $info = new TestInfo(

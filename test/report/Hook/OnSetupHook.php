@@ -8,7 +8,6 @@ use Qameta\Allure\Allure;
 
 final class OnSetupHook
 {
-
     public function __invoke()
     {
         Allure::getLifecycleConfigurator()

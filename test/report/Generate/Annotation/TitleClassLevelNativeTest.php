@@ -14,7 +14,6 @@ use Qameta\Allure\Attribute;
 ]
 class TitleClassLevelNativeTest extends TestCase
 {
-
     public function testWithoutTitleAnnotation(): void
     {
         $this->expectNotToPerformAssertions();

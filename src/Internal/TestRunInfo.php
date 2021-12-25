@@ -9,7 +9,6 @@ namespace Qameta\Allure\PHPUnit\Internal;
  */
 final class TestRunInfo
 {
-
     public function __construct(
         private TestInfo $testInfo,
         private string $uuid,

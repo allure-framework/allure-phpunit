@@ -8,7 +8,6 @@ use Qameta\Allure\PHPUnit\Setup\ThreadDetectorInterface;
 
 final class TestThreadDetector implements ThreadDetectorInterface
 {
-
     public function getHost(): ?string
     {
         return null;
