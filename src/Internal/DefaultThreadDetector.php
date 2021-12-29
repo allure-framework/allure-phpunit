@@ -17,7 +17,6 @@ use function gethostname;
  */
 final class DefaultThreadDetector implements ThreadDetectorInterface
 {
-
     private string|false|null $hostName = null;
 
     public function getThread(): ?string

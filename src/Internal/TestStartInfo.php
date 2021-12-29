@@ -6,7 +6,6 @@ namespace Qameta\Allure\PHPUnit\Internal;
 
 final class TestStartInfo
 {
-
     public function __construct(
         private string $containerId,
         private string $testId,

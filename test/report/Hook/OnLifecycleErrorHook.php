@@ -9,7 +9,6 @@ use Throwable;
 
 final class OnLifecycleErrorHook implements OnLifecycleErrorHookInterface
 {
-
     /**
      * @throws Throwable
      */

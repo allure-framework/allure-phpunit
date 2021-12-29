@@ -12,7 +12,6 @@ use Throwable;
 
 interface AllureAdapterInterface
 {
-
     public function registerStart(ContainerResult $containerResult, TestResult $testResult, TestInfo $info): string;
 
     public function registerRun(TestResult $testResult, TestInfo $info): TestRunInfo;

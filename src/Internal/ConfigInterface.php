@@ -10,7 +10,6 @@ use Qameta\Allure\Setup\LinkTemplateInterface;
 
 interface ConfigInterface
 {
-
     public function getOutputDirectory(): ?string;
 
     /**

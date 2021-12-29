@@ -18,7 +18,6 @@ use stdClass;
  */
 class ConfigTest extends TestCase
 {
-
     /**
      * @dataProvider providerNoOutputDirectory
      */

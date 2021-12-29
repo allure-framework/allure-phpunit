@@ -9,7 +9,6 @@ use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
 
 final class TestTestLifecycle implements TestLifecycleInterface
 {
-
     public function create(): TestLifecycleInterface
     {
         return $this;

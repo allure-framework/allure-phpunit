@@ -23,7 +23,6 @@ use function preg_match;
  */
 final class TestLifecycle implements TestLifecycleInterface
 {
-
     private ?TestInfo $currentTest = null;
 
     public function __construct(

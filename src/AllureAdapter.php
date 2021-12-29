@@ -15,7 +15,6 @@ use Throwable;
 
 final class AllureAdapter implements AllureAdapterInterface
 {
-
     private static ?AllureAdapterInterface $instance = null;
 
     /**

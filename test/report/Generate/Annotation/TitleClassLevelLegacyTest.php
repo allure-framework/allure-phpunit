@@ -17,7 +17,6 @@ use Yandex\Allure\Adapter\Annotation\Title;
 ]
 class TitleClassLevelLegacyTest extends TestCase
 {
-
     public function testWithoutTitleAnnotation(): void
     {
         $this->expectNotToPerformAssertions();
