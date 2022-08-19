@@ -57,6 +57,32 @@ class RetriesTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider providerIndexedData
+     */
+    #[
+        DisplayName('Reruns of test with indexed data provider are reported correctly'),
+        Description("Parameter `retry` has different value on each run but is excluded and doesn't have effect"),
+    ]
+    public function testRerunsOfTestWithIndexedDataProvider(string $firstValue, string $secondValue): void
+    {
+        Allure::parameter('First argument', $firstValue);
+        Allure::parameter('Second argument', $secondValue);
+        Allure::parameter('Run index', (string) $this->getRunIndex(__METHOD__), true);
+        $this->expectNotToPerformAssertions();
+    }
+  
+    /**
+     * @return iterable<array{string, string}>
+     */
+    public function providerIndexedData(): iterable
+    {
+        return [
+            ['a', 'b'],
+            ['b', 'b'],
+        ];
+    }
+
     private function getRunIndex(string $method): int
     {
         self::$runCounters[$method] ??= 0;
