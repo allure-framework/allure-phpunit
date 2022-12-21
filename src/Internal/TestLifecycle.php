@@ -180,6 +180,7 @@ final class TestLifecycle implements TestLifecycleInterface
             $dataLabel = null;
         }
 
+        /** @psalm-suppress PossiblyUndefinedArrayOffset */
         [$class, $method] = isset($classAndMethod)
             ? array_pad(explode('::', $classAndMethod, 2), 2, null)
             : [null, null];

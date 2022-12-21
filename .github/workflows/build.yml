@@ -19,6 +19,7 @@ jobs:
         php-version:
           - "8.0"
           - "8.1"
+          - "8.2"
         os:
           - ubuntu-latest
           - windows-latest
@@ -48,19 +49,19 @@ jobs:
           ${{ matrix.composer-options }}
 
       - name: Run tests
-        if: ${{ matrix.os != 'windows-latest' && matrix.php-version != '8.1' }}
+        if: ${{ matrix.os != 'windows-latest' && matrix.php-version != '8.2' }}
         run: composer test
 
       - name: Run tests (windows)
-        if: ${{ matrix.os == 'windows-latest' && matrix.php-version != '8.1' }}
+        if: ${{ matrix.os == 'windows-latest' && matrix.php-version != '8.2' }}
         run: composer test-windows
 
       - name: Run tests (experimental)
-        if: ${{ matrix.os != 'windows-latest' && matrix.php-version == '8.1' }}
+        if: ${{ matrix.os != 'windows-latest' && matrix.php-version == '8.2' }}
         continue-on-error: true
         run: composer test
 
       - name: Run tests (windows, experimental)
-        if: ${{ matrix.os == 'windows-latest' && matrix.php-version == '8.1' }}
+        if: ${{ matrix.os == 'windows-latest' && matrix.php-version == '8.2' }}
         continue-on-error: true
         run: composer test-windows
