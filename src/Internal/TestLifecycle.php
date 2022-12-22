@@ -26,12 +26,12 @@ final class TestLifecycle implements TestLifecycleInterface
     private ?TestInfo $currentTest = null;
 
     public function __construct(
-        private AllureLifecycleInterface $lifecycle,
-        private ResultFactoryInterface $resultFactory,
-        private StatusDetectorInterface $statusDetector,
-        private ThreadDetectorInterface $threadDetector,
-        private AllureAdapterInterface $adapter,
-        private TestUpdaterInterface $testUpdater,
+        private readonly AllureLifecycleInterface $lifecycle,
+        private readonly ResultFactoryInterface $resultFactory,
+        private readonly StatusDetectorInterface $statusDetector,
+        private readonly ThreadDetectorInterface $threadDetector,
+        private readonly AllureAdapterInterface $adapter,
+        private readonly TestUpdaterInterface $testUpdater,
     ) {
     }
 

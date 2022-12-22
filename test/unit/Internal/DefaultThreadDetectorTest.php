@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Test\Unit\Internal;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\PHPUnit\Internal\DefaultThreadDetector;
 
-/**
- * @covers \Qameta\Allure\PHPUnit\Internal\DefaultThreadDetector
- */
+#[CoversClass(DefaultThreadDetector::class)]
 class DefaultThreadDetectorTest extends TestCase
 {
     public function testGetThread_WithoutParatestToken_ReturnsNull(): void

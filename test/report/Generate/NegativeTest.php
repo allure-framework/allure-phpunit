@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Test\Report\Generate;
 
+use PHPUnit\Event;
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Allure;
 use Qameta\Allure\Attribute\DisplayName;
@@ -53,8 +54,19 @@ class NegativeTest extends TestCase
     #[DisplayName('Test that emits warning is reported as broken')]
     public function testWarning(): void
     {
-        /** @psalm-suppress InternalMethod */
-        $this->addWarning('Warning message');
+        /**
+         * @psalm-suppress InternalMethod
+         * @psalm-suppress InternalClass
+         * @psalm-suppress TooManyArguments
+         */
+        Event\Facade::emitter()->testTriggeredWarning(
+            $this->valueObjectForEvents(),
+            "Test triggered warning",
+            __FILE__,
+            __LINE__,
+            false,
+        );
+        self::assertTrue(true);
     }
 
     #[DisplayName('Skipped test is reported as skipped')]
@@ -72,7 +84,6 @@ class NegativeTest extends TestCase
     #[DisplayName('Risky test is reported as failed')]
     public function testRisky(): void
     {
-        self::markAsRisky();
-        $this->expectNotToPerformAssertions();
+        // Not performing assertions makes test risky
     }
 }

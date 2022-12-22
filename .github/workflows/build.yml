@@ -17,9 +17,9 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
         os:
           - ubuntu-latest
           - windows-latest
@@ -29,7 +29,7 @@ jobs:
           - "--prefer-lowest"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.0
+        uses: actions/checkout@v3
 
       - name: Validate composer.json and composer.lock
         run: composer validate
@@ -49,19 +49,9 @@ jobs:
           ${{ matrix.composer-options }}
 
       - name: Run tests
-        if: ${{ matrix.os != 'windows-latest' && matrix.php-version != '8.2' }}
+        if: ${{ matrix.os != 'windows-latest' }}
         run: composer test
 
       - name: Run tests (windows)
-        if: ${{ matrix.os == 'windows-latest' && matrix.php-version != '8.2' }}
-        run: composer test-windows
-
-      - name: Run tests (experimental)
-        if: ${{ matrix.os != 'windows-latest' && matrix.php-version == '8.2' }}
-        continue-on-error: true
-        run: composer test
-
-      - name: Run tests (windows, experimental)
-        if: ${{ matrix.os == 'windows-latest' && matrix.php-version == '8.2' }}
-        continue-on-error: true
+        if: ${{ matrix.os == 'windows-latest' }}
         run: composer test-windows

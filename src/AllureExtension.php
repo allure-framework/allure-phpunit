@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit;
 
-use PHPUnit\Runner\AfterIncompleteTestHook;
-use PHPUnit\Runner\AfterRiskyTestHook;
-use PHPUnit\Runner\AfterSkippedTestHook;
-use PHPUnit\Runner\AfterSuccessfulTestHook;
-use PHPUnit\Runner\AfterTestErrorHook;
-use PHPUnit\Runner\AfterTestFailureHook;
-use PHPUnit\Runner\AfterTestHook;
-use PHPUnit\Runner\AfterTestWarningHook;
-use PHPUnit\Runner\BeforeTestHook;
+use PHPUnit\Runner\Extension\Extension;
+use PHPUnit\Runner\Extension\Facade;
+use PHPUnit\Runner\Extension\ParameterCollection;
+use PHPUnit\TextUI\Configuration\Configuration;
 use Qameta\Allure\Allure;
 use Qameta\Allure\Model\LinkType;
-use Qameta\Allure\Model\Status;
 use Qameta\Allure\PHPUnit\Internal\Config;
 use Qameta\Allure\PHPUnit\Internal\ConfigInterface;
 use Qameta\Allure\PHPUnit\Internal\DefaultThreadDetector;
@@ -29,37 +23,20 @@ use function is_array;
 
 use const DIRECTORY_SEPARATOR;
 
-final class AllureExtension implements
-    BeforeTestHook,
-    AfterTestHook,
-    AfterTestFailureHook,
-    AfterTestErrorHook,
-    AfterIncompleteTestHook,
-    AfterSkippedTestHook,
-    AfterTestWarningHook,
-    AfterRiskyTestHook,
-    AfterSuccessfulTestHook
+final class AllureExtension implements Extension
 {
     private const DEFAULT_OUTPUT_DIRECTORY = 'build' . DIRECTORY_SEPARATOR . 'allure-results';
 
     private const DEFAULT_CONFIG_FILE = 'config' . DIRECTORY_SEPARATOR . 'allure.config.php';
 
-    private TestLifecycleInterface $testLifecycle;
-
     public function __construct(
-        string|array|ConfigInterface|TestLifecycleInterface|null $configOrTestLifecycle = null,
+        private readonly ?TestLifecycleInterface $testLifecycle = null,
     ) {
-        $this->testLifecycle = $configOrTestLifecycle instanceof TestLifecycleInterface
-            ? $configOrTestLifecycle
-            : $this->createTestLifecycle($configOrTestLifecycle);
     }
 
-    private function createTestLifecycle(string|array|ConfigInterface|null $configSource): TestLifecycleInterface
+    private function createTestLifecycle(?string $configSource): TestLifecycleInterface
     {
-        $config = $configSource instanceof ConfigInterface
-            ? $configSource
-            : $this->loadConfig($configSource);
-
+        $config = new Config($this->loadConfigData($configSource));
         $this->setupAllure($config);
 
         return new TestLifecycle(
@@ -95,15 +72,6 @@ final class AllureExtension implements
         }
     }
 
-    private function loadConfig(string|array|null $configSource): ConfigInterface
-    {
-        return new Config(
-            is_array($configSource)
-                ? $configSource
-                : $this->loadConfigData($configSource),
-        );
-    }
-
     private function loadConfigData(?string $configFile): array
     {
         $fileShouldExist = isset($configFile);
@@ -121,80 +89,26 @@ final class AllureExtension implements
 
         return [];
     }
-    public function executeBeforeTest(string $test): void
-    {
-        $this
-            ->testLifecycle
-            ->switchTo($test)
-            ->reset()
-            ->create()
-            ->updateInfo()
-            ->start();
-    }
 
-    public function executeAfterTest(string $test, float $time): void
+    public function bootstrap(Configuration $configuration, Facade $facade, ParameterCollection $parameters): void
     {
-        $this
-            ->testLifecycle
-            ->switchTo($test)
-            ->stop()
-            ->updateRunInfo()
-            ->write();
-    }
+        $configSource = $parameters->has('config')
+            ? $parameters->get('config')
+            : null;
 
-    public function executeAfterTestFailure(string $test, string $message, float $time): void
-    {
-        $this
-            ->testLifecycle
-            ->switchTo($test)
-            ->updateDetectedStatus($message, Status::failed(), Status::failed());
-    }
+        $testLifecycle = $this->testLifecycle ?? $this->createTestLifecycle($configSource);
 
-    public function executeAfterTestError(string $test, string $message, float $time): void
-    {
-        $this
-            ->testLifecycle
-            ->switchTo($test)
-            ->updateDetectedStatus($message, Status::broken());
-    }
-
-    public function executeAfterIncompleteTest(string $test, string $message, float $time): void
-    {
-        $this
-            ->testLifecycle
-            ->switchTo($test)
-            ->updateStatus($message, Status::broken());
-    }
-
-    public function executeAfterSkippedTest(string $test, string $message, float $time): void
-    {
-        $this
-            ->testLifecycle
-            ->switchTo($test)
-            ->updateStatus($message, Status::skipped());
-    }
-
-    public function executeAfterTestWarning(string $test, string $message, float $time): void
-    {
-        $this
-            ->testLifecycle
-            ->switchTo($test)
-            ->updateStatus($message, Status::broken());
-    }
-
-    public function executeAfterRiskyTest(string $test, string $message, float $time): void
-    {
-        $this
-            ->testLifecycle
-            ->switchTo($test)
-            ->updateStatus($message, Status::failed());
-    }
-
-    public function executeAfterSuccessfulTest(string $test, float $time): void
-    {
-        $this
-            ->testLifecycle
-            ->switchTo($test)
-            ->updateStatus(status: Status::passed());
+        $facade->registerSubscribers(
+            new Event\TestPreparationStartedSubscriber($testLifecycle),
+            new Event\TestPreparedSubscriber($testLifecycle),
+            new Event\TestFinishedSubscriber($testLifecycle),
+            new Event\TestFailedSubscriber($testLifecycle),
+            new Event\TestErroredSubscriber($testLifecycle),
+            new Event\TestMarkedIncompleteSubscriber($testLifecycle),
+            new Event\TestSkippedSubscriber($testLifecycle),
+            new Event\TestWarningTriggeredSubscriber($testLifecycle),
+            new Event\TestConsideredRiskySubscriber($testLifecycle),
+            new Event\TestPassedSubscriber($testLifecycle),
+        );
     }
 }

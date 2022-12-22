@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Test\Unit\Internal;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Hook\LifecycleHookInterface;
 use Qameta\Allure\PHPUnit\Internal\Config;
@@ -13,14 +15,10 @@ use Qameta\Allure\Setup\LinkTemplateInterface;
 use RuntimeException;
 use stdClass;
 
-/**
- * @covers \Qameta\Allure\PHPUnit\Internal\Config
- */
+#[CoversClass(Config::class)]
 class ConfigTest extends TestCase
 {
-    /**
-     * @dataProvider providerNoOutputDirectory
-     */
+    #[DataProvider('providerNoOutputDirectory')]
     public function testGetOutputDirectory_EmptyData_ReturnsNull(array $data): void
     {
         $config = new Config($data);
@@ -30,7 +28,7 @@ class ConfigTest extends TestCase
     /**
      * @return iterable<string, array{array}>
      */
-    public function providerNoOutputDirectory(): iterable
+    public static function providerNoOutputDirectory(): iterable
     {
         return [
             'No entry' => [[]],
@@ -52,9 +50,7 @@ class ConfigTest extends TestCase
         $config->getOutputDirectory();
     }
 
-    /**
-     * @dataProvider providerNoLinkTemplates
-     */
+    #[DataProvider('providerNoLinkTemplates')]
     public function testGetLinkTemplates_EmptyData_ReturnsEmptyList(array $data): void
     {
         $config = new Config($data);
@@ -64,7 +60,7 @@ class ConfigTest extends TestCase
     /**
      * @return iterable<string, array{array}>
      */
-    public function providerNoLinkTemplates(): iterable
+    public static function providerNoLinkTemplates(): iterable
     {
         return [
             'No entry' => [[]],
@@ -152,9 +148,7 @@ class ConfigTest extends TestCase
         self::assertEquals($expectedData, $config->getLinkTemplates());
     }
 
-    /**
-     * @dataProvider providerNoSetupHook
-     */
+    #[DataProvider('providerNoSetupHook')]
     public function testGetSetupHook_EmptyData_ReturnsNull(array $data): void
     {
         $config = new Config($data);
@@ -164,7 +158,7 @@ class ConfigTest extends TestCase
     /**
      * @return iterable<string, array{array}>
      */
-    public function providerNoSetupHook(): iterable
+    public static function providerNoSetupHook(): iterable
     {
         return [
             'No entry' => [[]],
@@ -172,9 +166,7 @@ class ConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerInvalidSetupHook
-     */
+    #[DataProvider('providerInvalidSetupHook')]
     public function testGetSetupHook_InvalidTypeInData_ThrowsException(array $data): void
     {
         $config = new Config($data);
@@ -186,7 +178,7 @@ class ConfigTest extends TestCase
     /**
      * @return iterable<string, array{array}>
      */
-    public function providerInvalidSetupHook(): iterable
+    public static function providerInvalidSetupHook(): iterable
     {
         return [
             'Invalid type' => [['setupHook' => 1]],
@@ -207,9 +199,7 @@ class ConfigTest extends TestCase
         self::assertInstanceOf(OnSetupHook::class, $config->getSetupHook());
     }
 
-    /**
-     * @dataProvider providerNoThreadDetector
-     */
+    #[DataProvider('providerNoThreadDetector')]
     public function testGetThreadDetector_EmptyData_ReturnsNull(array $data): void
     {
         $config = new Config($data);
@@ -219,7 +209,7 @@ class ConfigTest extends TestCase
     /**
      * @return iterable<string, array{array}>
      */
-    public function providerNoThreadDetector(): iterable
+    public static function providerNoThreadDetector(): iterable
     {
         return [
             'No entry' => [[]],
@@ -269,9 +259,7 @@ class ConfigTest extends TestCase
         self::assertInstanceOf(TestThreadDetector::class, $config->getThreadDetector());
     }
 
-    /**
-     * @dataProvider providerNoLifecycleHooks
-     */
+    #[DataProvider('providerNoLifecycleHooks')]
     public function testGetLifecycleHooks_EmptyData_ReturnsEmptyList(array $data): void
     {
         $config = new Config($data);
@@ -281,7 +269,7 @@ class ConfigTest extends TestCase
     /**
      * @return iterable<string, array{array}>
      */
-    public function providerNoLifecycleHooks(): iterable
+    public static function providerNoLifecycleHooks(): iterable
     {
         return [
             'No entry' => [[]],

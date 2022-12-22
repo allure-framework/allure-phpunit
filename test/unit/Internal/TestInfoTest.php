@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Test\Unit\Internal;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\PHPUnit\Internal\TestInfo;
 use stdClass;
 
-/**
- * @covers \Qameta\Allure\PHPUnit\Internal\TestInfo
- */
+#[CoversClass(TestInfo::class)]
 class TestInfoTest extends TestCase
 {
     public function testGetTest_ConstructedWithTest_ReturnsSameValue(): void
@@ -28,8 +28,8 @@ class TestInfoTest extends TestCase
 
     /**
      * @param class-string|null $class
-     * @dataProvider providerGetClass
      */
+    #[DataProvider('providerGetClass')]
     public function testGetClass_ConstructedWithClass_ReturnsSameClass(?string $class): void
     {
         $info = new TestInfo(
@@ -46,7 +46,7 @@ class TestInfoTest extends TestCase
     /**
      * @return iterable<string, array{class-string|null}>
      */
-    public function providerGetClass(): iterable
+    public static function providerGetClass(): iterable
     {
         return [
             'Null' => [null],
@@ -54,9 +54,7 @@ class TestInfoTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerNullableString
-     */
+    #[DataProvider('providerNullableString')]
     public function testGetMethod_ConstructedWithMethod_ReturnsSameMethod(?string $method): void
     {
         $info = new TestInfo(
@@ -73,7 +71,7 @@ class TestInfoTest extends TestCase
     /**
      * @return iterable<string, array{string|null}>
      */
-    public function providerNullableString(): iterable
+    public static function providerNullableString(): iterable
     {
         return [
             'Null' => [null],
@@ -81,9 +79,7 @@ class TestInfoTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerNullableString
-     */
+    #[DataProvider('providerNullableString')]
     public function testGetDataLabel_ConstructedWithDataLabel_ReturnsSameLabel(?string $dataLabel): void
     {
         $info = new TestInfo(
@@ -97,9 +93,7 @@ class TestInfoTest extends TestCase
         self::assertSame($dataLabel, $info->getDataLabel());
     }
 
-    /**
-     * @dataProvider providerNullableString
-     */
+    #[DataProvider('providerNullableString')]
     public function testGetHost_ConstructedWithHost_ReturnsSameHost(?string $host): void
     {
         $info = new TestInfo(
@@ -113,9 +107,7 @@ class TestInfoTest extends TestCase
         self::assertSame($host, $info->getHost());
     }
 
-    /**
-     * @dataProvider providerNullableString
-     */
+    #[DataProvider('providerNullableString')]
     public function testGetThread_ConstructedWithThread_ReturnsSameThread(?string $thread): void
     {
         $info = new TestInfo(
@@ -133,8 +125,8 @@ class TestInfoTest extends TestCase
      * @param class-string|null $class
      * @param string|null $method
      * @param string|null $expectedFullName
-     * @dataProvider providerGetFullName
      */
+    #[DataProvider('providerGetFullName')]
     public function testGetFullName_ConstructedWithGivenClassAndMethod_ReturnsMatchingValue(
         ?string $class,
         ?string $method,
@@ -154,7 +146,7 @@ class TestInfoTest extends TestCase
     /**
      * @return iterable<string, array{class-string|null, string|null, string|null}>
      */
-    public function providerGetFullName(): iterable
+    public static function providerGetFullName(): iterable
     {
         return [
             'Both class and method are null' => [null, null, null],
@@ -169,8 +161,8 @@ class TestInfoTest extends TestCase
      * @param class-string|null $class
      * @param string|null $method
      * @param string      $expectedName
-     * @dataProvider providerGetName
      */
+    #[DataProvider('providerGetName')]
     public function testGetName_Constructed_ReturnsMatchingTest(
         string $test,
         ?string $class,
@@ -191,7 +183,7 @@ class TestInfoTest extends TestCase
     /**
      * @return iterable<string, array{string, class-string|null, string|null, string}>
      */
-    public function providerGetName(): iterable
+    public static function providerGetName(): iterable
     {
         return [
             'Class is not set' => ['a', null, 'b', 'a'],

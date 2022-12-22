@@ -34,25 +34,25 @@ This adapter only generates JSON files containing information about tests. See [
 
 ## Installation && Usage
 **Note:** this adapter supports Allure 2.x.x only.
+
+Supported PHP versions: 8.1-8.3.
+
 In order to use this adapter you need to add a new dependency to your **composer.json** file:
 ```
 {
     "require": {
-	    "php": "^8",
-	    "allure-framework/allure-phpunit": "^2"
+	    "php": "^8.1",
+	    "allure-framework/allure-phpunit": "^3"
     }
 }
 ```
 Then add Allure test listener in **phpunit.xml** file:
 ```xml
 <extensions>
-    <extension class="Qameta\Allure\PHPUnit\AllureExtension">
-        <!-- Optional arguments block; omit it if you want to use default values -->
-        <arguments>
-            <!-- Path to config file (default is config/allure.config.php) -->
-            <string>config/allure.config.php</string>
-        </arguments>
-    </extension>
+    <bootstrap class="Qameta\Allure\PHPUnit\AllureExtension">
+          <!-- Path to config file (default is config/allure.config.php) -->
+          <parameter name="config" value="config/allure.config.php" />
+    </bootstrap>
 </extensions>
 ```
 Config is common PHP file that should return an array: 
@@ -84,17 +84,17 @@ After running PHPUnit tests a new folder will be created (**build/allure-results
 This adapter comes with a set of PHP annotations and traits allowing to use main Allure features.
 
 ### Human-readable test class or test method title
-In order to add such title to any test class or [test case](https://github.com/allure-framework/allure1/wiki/Glossary#test-case) method you need to annotate it with **#[Title]** annotation:
+In order to add such title to any test class or [test case](https://github.com/allure-framework/allure1/wiki/Glossary#test-case) method you need to annotate it with **#[DisplayName]** annotation:
 ```php
 namespace Example\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Qameta\Allure\Attribute\Title;
+use Qameta\Allure\Attribute\DisplayName;
 
-#[Title("Human-readable test class title")]
+#[DisplayName("Human-readable test class title")]
 class SomeTest extends TestCase
 {
-    #[Title("Human-readable test method title")]
+    #[DisplayName("Human-readable test method title")]
     public function testCaseMethod(): void
     {
         //Some implementation here...
@@ -251,7 +251,7 @@ class SomeTest extends TestCase
         Title("Second step"),
         Parameter("param2", "value2"),
     ]
-    private function stepTwo()
+    private function stepTwo(): void
     {
         //Some implementation here...
     }

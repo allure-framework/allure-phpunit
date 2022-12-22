@@ -6,6 +6,8 @@ namespace Qameta\Allure\PHPUnit\Test\Unit;
 
 use Exception;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Model\ContainerResult;
 use Qameta\Allure\Model\Parameter;
@@ -18,9 +20,7 @@ use stdClass;
 use function array_keys;
 use function array_map;
 
-/**
- * @covers \Qameta\Allure\PHPUnit\AllureAdapter
- */
+#[CoversClass(AllureAdapter::class)]
 class AllureAdapterTest extends TestCase
 {
     public function setUp(): void
@@ -203,8 +203,8 @@ class AllureAdapterTest extends TestCase
      * @param string|null                $secondMethod
      * @param array<string, string|null> $secondParameters
      * @param int                        $expectedRunIndex
-     * @dataProvider providerRegisterRunRunIndex
      */
+    #[DataProvider('providerRegisterRunRunIndex')]
     public function testRegisterRun_TestRegisteredBefore_ResultHasMatchingRunIndex(
         string $firstTest,
         ?string $firstClass,
@@ -255,7 +255,7 @@ class AllureAdapterTest extends TestCase
      *      int
      * }>
      */
-    public function providerRegisterRunRunIndex(): iterable
+    public static function providerRegisterRunRunIndex(): iterable
     {
         return [
             'Same test and no parameters' => [
@@ -328,8 +328,8 @@ class AllureAdapterTest extends TestCase
      * @param array<string, string|null> $secondParameters
      * @param string                     $secondUuid
      * @param string|null                $expectedRerunOf
-     * @dataProvider providerRegisterRunRerunOf
      */
+    #[DataProvider('providerRegisterRunRerunOf')]
     public function testRegisterRun_TestRegisteredBefore_ResultHasMatchingRerunOf(
         string $firstTest,
         ?string $firstClass,
@@ -384,7 +384,7 @@ class AllureAdapterTest extends TestCase
      *      string|null
      * }>
      */
-    public function providerRegisterRunRerunOf(): iterable
+    public static function providerRegisterRunRerunOf(): iterable
     {
         return [
             'Same test and no parameters' => [
@@ -466,8 +466,8 @@ class AllureAdapterTest extends TestCase
      * @param string|null                $secondMethod
      * @param array<string, string|null> $secondParameters
      * @param string                     $secondUuid
-     * @dataProvider providerRegisterRunSameTestCaseId
      */
+    #[DataProvider('providerRegisterRunSameTestCaseId')]
     public function testRegisterRun_MatchingTestRegisteredWithGivenTestCaseId_ResultHasSameTestCaseId(
         string $firstTest,
         ?string $firstClass,
@@ -520,7 +520,7 @@ class AllureAdapterTest extends TestCase
      *      string
      * }>
      */
-    public function providerRegisterRunSameTestCaseId(): iterable
+    public static function providerRegisterRunSameTestCaseId(): iterable
     {
         return [
             'Same test and no parameters' => [
@@ -585,8 +585,8 @@ class AllureAdapterTest extends TestCase
      * @param string|null                $secondMethod
      * @param array<string, string|null> $secondParameters
      * @param string                     $secondUuid
-     * @dataProvider providerRegisterRunNewTestCaseId
      */
+    #[DataProvider('providerRegisterRunNewTestCaseId')]
     public function testRegisterRun_NonMatchingTestRegisteredWithGivenTestCaseId_ResultHasNewTestCaseId(
         string $firstTest,
         ?string $firstClass,
@@ -639,7 +639,7 @@ class AllureAdapterTest extends TestCase
      *      string
      * }>
      */
-    public function providerRegisterRunNewTestCaseId(): iterable
+    public static function providerRegisterRunNewTestCaseId(): iterable
     {
         return [
             'Same test and different parameter names' => [

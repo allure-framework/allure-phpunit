@@ -18,12 +18,12 @@ final class TestInfo
      * @param string|null       $thread
      */
     public function __construct(
-        private string $test,
-        private ?string $class,
-        private ?string $method,
-        private ?string $dataLabel,
-        private ?string $host,
-        private ?string $thread,
+        private readonly string $test,
+        private readonly ?string $class,
+        private readonly ?string $method,
+        private readonly ?string $dataLabel,
+        private readonly ?string $host,
+        private readonly ?string $thread,
     ) {
     }
 
