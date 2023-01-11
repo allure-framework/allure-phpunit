@@ -34,9 +34,9 @@
     "phpunit/phpunit": "^9"
   },
   "require-dev": {
-    "brianium/paratest": "^6.7",
+    "brianium/paratest": "^6.8",
     "psalm/plugin-phpunit": "^0.18.4",
-    "squizlabs/php_codesniffer": "^3.6.2",
+    "squizlabs/php_codesniffer": "^3.7.1",
     "vimeo/psalm": "^5.4"
   },
   "conflict": {
