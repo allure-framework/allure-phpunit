@@ -166,7 +166,7 @@ final class TestLifecycle implements TestLifecycleInterface
     private function buildTestInfo(string $test, ?string $host = null, ?string $thread = null): TestInfo
     {
         $dataLabelMatchResult = preg_match(
-            '#^([^\s]+)\s+with\s+data\s+set\s+"(.*)"\s+\(.+\)$#',
+            '#^([^\s]+)\s+with\s+data\s+set\s+(\#\d+|".+")\s+\(.+\)$#',
             $test,
             $matches,
         );
