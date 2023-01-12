@@ -71,9 +71,9 @@ class RetriesTest extends TestCase
         Allure::parameter('Run index', (string) $this->getRunIndex(__METHOD__), true);
         $this->expectNotToPerformAssertions();
     }
-  
+
     /**
-     * @return iterable<array{string, string}>
+     * @return iterable<int, array{string, string}>
      */
     public function providerIndexedData(): iterable
     {

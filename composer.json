@@ -34,10 +34,10 @@
     "phpunit/phpunit": "^9"
   },
   "require-dev": {
-    "brianium/paratest": "^6.4.1",
+    "brianium/paratest": "^6.8",
     "psalm/plugin-phpunit": "^0.18.4",
-    "squizlabs/php_codesniffer": "^3.6.2",
-    "vimeo/psalm": "^4.16.1"
+    "squizlabs/php_codesniffer": "^3.7.1",
+    "vimeo/psalm": "^5.4"
   },
   "conflict": {
     "amphp/byte-stream": "<1.5.1"
