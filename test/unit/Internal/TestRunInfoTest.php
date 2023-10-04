@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Test\Unit\Internal;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\PHPUnit\Internal\TestInfo;
 use Qameta\Allure\PHPUnit\Internal\TestRunInfo;
 
-/**
- * @covers \Qameta\Allure\PHPUnit\Internal\TestRunInfo
- */
+#[CoversClass(TestRunInfo::class)]
 class TestRunInfoTest extends TestCase
 {
     public function testGetTestInfo_ConstructedWithTestInfo_ReturnsSameInstance(): void
@@ -57,8 +57,8 @@ class TestRunInfoTest extends TestCase
 
     /**
      * @param string|null $rerunOf
-     * @dataProvider providerRerunOf
      */
+    #[DataProvider('providerRerunOf')]
     public function testGetRerunOf_ConstructedWithRerunOf_ReturnsSameRerunOf(?string $rerunOf): void
     {
         $testInfo = new TestInfo(
@@ -83,7 +83,7 @@ class TestRunInfoTest extends TestCase
     /**
      * @return iterable<string, array{string|null}>
      */
-    public function providerRerunOf(): iterable
+    public static function providerRerunOf(): iterable
     {
         return [
             'Null' => [null],

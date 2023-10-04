@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Qameta\Allure\PHPUnit\Test\Unit;
 
 use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\PHPUnit\ExceptionDetailsTrait;
 use Qameta\Allure\PHPUnit\AllureAdapter;
 use Qameta\Allure\PHPUnit\AllureAdapterInterface;
 use Throwable;
 
-/**
- * @covers \Qameta\Allure\PHPUnit\ExceptionDetailsTrait
- */
+#[CoversClass(ExceptionDetailsTrait::class)]
 class ExceptionDetailsTraitTest extends TestCase
 {
     public function testOnNotSuccessfulTest_GivenException_ThrowsSameException(): void

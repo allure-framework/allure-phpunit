@@ -10,12 +10,12 @@ namespace Qameta\Allure\PHPUnit\Internal;
 final class TestRunInfo
 {
     public function __construct(
-        private TestInfo $testInfo,
-        private string $uuid,
-        private ?string $rerunOf,
-        private int $runIndex,
-        private string $testCaseId,
-        private string $historyId,
+        private readonly TestInfo $testInfo,
+        private readonly string $uuid,
+        private readonly ?string $rerunOf,
+        private readonly int $runIndex,
+        private readonly string $testCaseId,
+        private readonly string $historyId,
     ) {
     }
 
