@@ -49,9 +49,17 @@ jobs:
           ${{ matrix.composer-options }}
 
       - name: Run tests
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ matrix.os != 'windows-latest' && !contains(matrix.composer-options, '--prefer-lowest') }}
         run: composer test
 
+      - name: Run tests (lowest)
+        if: ${{ matrix.os != 'windows-latest' && contains(matrix.composer-options, '--prefer-lowest') }}
+        run: composer test-lowest
+
       - name: Run tests (windows)
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os == 'windows-latest'  && !contains(matrix.composer-options, '--prefer-lowest') }}
         run: composer test-windows
+
+      - name: Run tests (windows-lowest)
+        if: ${{ matrix.os == 'windows-latest'  && contains(matrix.composer-options, '--prefer-lowest') }}
+        run: composer test-windows-lowest

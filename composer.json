@@ -60,16 +60,27 @@
   "scripts": {
     "test-cs": "vendor/bin/phpcs -sp",
     "test-unit": "vendor/bin/phpunit --coverage-text",
+    "test-unit-lowest": "vendor/bin/phpunit --configuration=phpunit.10.0.xml --coverage-text",
     "clear-allure-results": "rm -rf ./build/allure-results",
     "test-report": [
       "@clear-allure-results",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=positive",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=negative; exit 0"
     ],
+    "test-report-lowest": [
+      "@clear-allure-results",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.10.0.report.xml --testsuite=positive",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.10.0.report.xml --testsuite=negative; exit 0"
+    ],
     "test-report-windows": [
       "@clear-allure-results",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=positive",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=negative & exit 0"
+    ],
+    "test-report-windows-lowest": [
+      "@clear-allure-results",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.10.0.report.xml --testsuite=positive",
+      "vendor/bin/paratest --processes=3 --configuration=phpunit.10.0.report.xml --testsuite=negative & exit 0"
     ],
     "test-psalm": "vendor/bin/psalm --shepherd",
     "test": [
@@ -78,10 +89,22 @@
       "@test-report",
       "@test-psalm"
     ],
+    "test-lowest": [
+      "@test-cs",
+      "@test-unit-lowest",
+      "@test-report-lowest",
+      "@test-psalm"
+    ],
     "test-windows": [
       "@test-cs",
       "@test-unit",
       "@test-report-windows",
+      "@test-psalm"
+    ],
+    "test-windows-lowest": [
+      "@test-cs",
+      "@test-unit-lowest",
+      "@test-report-windows-lowest",
       "@test-psalm"
     ]
   }

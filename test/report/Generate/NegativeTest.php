@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Test\Report\Generate;
 
-use PHPUnit\Event;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Allure;
 use Qameta\Allure\Attribute\DisplayName;
 use Qameta\Allure\PHPUnit\ExceptionDetailsTrait;
 use RuntimeException;
+
+use function trigger_error;
+
+use const E_USER_WARNING;
 
 class NegativeTest extends TestCase
 {
@@ -51,22 +55,10 @@ class NegativeTest extends TestCase
         );
     }
 
-    #[DisplayName('Test that emits warning is reported as broken')]
+    #[DisplayName('Test that emits warning is reported as broken'), DoesNotPerformAssertions]
     public function testWarning(): void
     {
-        /**
-         * @psalm-suppress InternalMethod
-         * @psalm-suppress InternalClass
-         * @psalm-suppress TooManyArguments
-         */
-        Event\Facade::emitter()->testTriggeredWarning(
-            $this->valueObjectForEvents(),
-            "Test triggered warning",
-            __FILE__,
-            __LINE__,
-            false,
-        );
-        self::assertTrue(true);
+        trigger_error('"Test triggered warning"', E_USER_WARNING);
     }
 
     #[DisplayName('Skipped test is reported as skipped')]
