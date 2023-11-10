@@ -165,18 +165,26 @@ final class TestLifecycle implements TestLifecycleInterface
 
     private function buildTestInfo(string $test, ?string $host = null, ?string $thread = null): TestInfo
     {
-        $dataLabelMatchResult = preg_match(
-            '#^([^\s]+)\s+with\s+data\s+set\s+(\#\d+|".+")\s+\(.+\)$#',
+        /** @var list<string> $matches */
+        $classAndMethodMatchResult = preg_match(
+            '#^(\S+)(.*)$#',
             $test,
             $matches,
         );
-
-        /** @var list<string> $matches */
-        if (1 === $dataLabelMatchResult) {
-            $classAndMethod = $matches[1] ?? null;
-            $dataLabel = $matches[2] ?? '?';
-        } else {
-            $classAndMethod = $test;
+        [$classAndMethod, $dataSetInfo] = 1 === $classAndMethodMatchResult
+            ? [$matches[1] ?? null, $matches[2] ?? null]
+            : [$test, null];
+        $dataLabelMatchResult = isset($dataSetInfo)
+            ? preg_match(
+                '/^\s+with\s+data\s+set\s+(?:(#\d+)|"(.*)")$/',
+                $dataSetInfo,
+                $matches,
+            )
+            : false;
+        $dataLabel = 1 === $dataLabelMatchResult
+            ? $matches[2] ?? $matches[1] ?? null
+            : null;
+        if ('' === $dataLabel) {
             $dataLabel = null;
         }
 
