@@ -261,6 +261,7 @@ trait EventTestTrait
             'file',
             1,
             false,
+            false,
         );
     }
 }
