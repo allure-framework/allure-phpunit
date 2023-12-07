@@ -10,7 +10,7 @@
     "allure"
   ],
   "description": "Allure PHPUnit integration",
-  "homepage": "http://allure.qatools.ru/",
+  "homepage": "https://allurereport.org/",
   "license": "Apache-2.0",
   "authors": [
     {
