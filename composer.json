@@ -31,7 +31,7 @@
   "require": {
     "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
     "allure-framework/allure-php-commons": "^2",
-    "phpunit/phpunit": "^10"
+    "phpunit/phpunit": "^10 || ^11"
   },
   "require-dev": {
     "brianium/paratest": "^7",
