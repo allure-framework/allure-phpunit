@@ -29,7 +29,7 @@
     "source": "https://github.com/allure-framework/allure-phpunit"
   },
   "require": {
-    "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
+    "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
     "allure-framework/allure-php-commons": "^2",
     "phpunit/phpunit": "^10"
   },
