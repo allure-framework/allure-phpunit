@@ -23,6 +23,7 @@ final class Config implements ConfigInterface
     ) {
     }
 
+    #[\Override]
     public function getOutputDirectory(): ?string
     {
         $key = 'outputDirectory';
@@ -41,6 +42,7 @@ final class Config implements ConfigInterface
     /**
      * @return array<string, LinkTemplateInterface>
      */
+    #[\Override]
     public function getLinkTemplates(): array
     {
         $key = 'linkTemplates';
@@ -112,6 +114,7 @@ final class Config implements ConfigInterface
         return is_string($source) && class_exists($source);
     }
 
+    #[\Override]
     public function getSetupHook(): ?callable
     {
         $key = 'setupHook';
@@ -135,6 +138,7 @@ final class Config implements ConfigInterface
         };
     }
 
+    #[\Override]
     public function getThreadDetector(): ?ThreadDetectorInterface
     {
         $key = 'threadDetector';
@@ -149,6 +153,7 @@ final class Config implements ConfigInterface
     /**
      * @return list<LifecycleHookInterface>
      */
+    #[\Override]
     public function getLifecycleHooks(): array
     {
         $key = 'lifecycleHooks';

@@ -48,21 +48,25 @@ final class AllureAdapter implements AllureAdapterInterface
         self::$instance = null;
     }
 
+    #[\Override]
     public function resetLastException(): void
     {
         $this->lastException = null;
     }
 
+    #[\Override]
     public function setLastException(Throwable $e): void
     {
         $this->lastException = $e;
     }
 
+    #[\Override]
     public function getLastException(): ?Throwable
     {
         return $this->lastException;
     }
 
+    #[\Override]
     public function registerStart(ContainerResult $containerResult, TestResult $testResult, TestInfo $info): string
     {
         $this->lastStarts[$info->getTest()] = new TestStartInfo(
@@ -73,6 +77,7 @@ final class AllureAdapter implements AllureAdapterInterface
         return $testResult->getUuid();
     }
 
+    #[\Override]
     public function getContainerId(TestInfo $info): string
     {
         $startInfo = $this->lastStarts[$info->getTest()] ?? null;
@@ -81,6 +86,7 @@ final class AllureAdapter implements AllureAdapterInterface
             ?? throw new LogicException("Container not registered: {$info->getTest()}");
     }
 
+    #[\Override]
     public function getTestId(TestInfo $info): string
     {
         $startInfo = $this->lastStarts[$info->getTest()] ?? null;
@@ -89,6 +95,7 @@ final class AllureAdapter implements AllureAdapterInterface
             ?? throw new LogicException("Test not registered: {$info->getTest()}");
     }
 
+    #[\Override]
     public function registerRun(TestResult $testResult, TestInfo $info): TestRunInfo
     {
         $testCaseId = $this->buildTestCaseId($testResult, $info);

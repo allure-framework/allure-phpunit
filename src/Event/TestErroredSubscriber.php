@@ -17,6 +17,7 @@ final class TestErroredSubscriber implements ErroredSubscriber
     ) {
     }
 
+    #[\Override]
     public function notify(Errored $event): void
     {
         $test = $event->test();

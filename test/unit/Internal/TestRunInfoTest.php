@@ -11,7 +11,7 @@ use Qameta\Allure\PHPUnit\Internal\TestInfo;
 use Qameta\Allure\PHPUnit\Internal\TestRunInfo;
 
 #[CoversClass(TestRunInfo::class)]
-class TestRunInfoTest extends TestCase
+final class TestRunInfoTest extends TestCase
 {
     public function testGetTestInfo_ConstructedWithTestInfo_ReturnsSameInstance(): void
     {

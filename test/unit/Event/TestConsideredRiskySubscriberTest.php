@@ -12,7 +12,7 @@ use Qameta\Allure\PHPUnit\Event\TestConsideredRiskySubscriber;
 use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
 
 #[CoversClass(TestConsideredRiskySubscriber::class)]
-class TestConsideredRiskySubscriberTest extends TestCase
+final class TestConsideredRiskySubscriberTest extends TestCase
 {
     use EventTestTrait;
 

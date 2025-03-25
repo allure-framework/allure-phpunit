@@ -35,6 +35,7 @@ final class TestLifecycle implements TestLifecycleInterface
     ) {
     }
 
+    #[\Override]
     public function create(): self
     {
         $containerResult = $this->resultFactory->createContainer();
@@ -48,6 +49,7 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
+    #[\Override]
     public function updateInfo(): self
     {
         $this->lifecycle->updateTest(
@@ -58,6 +60,7 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
+    #[\Override]
     public function start(): self
     {
         $this->lifecycle->startTest(
@@ -67,6 +70,7 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
+    #[\Override]
     public function stop(): self
     {
         $this->lifecycle->stopTest(
@@ -79,6 +83,7 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
+    #[\Override]
     public function updateRunInfo(): self
     {
         $this->lifecycle->updateTest(
@@ -92,6 +97,7 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
+    #[\Override]
     public function write(): self
     {
         $this->lifecycle->writeTest(
@@ -104,6 +110,7 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
+    #[\Override]
     public function updateStatus(?string $message = null, ?Status $status = null): self
     {
         $this->lifecycle->updateTest(
@@ -114,6 +121,7 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
+    #[\Override]
     public function updateDetectedStatus(
         ?string $message = null,
         ?Status $status = null,
@@ -137,6 +145,7 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
+    #[\Override]
     public function switchTo(string $test): self
     {
         $thread = $this->threadDetector->getThread();
@@ -151,6 +160,7 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this;
     }
 
+    #[\Override]
     public function reset(): self
     {
         $this->adapter->resetLastException();

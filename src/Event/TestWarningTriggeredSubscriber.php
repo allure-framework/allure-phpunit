@@ -17,6 +17,7 @@ final class TestWarningTriggeredSubscriber implements WarningTriggeredSubscriber
     ) {
     }
 
+    #[\Override]
     public function notify(WarningTriggered $event): void
     {
         $test = $event->test();

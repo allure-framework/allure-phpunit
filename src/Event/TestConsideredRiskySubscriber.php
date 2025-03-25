@@ -17,6 +17,7 @@ final class TestConsideredRiskySubscriber implements ConsideredRiskySubscriber
     ) {
     }
 
+    #[\Override]
     public function notify(ConsideredRisky $event): void
     {
         $test = $event->test();

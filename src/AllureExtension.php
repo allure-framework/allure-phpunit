@@ -90,6 +90,7 @@ final class AllureExtension implements Extension
         return [];
     }
 
+    #[\Override]
     public function bootstrap(Configuration $configuration, Facade $facade, ParameterCollection $parameters): void
     {
         $configSource = $parameters->has('config')

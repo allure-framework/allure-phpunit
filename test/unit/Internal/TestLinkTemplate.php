@@ -8,6 +8,7 @@ use Qameta\Allure\Setup\LinkTemplateInterface;
 
 final class TestLinkTemplate implements LinkTemplateInterface
 {
+    #[\Override]
     public function buildUrl(?string $name): ?string
     {
         return null;

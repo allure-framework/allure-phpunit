@@ -17,6 +17,7 @@ final class TestMarkedIncompleteSubscriber implements MarkedIncompleteSubscriber
     ) {
     }
 
+    #[\Override]
     public function notify(MarkedIncomplete $event): void
     {
         $test = $event->test();

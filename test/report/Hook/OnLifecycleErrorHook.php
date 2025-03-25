@@ -12,6 +12,7 @@ final class OnLifecycleErrorHook implements OnLifecycleErrorHookInterface
     /**
      * @throws Throwable
      */
+    #[\Override]
     public function onLifecycleError(Throwable $error): void
     {
         throw $error;

@@ -12,7 +12,7 @@ use Qameta\Allure\PHPUnit\Event\TestMarkedIncompleteSubscriber;
 use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
 
 #[CoversClass(TestMarkedIncompleteSubscriber::class)]
-class TestMarkedIncompleteSubscriberTest extends TestCase
+final class TestMarkedIncompleteSubscriberTest extends TestCase
 {
     use EventTestTrait;
 

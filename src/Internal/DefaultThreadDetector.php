@@ -19,6 +19,7 @@ final class DefaultThreadDetector implements ThreadDetectorInterface
 {
     private string|false|null $hostName = null;
 
+    #[\Override]
     public function getThread(): ?string
     {
         /** @var mixed $token */
@@ -29,6 +30,7 @@ final class DefaultThreadDetector implements ThreadDetectorInterface
             : null;
     }
 
+    #[\Override]
     public function getHost(): ?string
     {
         $this->hostName ??= @gethostname();
