@@ -16,6 +16,7 @@ final class TestFinishedSubscriber implements FinishedSubscriber
     ) {
     }
 
+    #[\Override]
     public function notify(Finished $event): void
     {
         $test = $event->test();

@@ -13,7 +13,7 @@ use Yandex\Allure\Adapter\Annotation\Title;
     Attribute\Epic('Annotations'),
     Attribute\Feature('Title'),
 ]
-class TitleTest extends TestCase
+final class TitleTest extends TestCase
 {
     use ExceptionDetailsTrait;
 

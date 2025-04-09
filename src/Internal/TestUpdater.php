@@ -23,13 +23,14 @@ use Throwable;
 /**
  * @internal
  */
-class TestUpdater implements TestUpdaterInterface
+final class TestUpdater implements TestUpdaterInterface
 {
     public function __construct(
         private readonly LinkTemplateCollectionInterface $linkTemplates,
     ) {
     }
 
+    #[\Override]
     public function setInfo(TestResult $testResult, TestInfo $info): void
     {
         $parser = $this->parseAnnotations($info);
@@ -119,6 +120,7 @@ class TestUpdater implements TestUpdaterInterface
             : [];
     }
 
+    #[\Override]
     public function setRunInfo(TestResult $testResult, TestRunInfo $runInfo): void
     {
         $testResult
@@ -127,6 +129,7 @@ class TestUpdater implements TestUpdaterInterface
             ->setRerunOf($runInfo->getRerunOf());
     }
 
+    #[\Override]
     public function setDetectedStatus(
         TestResult $test,
         StatusDetectorInterface $statusDetector,
@@ -138,6 +141,7 @@ class TestUpdater implements TestUpdaterInterface
             ->setStatusDetails($statusDetector->getStatusDetails($e));
     }
 
+    #[\Override]
     public function setStatus(TestResult $test, ?string $message = null, ?Status $status = null): void
     {
         $test

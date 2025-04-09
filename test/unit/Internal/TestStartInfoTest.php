@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Qameta\Allure\PHPUnit\Internal\TestStartInfo;
 
 #[CoversClass(TestStartInfo::class)]
-class TestStartInfoTest extends TestCase
+final class TestStartInfoTest extends TestCase
 {
     public function testGetContainerId_ConstructedWithContainerId_ReturnsSameId(): void
     {

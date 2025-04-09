@@ -17,6 +17,7 @@ final class TestSkippedSubscriber implements SkippedSubscriber
     ) {
     }
 
+    #[\Override]
     public function notify(Skipped $event): void
     {
         $test = $event->test();

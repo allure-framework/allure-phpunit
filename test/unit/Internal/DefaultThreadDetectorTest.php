@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Qameta\Allure\PHPUnit\Internal\DefaultThreadDetector;
 
 #[CoversClass(DefaultThreadDetector::class)]
-class DefaultThreadDetectorTest extends TestCase
+final class DefaultThreadDetectorTest extends TestCase
 {
     public function testGetThread_WithoutParatestToken_ReturnsNull(): void
     {

@@ -12,7 +12,7 @@ use Qameta\Allure\PHPUnit\Event\TestSkippedSubscriber;
 use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
 
 #[CoversClass(TestSkippedSubscriber::class)]
-class TestSkippedSubscriberTest extends TestCase
+final class TestSkippedSubscriberTest extends TestCase
 {
     use EventTestTrait;
 

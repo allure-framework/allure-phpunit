@@ -12,7 +12,7 @@ use Qameta\Allure\Attribute;
     Attribute\Epic('Annotations'),
     Attribute\Feature('Title'),
 ]
-class TitleClassLevelNativeTest extends TestCase
+final class TitleClassLevelNativeTest extends TestCase
 {
     public function testWithoutTitleAnnotation(): void
     {

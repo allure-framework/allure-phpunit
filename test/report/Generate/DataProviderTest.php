@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Qameta\Allure\Allure;
 use Qameta\Allure\Attribute\DisplayName;
 
-class DataProviderTest extends TestCase
+final class DataProviderTest extends TestCase
 {
     #[DataProvider('providerNamed'), DisplayName('Test with named data set')]
     public function testNamedDataSet(int $x, int $y): void

@@ -11,7 +11,7 @@ use Qameta\Allure\PHPUnit\Event\TestPreparationStartedSubscriber;
 use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
 
 #[CoversClass(TestPreparationStartedSubscriber::class)]
-class TestPreparationStartedSubscriberTest extends TestCase
+final class TestPreparationStartedSubscriberTest extends TestCase
 {
     use EventTestTrait;
 

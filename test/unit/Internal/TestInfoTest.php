@@ -11,7 +11,7 @@ use Qameta\Allure\PHPUnit\Internal\TestInfo;
 use stdClass;
 
 #[CoversClass(TestInfo::class)]
-class TestInfoTest extends TestCase
+final class TestInfoTest extends TestCase
 {
     public function testGetTest_ConstructedWithTest_ReturnsSameValue(): void
     {

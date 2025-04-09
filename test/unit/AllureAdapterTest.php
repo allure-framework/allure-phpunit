@@ -21,8 +21,9 @@ use function array_keys;
 use function array_map;
 
 #[CoversClass(AllureAdapter::class)]
-class AllureAdapterTest extends TestCase
+final class AllureAdapterTest extends TestCase
 {
+    #[\Override]
     public function setUp(): void
     {
         AllureAdapter::reset();

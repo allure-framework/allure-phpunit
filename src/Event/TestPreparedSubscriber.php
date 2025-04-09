@@ -16,6 +16,7 @@ final class TestPreparedSubscriber implements PreparedSubscriber
     ) {
     }
 
+    #[\Override]
     public function notify(Prepared $event): void
     {
         $test = $event->test();

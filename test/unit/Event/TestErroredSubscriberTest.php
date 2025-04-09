@@ -12,7 +12,7 @@ use Qameta\Allure\PHPUnit\Event\TestErroredSubscriber;
 use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
 
 #[CoversClass(TestErroredSubscriber::class)]
-class TestErroredSubscriberTest extends TestCase
+final class TestErroredSubscriberTest extends TestCase
 {
     use EventTestTrait;
 

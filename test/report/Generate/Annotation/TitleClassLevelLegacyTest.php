@@ -15,7 +15,7 @@ use Yandex\Allure\Adapter\Annotation\Title;
     Attribute\Epic('Annotations'),
     Attribute\Feature('Title'),
 ]
-class TitleClassLevelLegacyTest extends TestCase
+final class TitleClassLevelLegacyTest extends TestCase
 {
     public function testWithoutTitleAnnotation(): void
     {

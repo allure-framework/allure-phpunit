@@ -15,7 +15,7 @@ use function trigger_error;
 
 use const E_USER_WARNING;
 
-class NegativeTest extends TestCase
+final class NegativeTest extends TestCase
 {
     use ExceptionDetailsTrait;
 

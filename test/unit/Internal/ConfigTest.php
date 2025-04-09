@@ -16,7 +16,7 @@ use RuntimeException;
 use stdClass;
 
 #[CoversClass(Config::class)]
-class ConfigTest extends TestCase
+final class ConfigTest extends TestCase
 {
     #[DataProvider('providerNoOutputDirectory')]
     public function testGetOutputDirectory_EmptyData_ReturnsNull(array $data): void

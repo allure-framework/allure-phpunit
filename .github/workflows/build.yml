@@ -20,6 +20,7 @@ jobs:
           - "8.1"
           - "8.2"
           - "8.3"
+          - "8.4"
         os:
           - ubuntu-latest
           - windows-latest
@@ -31,9 +32,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate composer.json and composer.lock
-        run: composer validate
-
       - name: Set up PHP ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
         with:
@@ -41,6 +39,9 @@ jobs:
           extensions: pcntl, posix
           coverage: xdebug
           ini-values: error_reporting=E_ALL
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
 
       - name: Install dependencies
         run: composer update

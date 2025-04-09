@@ -17,6 +17,7 @@ final class TestPassedSubscriber implements PassedSubscriber
     ) {
     }
 
+    #[\Override]
     public function notify(Passed $event): void
     {
         $test = $event->test();
