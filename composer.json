@@ -63,7 +63,8 @@
     },
     "psr-4": {
       "Qameta\\Allure\\PHPUnit\\Test\\Unit\\": "test/unit/",
-      "Qameta\\Allure\\PHPUnit\\Test\\Report\\": "test/report/"
+      "Qameta\\Allure\\PHPUnit\\Test\\Report\\": "test/report/",
+      "Qameta\\Allure\\PHPUnit\\Scripts\\": "scripts/"
     }
   },
   "scripts": {
@@ -115,6 +116,9 @@
       "@test-unit-lowest",
       "@test-report-windows-lowest",
       "@test-psalm"
+    ],
+    "print-phpunit-schema-version": [
+      "Qameta\\Allure\\PHPUnit\\Scripts\\CiScripts::printConfigSchemaVersion"
     ]
   }
 }
