@@ -11,7 +11,7 @@ on:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php-version }} on ${{ matrix.os }} (${{ matrix.composer-options }})
+    name: PHP ${{ matrix.php-version }} on ${{ matrix.os }} (${{ matrix.prefer-lowest }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -25,9 +25,15 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macOS-latest
-        composer-options:
+        prefer-lowest:
           - ""
           - "--prefer-lowest"
+        include:
+          # PHPUnit ^10.5.32 is incompatible with paratest 7.3.
+          # Paratest 7.4.6, which fixes the incompatibility, requires PHP 8.2
+          - php-version: "8.1"
+            prefer-lowest: ""
+            update-constraints: "'--with=phpunit/phpunit:<10.5.32'"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,7 +53,8 @@ jobs:
         run: composer update
           --prefer-dist
           --no-progress
-          ${{ matrix.composer-options }}
+          ${{ matrix.prefer-lowest }}
+          ${{ matrix.update-constraints }}
 
       - name: Set PHPUnit schema version
         id: phpunit-version
