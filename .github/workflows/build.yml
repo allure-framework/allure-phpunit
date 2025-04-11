@@ -53,14 +53,14 @@ jobs:
         if: ${{ matrix.os != 'windows-latest' && !contains(matrix.composer-options, '--prefer-lowest') }}
         run: composer test
 
-      - name: Run tests (lowest)
+      - name: Run tests (phpunit10.0)
         if: ${{ matrix.os != 'windows-latest' && contains(matrix.composer-options, '--prefer-lowest') }}
-        run: composer test-lowest
+        run: composer test-phpunit10.0
 
       - name: Run tests (windows)
         if: ${{ matrix.os == 'windows-latest'  && !contains(matrix.composer-options, '--prefer-lowest') }}
         run: composer test-windows
 
-      - name: Run tests (windows-lowest)
+      - name: Run tests (windows-phpunit10.0)
         if: ${{ matrix.os == 'windows-latest'  && contains(matrix.composer-options, '--prefer-lowest') }}
-        run: composer test-windows-lowest
+        run: composer test-windows-phpunit10.0

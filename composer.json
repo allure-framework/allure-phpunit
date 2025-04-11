@@ -69,14 +69,14 @@
   "scripts": {
     "test-cs": "vendor/bin/phpcs -sp",
     "test-unit": "vendor/bin/phpunit --coverage-text",
-    "test-unit-lowest": "vendor/bin/phpunit --configuration=phpunit.10.0.xml --coverage-text",
+    "test-unit-phpunit10.0": "vendor/bin/phpunit --configuration=phpunit.10.0.xml --coverage-text",
     "clear-allure-results": "rm -rf ./build/allure-results",
     "test-report": [
       "@clear-allure-results",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=positive",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=negative; exit 0"
     ],
-    "test-report-lowest": [
+    "test-report-phpunit10.0": [
       "@clear-allure-results",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.10.0.report.xml --testsuite=positive",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.10.0.report.xml --testsuite=negative; exit 0"
@@ -86,7 +86,7 @@
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=positive",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.report.xml --testsuite=negative & exit 0"
     ],
-    "test-report-windows-lowest": [
+    "test-report-windows-phpunit10.0": [
       "@clear-allure-results",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.10.0.report.xml --testsuite=positive",
       "vendor/bin/paratest --processes=3 --configuration=phpunit.10.0.report.xml --testsuite=negative & exit 0"
@@ -98,10 +98,10 @@
       "@test-report",
       "@test-psalm"
     ],
-    "test-lowest": [
+    "test-phpunit10.0": [
       "@test-cs",
-      "@test-unit-lowest",
-      "@test-report-lowest",
+      "@test-unit-phpunit10.0",
+      "@test-report-phpunit10.0",
       "@test-psalm"
     ],
     "test-windows": [
@@ -110,10 +110,10 @@
       "@test-report-windows",
       "@test-psalm"
     ],
-    "test-windows-lowest": [
+    "test-windows-phpunit10.0": [
       "@test-cs",
-      "@test-unit-lowest",
-      "@test-report-windows-lowest",
+      "@test-unit-phpunit10.0",
+      "@test-report-windows-phpunit10.0",
       "@test-psalm"
     ],
     "print-phpunit-schema-version": [
