@@ -38,26 +38,7 @@ trait EventTestTrait
 {
     protected function createTelemetryInfo(): Info
     {
-        /**
-         * @psalm-suppress MixedAssignment
-         * @psalm-suppress TooManyArguments
-         */
-        $garbageCollectorStatus = class_exists(GarbageCollectorStatus::class)
-            ? new GarbageCollectorStatus(
-                0,
-                0,
-                0,
-                0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                false,
-                false,
-                false,
-                0,
-            )
-            : null; // early PHPUnit 10
+        $garbageCollectorStatus = self::createGarbageCollectorStatus();
 
         /**
          * @psalm-suppress TooManyArguments
@@ -263,5 +244,48 @@ trait EventTestTrait
             false,
             false,
         );
+    }
+
+    private static function createGarbageCollectorStatus(): ?GarbageCollectorStatus
+    {
+        // GarbageCollectorStatus doesn't exist in PHPUnit 10.0
+        if (class_exists(GarbageCollectorStatus::class)) {
+            $ctorInfo = (new \ReflectionClass(GarbageCollectorStatus::class))->getConstructor();
+            if (isset($ctorInfo)) {
+                /**
+                 * @psalm-suppress InvalidArgument
+                 * @psalm-suppress TooFewArguments
+                 * @psalm-suppress TooManyArguments
+                 */
+                return $ctorInfo->getNumberOfParameters() === 8
+                    # PHPUnit [10.1, 10.3)
+                    ? new GarbageCollectorStatus(
+                        0,
+                        0,
+                        0,
+                        0,
+                        false,
+                        false,
+                        false,
+                        0,
+                    )
+                    # Extra arguments are required since 10.3.0
+                    : new GarbageCollectorStatus(
+                        0,
+                        0,
+                        0,
+                        0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        false,
+                        false,
+                        false,
+                        0,
+                    );
+            }
+        }
+        return null;
     }
 }
