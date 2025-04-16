@@ -116,6 +116,9 @@
       "@test-report-windows-phpunit10.0",
       "@test-psalm"
     ],
+    "print-phpunit-version": [
+      "Qameta\\Allure\\PHPUnit\\Scripts\\CiScripts::printPhpUnitVersion"
+    ],
     "print-phpunit-schema-version": [
       "Qameta\\Allure\\PHPUnit\\Scripts\\CiScripts::printConfigSchemaVersion"
     ]

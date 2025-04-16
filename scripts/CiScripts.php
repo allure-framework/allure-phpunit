@@ -5,6 +5,16 @@ namespace Qameta\Allure\PHPUnit\Scripts;
 final class CiScripts
 {
     /**
+     * Prints the version of PHPUnit.
+     */
+    public static function printPhpUnitVersion(): void
+    {
+        if (class_exists(\PHPUnit\Runner\Version::class)) {
+            echo(\PHPUnit\Runner\Version::id());
+        }
+    }
+
+    /**
      * Prints the version of the PHPUnit XML schema.
      * We use this in the CI pipeline to deside which configuration file to use.
      */

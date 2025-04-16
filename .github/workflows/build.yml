@@ -71,16 +71,12 @@ jobs:
           ${{ matrix.update-constraints }}
         shell: bash
 
-      - name: Set PHPUnit schema version
+      - name: Set PHPUnit version
         id: set-phpunit-version
         run: |
+          echo "Tested against PHPUnit **v$(composer print-phpunit-version)**" >> "$GITHUB_STEP_SUMMARY"
           echo "PHPUNIT_SCHEMA_VERSION=$(composer print-phpunit-schema-version)" >> "$GITHUB_OUTPUT"
         shell: bash
-
-      - name: Show PHPUnit schema version
-        id: show-phpunit-version
-        run: |
-          echo "PHPUNIT_SCHEMA_VERSION=${{ steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION }}"
 
       - name: Run tests
         if: ${{ matrix.os != 'windows-latest' && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION != '10.0' }}
