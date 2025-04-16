@@ -246,6 +246,10 @@ trait EventTestTrait
         );
     }
 
+    /**
+     * GarbageCollectorStatus doesn't exist in PHPUnit 10.0
+     * @psalm-suppress UndefinedClass
+     */
     private static function createGarbageCollectorStatus(): ?GarbageCollectorStatus
     {
         // GarbageCollectorStatus doesn't exist in PHPUnit 10.0
