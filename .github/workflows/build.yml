@@ -74,6 +74,7 @@ jobs:
         id: set-phpunit-version
         run: |
           echo "PHPUNIT_SCHEMA_VERSION=$(composer print-phpunit-schema-version)" >> "$GITHUB_OUTPUT"
+        shell: bash
 
       - name: Show PHPUnit schema version
         id: show-phpunit-version
