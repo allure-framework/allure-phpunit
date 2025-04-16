@@ -64,11 +64,12 @@ jobs:
         run: composer validate
 
       - name: Install dependencies
-        run: composer update
-          --prefer-dist
-          --no-progress
+        run: >
+          composer update --prefer-dist --no-progress
           ${{ matrix.prefer-lowest }}
+          '--with=phpunit/phpunit:^${{ matrix.phpunit-version }}'
           ${{ matrix.update-constraints }}
+        shell: bash
 
       - name: Set PHPUnit schema version
         id: set-phpunit-version
