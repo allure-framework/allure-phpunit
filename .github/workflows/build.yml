@@ -48,6 +48,11 @@ jobs:
           - php-version: "8.1"
             phpunit-version: "10"
             update-constraints: "'--with=phpunit/phpunit:<10.5.32'"
+
+          # PHPUnit ~11.0 || ~11.1 can't double readonly classes, which fails some tests
+          # We constraint PHPUnit 11 to ^11.2 until we find a better solution
+          - phpunit-version: "11"
+            update-constraints: "'--with=phpunit/phpunit:^11.2'"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
