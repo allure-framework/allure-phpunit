@@ -71,22 +71,27 @@ jobs:
           ${{ matrix.update-constraints }}
 
       - name: Set PHPUnit schema version
-        id: phpunit-version
+        id: set-phpunit-version
         run: |
-          echo "PHPUNIT_SCHEMA_VERSION=$(composer print-phpunit-schema-version)" >> $GITHUB_OUTPUT
+          echo "PHPUNIT_SCHEMA_VERSION=$(composer print-phpunit-schema-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Show PHPUnit schema version
+        id: show-phpunit-version
+        run: |
+          echo "PHPUNIT_SCHEMA_VERSION=${{ steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION }}"
 
       - name: Run tests
-        if: ${{ matrix.os != 'windows-latest' && steps.phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION != '10.0' }}
+        if: ${{ matrix.os != 'windows-latest' && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION != '10.0' }}
         run: composer test
 
       - name: Run tests (phpunit10.0)
-        if: ${{ matrix.os != 'windows-latest' && steps.phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION == '10.0' }}
+        if: ${{ matrix.os != 'windows-latest' && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION == '10.0' }}
         run: composer test-phpunit10.0
 
       - name: Run tests (windows)
-        if: ${{ matrix.os == 'windows-latest'  && steps.phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION != '10.0' }}
+        if: ${{ matrix.os == 'windows-latest'  && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION != '10.0' }}
         run: composer test-windows
 
       - name: Run tests (windows-phpunit10.0)
-        if: ${{ matrix.os == 'windows-latest'  && steps.phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION == '10.0' }}
+        if: ${{ matrix.os == 'windows-latest'  && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION == '10.0' }}
         run: composer test-windows-phpunit10.0
