@@ -52,15 +52,18 @@ abstract class ExceptionDetailsTraitTestBase extends TestCase
     }
 }
 
+/**
+ * CoversTrait was added in PHPUnit 11.2.0.
+ * If was then deprecated in 11.4.0 but the deprecation was reverted in 11.5.4.
+ * @psalm-suppress DeprecatedClass
+ */
 if (class_exists(CoversTrait::class)) {
-    // Since PHPUnit 11.2.0 (deprecation has been reverted in 11.5.4)
     #[CoversTrait(ExceptionDetailsTrait::class)]
     final class ExceptionDetailsTraitTest extends ExceptionDetailsTraitTestBase
     {
     }
 
 } else {
-    // For PHPUnit <11.2.0
     #[CoversClass(ExceptionDetailsTrait::class)]
     final class ExceptionDetailsTraitTest extends ExceptionDetailsTraitTestBase
     {
