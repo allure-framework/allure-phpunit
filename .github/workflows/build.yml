@@ -11,7 +11,7 @@ on:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php-version }} on ${{ matrix.os }} (${{ matrix.composer-options }})
+    name: PHP ${{ matrix.php-version }} PHPUnit ${{matrix.phpunit-version}} on ${{ matrix.os }} (${{ matrix.prefer-lowest }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -25,9 +25,34 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macOS-latest
-        composer-options:
+        phpunit-version:
+          - "10"
+          - "11"
+          - "12"
+        prefer-lowest:
           - ""
           - "--prefer-lowest"
+        exclude:
+          # PHPUnit ^11 requires PHP 8.2
+          - phpunit-version: "11"
+            php-version: "8.1"
+
+          # PHPUnit ^12 requires PHP 8.3
+          - phpunit-version: "12"
+            php-version: "8.1"
+          - phpunit-version: "12"
+            php-version: "8.2"
+        include:
+          # PHPUnit ^10.5.32 is incompatible with paratest 7.3.
+          # Paratest 7.4.6, which fixes the incompatibility, requires PHP 8.2
+          - php-version: "8.1"
+            phpunit-version: "10"
+            update-constraints: "'--with=phpunit/phpunit:<10.5.32'"
+
+          # PHPUnit ~11.0 || ~11.1 can't double readonly classes, which fails some tests
+          # We constraint PHPUnit 11 to ^11.2 until we find a better solution
+          - phpunit-version: "11"
+            update-constraints: "'--with=phpunit/phpunit:^11.2'"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,23 +69,32 @@ jobs:
         run: composer validate
 
       - name: Install dependencies
-        run: composer update
-          --prefer-dist
-          --no-progress
-          ${{ matrix.composer-options }}
+        run: >
+          composer update --prefer-dist --no-progress
+          ${{ matrix.prefer-lowest }}
+          '--with=phpunit/phpunit:^${{ matrix.phpunit-version }}'
+          ${{ matrix.update-constraints }}
+        shell: bash
+
+      - name: Set PHPUnit version
+        id: set-phpunit-version
+        run: |
+          echo "Tested against PHPUnit **v$(composer print-phpunit-version)**" >> "$GITHUB_STEP_SUMMARY"
+          echo "PHPUNIT_SCHEMA_VERSION=$(composer print-phpunit-schema-version)" >> "$GITHUB_OUTPUT"
+        shell: bash
 
       - name: Run tests
-        if: ${{ matrix.os != 'windows-latest' && !contains(matrix.composer-options, '--prefer-lowest') }}
+        if: ${{ matrix.os != 'windows-latest' && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION != '10.0' }}
         run: composer test
 
-      - name: Run tests (lowest)
-        if: ${{ matrix.os != 'windows-latest' && contains(matrix.composer-options, '--prefer-lowest') }}
-        run: composer test-lowest
+      - name: Run tests (phpunit10.0)
+        if: ${{ matrix.os != 'windows-latest' && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION == '10.0' }}
+        run: composer test-phpunit10.0
 
       - name: Run tests (windows)
-        if: ${{ matrix.os == 'windows-latest'  && !contains(matrix.composer-options, '--prefer-lowest') }}
+        if: ${{ matrix.os == 'windows-latest'  && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION != '10.0' }}
         run: composer test-windows
 
-      - name: Run tests (windows-lowest)
-        if: ${{ matrix.os == 'windows-latest'  && contains(matrix.composer-options, '--prefer-lowest') }}
-        run: composer test-windows-lowest
+      - name: Run tests (windows-phpunit10.0)
+        if: ${{ matrix.os == 'windows-latest'  && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION == '10.0' }}
+        run: composer test-windows-phpunit10.0

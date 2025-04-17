@@ -17,6 +17,9 @@ final class DataProviderTest extends TestCase
         Allure::runStep(fn () => self::assertSame($x, $y));
     }
 
+    /**
+     * @return iterable<string, array<int, int>>
+     */
     public static function providerNamed(): iterable
     {
         return [
@@ -34,6 +37,9 @@ final class DataProviderTest extends TestCase
         Allure::runStep(fn () => self::assertSame($x, $y));
     }
 
+    /**
+     * @return iterable<int, array<int, int>>
+     */
     public static function providerListed(): iterable
     {
         return [
