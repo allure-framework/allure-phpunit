@@ -43,6 +43,12 @@ jobs:
             php-version: "8.1"
           - phpunit-version: "12"
             php-version: "8.2"
+
+          # the lowest paratest version that supports PHP 8.5 requires PHPUnit ^12
+          - phpunit-version: "10"
+            php-version: "8.5"
+          - phpunit-version: "11"
+            php-version: "8.5"
         include:
           # PHPUnit ^10.5.32 is incompatible with paratest 7.3.
           # Paratest 7.4.6, which fixes the incompatibility, requires PHP 8.2
