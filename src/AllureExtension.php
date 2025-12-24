@@ -93,9 +93,16 @@ final class AllureExtension implements Extension
     #[\Override]
     public function bootstrap(Configuration $configuration, Facade $facade, ParameterCollection $parameters): void
     {
-        $configSource = $parameters->has('config')
-            ? $parameters->get('config')
-            : null;
+        if ($configuration->hasConfigurationFile()) {
+            $path = dirname($configuration->configurationFile());
+            $configSource = $parameters->has('config')
+                ? $path . DIRECTORY_SEPARATOR . $parameters->get('config')
+                : null;
+        } else {
+            $configSource = $parameters->has('config')
+                ? $parameters->get('config')
+                : null;
+        }
 
         $testLifecycle = $this->testLifecycle ?? $this->createTestLifecycle($configSource);
 
