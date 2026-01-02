@@ -83,9 +83,7 @@ final class AnnotationTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Parameter('foo', 'native foo')]
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Parameter('bar', 'native bar')]
     public function testNativeParameterAnnotation(): void
     {
@@ -95,9 +93,7 @@ final class AnnotationTest extends TestCase
     /**
      * @Parameter (name = "foo", value = "legacy bar", kind = ParameterKind::ARGUMENT)
      */
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Parameter('foo', 'native foo')]
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Parameter('bar', 'native baz')]
     public function testMixedParameterAnnotation(): void
     {
@@ -112,9 +108,7 @@ final class AnnotationTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Story('Native story 1')]
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Story('Native story 2')]
     public function testNativeStoriesAnnotation(): void
     {
@@ -124,9 +118,7 @@ final class AnnotationTest extends TestCase
     /**
      * @Stories ("Legacy story 1", "Mixed story 2")
      */
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Story('Native story 1')]
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Story('Mixed story 2')]
     public function testMixedStoriesAnnotation(): void
     {
@@ -141,9 +133,7 @@ final class AnnotationTest extends TestCase
         $this->expectNotToPerformAssertions();
     }
 
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Feature('Native feature 1')]
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Feature('Native feature 2')]
     public function testNativeFeaturesAnnotation(): void
     {
@@ -153,9 +143,7 @@ final class AnnotationTest extends TestCase
     /**
      * @Features ("Legacy feature 1", "Mixed feature 2")
      */
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Feature('Native feature 1')]
-    /** @psalm-suppress InvalidAttribute */
     #[Attribute\Feature('Mixed feature 2')]
     public function testMixedFeaturesAnnotation(): void
     {

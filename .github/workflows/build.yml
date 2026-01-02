@@ -60,6 +60,12 @@ jobs:
           # We constraint PHPUnit 11 to ^11.2 until we find a better solution
           - phpunit-version: "11"
             update-constraints: "'--with=phpunit/phpunit:^11.2'"
+
+          # Some dev libraries are resolved to versions incompatible with PHP 8.5
+          # under the --prefer-lowest strategy. Here we're constraining them to
+          # the lowest compatible versions.
+          - php-version: "8.5"
+            update-constraints: "'--with=amphp/amp:>=3.1.1' '--with=amphp/parallel:>=2.3.3' '--with=nikic/php-parser:>=5.7' '--with=revolt/event-loop:>=1.0.8'"
     steps:
       - name: Checkout
         uses: actions/checkout@v6
