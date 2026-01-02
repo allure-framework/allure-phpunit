@@ -35,7 +35,7 @@ This adapter only generates JSON files containing information about tests. See [
 ## Installation && Usage
 **Note:** this adapter supports Allure 2.x.x only.
 
-Supported PHP versions: 8.1-8.4.
+Supported PHP versions: 8.1-8.5.
 
 In order to use this adapter you need to add a new dependency to your **composer.json** file:
 ```
