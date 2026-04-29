@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Internal;
 
+use function array_filter;
+use function explode;
+use function is_string;
+
 /**
  * @internal
  */
@@ -55,6 +59,16 @@ final class TestInfo
         return isset($this->class, $this->method)
             ? "{$this->class}::{$this->method}"
             : null;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getTitlePath(): array
+    {
+        return is_string($this->class)
+            ? [...array_filter(explode("\\", $this->class))]
+            : [];
     }
 
     public function getName(): string

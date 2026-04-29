@@ -157,6 +157,43 @@ final class TestInfoTest extends TestCase
     }
 
     /**
+     * @param string|null $class
+     * @param list<string> $expectedTitlePath
+     * @psalm-suppress ArgumentTypeCoercion
+     */
+    #[DataProvider('providerGetTitlePath')]
+    public function testGetGetTitlePath_ConstructedWithGivenClass_ReturnsMatchingValue(
+        ?string $class,
+        array $expectedTitlePath,
+    ): void {
+        $info = new TestInfo(
+            test: 'a',
+            class: $class,
+            method: null,
+            dataLabel: null,
+            host: null,
+            thread: null,
+        );
+        self::assertEquals($expectedTitlePath, $info->getTitlePath());
+    }
+
+    /**
+     * @return iterable<string, array{string|null, list<string>}>
+     */
+    public static function providerGetTitlePath(): iterable
+    {
+        return [
+            "null class" => [null, []],
+            "empty class" => ["", []],
+            "no namespace" => ["Foo", ["Foo"]],
+            "one namespace" => ["Foo\\Bar", ["Foo", "Bar"]],
+            "nested namespaces" => ["Foo\\Bar\\Baz\\Qux", ["Foo", "Bar", "Baz", "Qux"]],
+            "absolute namespace path" => ["\\Foo\\Bar", ["Foo", "Bar"]],
+            "empty namespaces" => ["\\Foo\\\\Bar", ["Foo", "Bar"]],
+        ];
+    }
+
+    /**
      * @param string      $test
      * @param class-string|null $class
      * @param string|null $method
