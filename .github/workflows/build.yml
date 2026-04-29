@@ -17,7 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - "8.1"
           - "8.2"
           - "8.3"
           - "8.4"
@@ -33,10 +32,6 @@ jobs:
           - "13"
 
         exclude:
-          # PHPUnit ^11 requires PHP 8.2
-          - phpunit-version: "11"
-            php-version: "8.1"
-
           # PHPUnit ^12 requires PHP 8.3
           - phpunit-version: "12"
             php-version: "8.1"
@@ -57,13 +52,6 @@ jobs:
           - phpunit-version: "11"
             php-version: "8.5"
 
-        include:
-          # PHPUnit ^10.5.32 is incompatible with paratest 7.3.
-          # Paratest 7.4.6, which fixes the incompatibility, requires PHP 8.2
-          - php-version: "8.1"
-            phpunit-version: "10"
-            update-constraints: "'--with=phpunit/phpunit:<10.5.32'"
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -83,7 +71,6 @@ jobs:
         run: >
           composer update --prefer-dist --no-progress
           '--with=phpunit/phpunit:^${{ matrix.phpunit-version }}'
-          ${{ matrix.update-constraints }}
         shell: bash
 
       - name: Set PHPUnit version
