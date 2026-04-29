@@ -37,28 +37,52 @@ final class TestFinishedSubscriberTest extends TestCase
             $this->createTestMethod(class: 'a', methodName: 'b'),
         );
 
+        $lastMethod = null;
         $testLifecycle
             ->expects(self::once())
-            ->id('switch')
             ->method('switchTo')
             ->with(self::identicalTo('a::b'))
-            ->willReturnSelf();
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    $lastMethod = "switchTo";
+
+                    return $testLifecycle;
+                }
+            );
         $testLifecycle
             ->expects(self::once())
-            ->id('stop')
-            ->after('switch')
             ->method('stop')
-            ->willReturnSelf();
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    self::assertEquals("switchTo", $lastMethod, "stop() was called before switchTo()");
+
+                    $lastMethod = "stop";
+
+                    return $testLifecycle;
+                }
+            );
         $testLifecycle
             ->expects(self::once())
-            ->id('update')
-            ->after('stop')
             ->method('updateRunInfo')
-            ->willReturnSelf();
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    self::assertEquals("stop", $lastMethod, "updateRunInfo() was called before stop()");
+
+                    $lastMethod = "updateRunInfo";
+
+                    return $testLifecycle;
+                }
+            );
         $testLifecycle
             ->expects(self::once())
-            ->after('update')
-            ->method('write');
+            ->method('write')
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    self::assertEquals("updateRunInfo", $lastMethod, "write() was called before updateRunInfo()");
+
+                    return $testLifecycle;
+                }
+            );
         $subscriber->notify($event);
     }
 }
