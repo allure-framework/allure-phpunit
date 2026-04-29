@@ -34,15 +34,14 @@ final class TestPassedSubscriberTest extends TestCase
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
         $subscriber = new TestPassedSubscriber($testLifecycle);
-        $event = $this->createTestPassesEvent(
-            test: $this->createTestMethod(class: 'a', methodName: 'b'),
-        );
+        $test = $this->createTestMethod(class: 'a', methodName: 'b');
+        $event = $this->createTestPassesEvent($test);
 
         $switched = false;
         $testLifecycle
             ->expects(self::once())
             ->method('switchTo')
-            ->with(self::identicalTo('a::b'))
+            ->with(self::identicalTo($test))
             ->willReturnCallback(
                 function () use (&$switched, $testLifecycle) {
                     $switched = true;

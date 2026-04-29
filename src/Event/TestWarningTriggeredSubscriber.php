@@ -21,14 +21,13 @@ final class TestWarningTriggeredSubscriber implements WarningTriggeredSubscriber
     public function notify(WarningTriggered $event): void
     {
         $test = $event->test();
-        $method = $test instanceof TestMethod ? $test : null;
-        if (!isset($method)) {
+        if (!$test instanceof TestMethod) {
             return;
         }
 
         $this
             ->testLifecycle
-            ->switchTo($method->nameWithClass())
+            ->switchTo($test)
             ->updateStatus($event->message(), Status::broken());
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Internal;
 
+use PHPUnit\Event\Code\TestMethod;
 use Qameta\Allure\Model\Status;
 
 interface TestLifecycleInterface
@@ -28,7 +29,7 @@ interface TestLifecycleInterface
         ?Status $overrideStatus = null,
     ): TestLifecycleInterface;
 
-    public function switchTo(string $test): TestLifecycleInterface;
+    public function switchTo(TestMethod $test): TestLifecycleInterface;
 
     public function reset(): TestLifecycleInterface;
 }
