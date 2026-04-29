@@ -9,6 +9,9 @@ on:
     branches:
       - 'main'
 
+permissions:
+  contents: read
+
 jobs:
   tests:
     name: PHP ${{ matrix.php-version }} PHPUnit ${{matrix.phpunit-version}} on ${{ matrix.os }}
