@@ -20,14 +20,13 @@ final class TestPreparedSubscriber implements PreparedSubscriber
     public function notify(Prepared $event): void
     {
         $test = $event->test();
-        $method = $test instanceof TestMethod ? $test->nameWithClass() : null;
-        if (!isset($method)) {
+        if (!$test instanceof TestMethod) {
             return;
         }
 
         $this
             ->testLifecycle
-            ->switchTo($method)
+            ->switchTo($test)
             ->updateInfo()
             ->start();
     }

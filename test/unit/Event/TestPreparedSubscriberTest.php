@@ -33,15 +33,14 @@ final class TestPreparedSubscriberTest extends TestCase
     {
         $testLifecycle = $this->createMock(TestLifecycleInterface::class);
         $subscriber = new TestPreparedSubscriber($testLifecycle);
-        $event = $this->createTestPreparedEvent(
-            test: $this->createTestMethod(class: 'a', methodName: 'b'),
-        );
+        $test = $this->createTestMethod(class: 'a', methodName: 'b');
+        $event = $this->createTestPreparedEvent($test);
 
         $lastMethod = null;
         $testLifecycle
             ->expects(self::once())
             ->method('switchTo')
-            ->with(self::identicalTo('a::b'))
+            ->with(self::identicalTo($test))
             ->willReturnCallback(
                 function () use (&$lastMethod, $testLifecycle) {
                     $lastMethod = "switchTo";

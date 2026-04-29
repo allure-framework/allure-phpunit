@@ -38,6 +38,7 @@ final class TestUpdater implements TestUpdaterInterface
         $testResult
             ->setName($parser->getDisplayName() ?? $info->getName())
             ->setFullName($info->getFullName())
+            ->setTitlePath(...$info->getTitlePath())
             ->setDescriptionHtml($parser->getDescriptionHtml())
             ->setDescription($parser->getDescription())
             ->addLabels(

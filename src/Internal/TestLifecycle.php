@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Internal;
 
+use PHPUnit\Event\Code\TestMethod;
 use Qameta\Allure\AllureLifecycleInterface;
 use Qameta\Allure\Model\ResultFactoryInterface;
 use Qameta\Allure\Model\Status;
@@ -16,6 +17,7 @@ use RuntimeException;
 use function array_pad;
 use function class_exists;
 use function explode;
+use function is_int;
 use function preg_match;
 
 /**
@@ -146,7 +148,7 @@ final class TestLifecycle implements TestLifecycleInterface
     }
 
     #[\Override]
-    public function switchTo(string $test): self
+    public function switchTo(TestMethod $test): self
     {
         $thread = $this->threadDetector->getThread();
         $this->lifecycle->switchThread($thread);
@@ -173,42 +175,22 @@ final class TestLifecycle implements TestLifecycleInterface
         return $this->currentTest ?? throw new RuntimeException("Current test is not set");
     }
 
-    private function buildTestInfo(string $test, ?string $host = null, ?string $thread = null): TestInfo
+    private function buildTestInfo(TestMethod $test, ?string $host = null, ?string $thread = null): TestInfo
     {
-        /** @var list<string> $matches */
-        $classAndMethodMatchResult = preg_match(
-            '#^(\S+)(.*)$#',
-            $test,
-            $matches,
-        );
-        [$classAndMethod, $dataSetInfo] = 1 === $classAndMethodMatchResult
-            ? [$matches[1] ?? null, $matches[2] ?? null]
-            : [$test, null];
-        $dataLabelMatchResult = isset($dataSetInfo)
-            ? preg_match(
-                '/^\s+with\s+data\s+set\s+(?:(#\d+)|"(.*)")$/',
-                $dataSetInfo,
-                $matches,
-            )
-            : false;
-        $dataLabel = 1 === $dataLabelMatchResult
-            ? $matches[2] ?? $matches[1] ?? null
-            : null;
-        if ('' === $dataLabel) {
-            $dataLabel = null;
-        }
+        $className = $test->className();
+        $methodName = $test->methodName();
 
-        /** @psalm-suppress PossiblyUndefinedArrayOffset */
-        [$class, $method] = isset($classAndMethod)
-            ? array_pad(explode('::', $classAndMethod, 2), 2, null)
-            : [null, null];
+        $testData = $test->testData();
+        $dataSetName = $testData->hasDataFromDataProvider()
+            ? $testData->dataFromDataProvider()->dataSetName()
+            : null;
 
         /** @psalm-suppress MixedArgument */
         return new TestInfo(
-            test: $test,
-            class: isset($class) && class_exists($class) ? $class : null,
-            method: $method,
-            dataLabel: $dataLabel,
+            test: $test->nameWithClass(),
+            class: class_exists($className) ? $className : null,
+            method: $methodName,
+            dataLabel: is_int($dataSetName) ? "#" . $dataSetName : $dataSetName,
             host: $host,
             thread: $thread,
         );

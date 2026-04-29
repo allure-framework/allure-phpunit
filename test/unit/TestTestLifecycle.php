@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Qameta\Allure\PHPUnit\Test\Unit;
 
+use PHPUnit\Event\Code\TestMethod;
 use Qameta\Allure\Model\Status;
 use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
 
@@ -34,7 +35,7 @@ final class TestTestLifecycle implements TestLifecycleInterface
     }
 
     #[\Override]
-    public function switchTo(string $test): TestLifecycleInterface
+    public function switchTo(TestMethod $test): TestLifecycleInterface
     {
         return $this;
     }
