@@ -2,7 +2,10 @@ name: "Verify type labels"
 
 on:
   pull_request:
-    types: [ labeled, unlabeled ]
+    types: [opened, labeled, unlabeled, synchronize]
+
+permissions:
+  contents: read
 
 jobs:
   triage:
@@ -10,4 +13,4 @@ jobs:
     steps:
       - uses: zwaldowski/match-label-action@v6
         with:
-          allowed: 'type:bug,type:new feature,type:improvement,type:dependencies,type:internal,type:invalid'
+          allowed: 'type:bug,type:new feature,type:improvement,type:dependencies,type:internal,type:invalid,type:docs'
