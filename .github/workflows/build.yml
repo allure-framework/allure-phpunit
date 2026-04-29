@@ -30,6 +30,7 @@ jobs:
           - "10"
           - "11"
           - "12"
+          - "13"
         prefer-lowest:
           - ""
           - "--prefer-lowest"
