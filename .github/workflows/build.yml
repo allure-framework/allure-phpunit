@@ -43,6 +43,14 @@ jobs:
           - phpunit-version: "12"
             php-version: "8.2"
 
+          # PHPUnit ^13 requires PHP 8.4
+          - phpunit-version: "13"
+            php-version: "8.1"
+          - phpunit-version: "13"
+            php-version: "8.2"
+          - phpunit-version: "13"
+            php-version: "8.3"
+
           # the lowest paratest version that supports PHP 8.5 requires PHPUnit ^12
           - phpunit-version: "10"
             php-version: "8.5"
