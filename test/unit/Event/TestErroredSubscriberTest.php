@@ -39,20 +39,32 @@ final class TestErroredSubscriberTest extends TestCase
             message: 'c',
         );
 
+        $switched = false;
         $testLifecycle
             ->expects(self::once())
-            ->id('switch')
             ->method('switchTo')
             ->with(self::identicalTo('a::b'))
-            ->willReturnSelf();
+            ->willReturnCallback(
+                function () use (&$switched, $testLifecycle) {
+                    $switched = true;
+
+                    return $testLifecycle;
+                }
+            );
         $testLifecycle
             ->expects(self::once())
-            ->after('switch')
             ->method('updateDetectedStatus')
             ->with(
                 self::identicalTo('c'),
                 self::identicalTo(Status::broken()),
                 self::identicalTo(null),
+            )
+            ->willReturnCallback(
+                function () use (&$switched, $testLifecycle) {
+                    self::assertTrue($switched, "updateDetectedStatus() was called before switchTo()");
+
+                    return $testLifecycle;
+                }
             );
         $subscriber->notify($event);
     }

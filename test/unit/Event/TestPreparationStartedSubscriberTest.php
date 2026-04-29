@@ -37,22 +37,40 @@ final class TestPreparationStartedSubscriberTest extends TestCase
             test: $this->createTestMethod(class: 'a', methodName: 'b'),
         );
 
+        $lastMethod = null;
         $testLifecycle
             ->expects(self::once())
-            ->id('switch')
             ->method('switchTo')
             ->with(self::identicalTo('a::b'))
-            ->willReturnSelf();
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    $lastMethod = "switchTo";
+
+                    return $testLifecycle;
+                }
+            );
         $testLifecycle
             ->expects(self::once())
-            ->id('reset')
-            ->after('switch')
             ->method('reset')
-            ->willReturnSelf();
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    self::assertEquals("switchTo", $lastMethod, "reset() was called before switchTo()");
+
+                    $lastMethod = true;
+
+                    return $testLifecycle;
+                }
+            );
         $testLifecycle
             ->expects(self::once())
-            ->after('reset')
-            ->method('create');
+            ->method('create')
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    self::assertEquals("reset", $lastMethod, "create() was called before reset()");
+
+                    return $testLifecycle;
+                }
+            );
         $subscriber->notify($event);
     }
 }
