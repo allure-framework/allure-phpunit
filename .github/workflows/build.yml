@@ -67,6 +67,19 @@ jobs:
           coverage: xdebug
           ini-values: error_reporting=E_ALL
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20.x'
+
+      - name: Normalize ALLURE_MATRIX_ENV
+        run: |
+          raw_value="${{ matrix.os }}-php-${{ matrix.php-version }}-phpunit-${{ matrix.phpunit-version }}"
+          value="$raw_value"
+          value="${value//./_}"
+          value="${value//\*/x}"
+          echo "ALLURE_MATRIX_ENV=${value}" >> "$GITHUB_ENV"
+          echo "ALLURE_TEST_DUMP_NAME=allure-results-${value}" >> "$GITHUB_ENV"
+
       - name: Validate composer.json and composer.lock
         run: composer validate
 
@@ -85,16 +98,68 @@ jobs:
 
       - name: Run tests
         if: ${{ matrix.os != 'windows-latest' && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION != '10.0' }}
-        run: composer test
+        run: |
+          npx -y allure@3 run --config "./allurerc.mjs" --rerun 2 --environment="${{ env.ALLURE_MATRIX_ENV }}" --dump="${{ env.ALLURE_TEST_DUMP_NAME }}" -- \
+          composer test
 
       - name: Run tests (phpunit10.0)
         if: ${{ matrix.os != 'windows-latest' && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION == '10.0' }}
-        run: composer test-phpunit10.0
+        run: |
+          npx -y allure@3 run --config "./allurerc.mjs" --rerun 2 --environment="${{ env.ALLURE_MATRIX_ENV }}" --dump="${{ env.ALLURE_TEST_DUMP_NAME }}" -- \
+          composer test-phpunit10.0
 
       - name: Run tests (windows)
         if: ${{ matrix.os == 'windows-latest'  && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION != '10.0' }}
-        run: composer test-windows
+        run: |
+          npx -y allure@3 run --config "./allurerc.mjs" --rerun 2 --environment="${{ env.ALLURE_MATRIX_ENV }}" --dump="${{ env.ALLURE_TEST_DUMP_NAME }}" -- \
+          composer test-windows
 
       - name: Run tests (windows-phpunit10.0)
         if: ${{ matrix.os == 'windows-latest'  && steps.set-phpunit-version.outputs.PHPUNIT_SCHEMA_VERSION == '10.0' }}
-        run: composer test-windows-phpunit10.0
+        run: |
+          npx -y allure@3 run --config "./allurerc.mjs" --rerun 2 --environment="${{ env.ALLURE_MATRIX_ENV }}" --dump="${{ env.ALLURE_TEST_DUMP_NAME }}" -- \
+          composer test-windows-phpunit10.0
+
+      - name: Upload report dump
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.ALLURE_TEST_DUMP_NAME }}
+          path: ./${{ env.ALLURE_TEST_DUMP_NAME }}.zip
+          retention-days: 1
+
+  report:
+    needs: [tests]
+    name: Build Allure report
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    env:
+      ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
+      ALLURE_ENDPOINT: ${{ secrets.ALLURE_ENDPOINT }}
+      ALLURE_PROJECT_ID: ${{ secrets.ALLURE_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20.x'
+
+      - name: Download Allure dumps
+        uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          pattern: allure-results-*
+          path: ./
+          merge-multiple: true
+
+      - name: Generate Allure report
+        run: npx -y allure@3 generate --config ./allurerc.mjs --dump="allure-results-*.zip" --output=./out/allure-report
+
+      - name: Post Allure summary
+        if: ${{ always() && !cancelled() && contains(fromJSON('["success","failure"]'), needs.tests.result) }}
+        uses: allure-framework/allure-action@v0
+        with:
+          report-directory: ./out/allure-report
