@@ -25,9 +25,15 @@ final class TestErroredSubscriber implements ErroredSubscriber
             return;
         }
 
+        $throwable = $event->throwable();
         $this
             ->testLifecycle
             ->switchTo($test)
-            ->updateDetectedStatus($event->throwable()->message(), Status::broken());
+            ->completeOrphanHookFailure(
+                Status::broken(),
+                $throwable->message(),
+                $throwable->asString(),
+            )
+            ->updateDetectedStatus($throwable->message(), Status::broken());
     }
 }

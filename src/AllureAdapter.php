@@ -27,7 +27,33 @@ final class AllureAdapter implements AllureAdapterInterface
      */
     private array $lastRuns = [];
 
+    /**
+     * @var array<string, true>
+     */
+    private array $startedTests = [];
+
+    /**
+     * @var array<string, true>
+     */
+    private array $writtenTests = [];
+
+    /**
+     * @var array<string, string>
+     */
+    private array $classContainers = [];
+
+    /**
+     * @var array<string, true>
+     */
+    private array $emittedHookGlobals = [];
+
     private ?Throwable $lastException = null;
+
+    private ?string $activeFixtureUuid = null;
+
+    private ?string $activeHookName = null;
+
+    private ?TestInfo $pendingFinalizeTest = null;
 
     private function __construct()
     {
@@ -73,6 +99,7 @@ final class AllureAdapter implements AllureAdapterInterface
             containerId: $containerResult->getUuid(),
             testId: $testResult->getUuid(),
         );
+        unset($this->startedTests[$info->getTest()], $this->writtenTests[$info->getTest()]);
 
         return $testResult->getUuid();
     }
@@ -113,6 +140,104 @@ final class AllureAdapter implements AllureAdapterInterface
         $this->lastRuns[$historyId] = $currentRunInfo;
 
         return $currentRunInfo;
+    }
+
+    #[\Override]
+    public function markTestStarted(TestInfo $info): void
+    {
+        $this->startedTests[$info->getTest()] = true;
+    }
+
+    #[\Override]
+    public function wasTestStarted(TestInfo $info): bool
+    {
+        return isset($this->startedTests[$info->getTest()]);
+    }
+
+    #[\Override]
+    public function markTestWritten(TestInfo $info): void
+    {
+        $this->writtenTests[$info->getTest()] = true;
+    }
+
+    #[\Override]
+    public function wasTestWritten(TestInfo $info): bool
+    {
+        return isset($this->writtenTests[$info->getTest()]);
+    }
+
+    #[\Override]
+    public function registerClassContainer(string $className, string $containerUuid): void
+    {
+        $this->classContainers[$className] = $containerUuid;
+    }
+
+    #[\Override]
+    public function getClassContainerId(string $className): ?string
+    {
+        return $this->classContainers[$className] ?? null;
+    }
+
+    #[\Override]
+    public function clearClassContainer(string $className): void
+    {
+        unset($this->classContainers[$className]);
+    }
+
+    #[\Override]
+    public function setActiveFixture(string $uuid, string $hookName): void
+    {
+        $this->activeFixtureUuid = $uuid;
+        $this->activeHookName = $hookName;
+    }
+
+    #[\Override]
+    public function getActiveFixtureUuid(): ?string
+    {
+        return $this->activeFixtureUuid;
+    }
+
+    #[\Override]
+    public function getActiveHookName(): ?string
+    {
+        return $this->activeHookName;
+    }
+
+    #[\Override]
+    public function clearActiveFixture(): void
+    {
+        $this->activeFixtureUuid = null;
+        $this->activeHookName = null;
+    }
+
+    #[\Override]
+    public function hasEmittedHookGlobalError(string $fixtureUuid): bool
+    {
+        return isset($this->emittedHookGlobals[$fixtureUuid]);
+    }
+
+    #[\Override]
+    public function markHookGlobalErrorEmitted(string $fixtureUuid): void
+    {
+        $this->emittedHookGlobals[$fixtureUuid] = true;
+    }
+
+    #[\Override]
+    public function markPendingFinalize(TestInfo $info): void
+    {
+        $this->pendingFinalizeTest = $info;
+    }
+
+    #[\Override]
+    public function getPendingFinalizeTest(): ?TestInfo
+    {
+        return $this->pendingFinalizeTest;
+    }
+
+    #[\Override]
+    public function clearPendingFinalize(): void
+    {
+        $this->pendingFinalizeTest = null;
     }
 
     /**

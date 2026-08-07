@@ -72,4 +72,70 @@ final class TestTestLifecycle implements TestLifecycleInterface
     {
         return $this;
     }
+
+    #[\Override]
+    public function ensureClassContainer(string $className): TestLifecycleInterface
+    {
+        return $this;
+    }
+
+    #[\Override]
+    public function writeClassContainer(?string $className = null): TestLifecycleInterface
+    {
+        return $this;
+    }
+
+    #[\Override]
+    public function startBeforeHookFixture(string $hookName): TestLifecycleInterface
+    {
+        return $this;
+    }
+
+    #[\Override]
+    public function startAfterHookFixture(string $hookName): TestLifecycleInterface
+    {
+        return $this;
+    }
+
+    #[\Override]
+    public function completeHookFixtureSuccess(): TestLifecycleInterface
+    {
+        return $this;
+    }
+
+    #[\Override]
+    public function completeHookFixtureFailure(
+        Status $status,
+        ?string $message = null,
+        ?string $trace = null,
+    ): TestLifecycleInterface {
+        return $this;
+    }
+
+    #[\Override]
+    public function finalizeWithoutFinished(): TestLifecycleInterface
+    {
+        return $this;
+    }
+
+    #[\Override]
+    public function markPendingFinalize(): TestLifecycleInterface
+    {
+        return $this;
+    }
+
+    #[\Override]
+    public function flushPendingFinalize(): TestLifecycleInterface
+    {
+        return $this;
+    }
+
+    #[\Override]
+    public function completeOrphanHookFailure(
+        Status $status,
+        ?string $message = null,
+        ?string $trace = null,
+    ): TestLifecycleInterface {
+        return $this;
+    }
 }

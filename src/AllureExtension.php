@@ -18,7 +18,9 @@ use Qameta\Allure\PHPUnit\Internal\TestLifecycleInterface;
 use Qameta\Allure\PHPUnit\Internal\TestUpdater;
 use RuntimeException;
 
+use function class_exists;
 use function file_exists;
+use function interface_exists;
 use function is_array;
 
 use const DIRECTORY_SEPARATOR;
@@ -99,7 +101,7 @@ final class AllureExtension implements Extension
 
         $testLifecycle = $this->testLifecycle ?? $this->createTestLifecycle($configSource);
 
-        $facade->registerSubscribers(
+        $subscribers = [
             new Event\TestPreparationStartedSubscriber($testLifecycle),
             new Event\TestPreparedSubscriber($testLifecycle),
             new Event\TestFinishedSubscriber($testLifecycle),
@@ -110,6 +112,211 @@ final class AllureExtension implements Extension
             new Event\TestWarningTriggeredSubscriber($testLifecycle),
             new Event\TestConsideredRiskySubscriber($testLifecycle),
             new Event\TestPassedSubscriber($testLifecycle),
+            new Event\TestSuiteFinishedSubscriber($testLifecycle),
+        ];
+
+        $facade->registerSubscribers(...$subscribers, ...$this->createHookSubscribers($testLifecycle));
+    }
+
+    /**
+     * @return list<object>
+     */
+    private function createHookSubscribers(TestLifecycleInterface $testLifecycle): array
+    {
+        $subscribers = [];
+
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\BeforeTestMethodCalledSubscriber::class,
+            static fn () => new Event\BeforeTestMethodCalledSubscriber($testLifecycle),
         );
+        $this->addFailedHookSubscriberIfSupported(
+            $subscribers,
+            'PHPUnit\\Event\\Test\\BeforeTestMethodFailedSubscriber',
+            Event\BeforeTestMethodFailedSubscriber::class,
+            $testLifecycle,
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\BeforeTestMethodErroredSubscriber::class,
+            static fn () => new Event\BeforeTestMethodErroredSubscriber($testLifecycle),
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\BeforeTestMethodFinishedSubscriber::class,
+            static fn () => new Event\BeforeTestMethodFinishedSubscriber($testLifecycle),
+        );
+
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\AfterTestMethodCalledSubscriber::class,
+            static fn () => new Event\AfterTestMethodCalledSubscriber($testLifecycle),
+        );
+        $this->addFailedHookSubscriberIfSupported(
+            $subscribers,
+            'PHPUnit\\Event\\Test\\AfterTestMethodFailedSubscriber',
+            Event\AfterTestMethodFailedSubscriber::class,
+            $testLifecycle,
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\AfterTestMethodErroredSubscriber::class,
+            static fn () => new Event\AfterTestMethodErroredSubscriber($testLifecycle),
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\AfterTestMethodFinishedSubscriber::class,
+            static fn () => new Event\AfterTestMethodFinishedSubscriber($testLifecycle),
+        );
+
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\PreConditionCalledSubscriber::class,
+            static fn () => new Event\PreConditionCalledSubscriber($testLifecycle),
+        );
+        $this->addFailedHookSubscriberIfSupported(
+            $subscribers,
+            'PHPUnit\\Event\\Test\\PreConditionFailedSubscriber',
+            Event\PreConditionFailedSubscriber::class,
+            $testLifecycle,
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\PreConditionErroredSubscriber::class,
+            static fn () => new Event\PreConditionErroredSubscriber($testLifecycle),
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\PreConditionFinishedSubscriber::class,
+            static fn () => new Event\PreConditionFinishedSubscriber($testLifecycle),
+        );
+
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\PostConditionCalledSubscriber::class,
+            static fn () => new Event\PostConditionCalledSubscriber($testLifecycle),
+        );
+        $this->addFailedHookSubscriberIfSupported(
+            $subscribers,
+            'PHPUnit\\Event\\Test\\PostConditionFailedSubscriber',
+            Event\PostConditionFailedSubscriber::class,
+            $testLifecycle,
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\PostConditionErroredSubscriber::class,
+            static fn () => new Event\PostConditionErroredSubscriber($testLifecycle),
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\PostConditionFinishedSubscriber::class,
+            static fn () => new Event\PostConditionFinishedSubscriber($testLifecycle),
+        );
+
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\BeforeFirstTestMethodCalledSubscriber::class,
+            static fn () => new Event\BeforeFirstTestMethodCalledSubscriber($testLifecycle),
+        );
+        $this->addFailedHookSubscriberIfSupported(
+            $subscribers,
+            'PHPUnit\\Event\\Test\\BeforeFirstTestMethodFailedSubscriber',
+            Event\BeforeFirstTestMethodFailedSubscriber::class,
+            $testLifecycle,
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\BeforeFirstTestMethodErroredSubscriber::class,
+            static fn () => new Event\BeforeFirstTestMethodErroredSubscriber($testLifecycle),
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\BeforeFirstTestMethodFinishedSubscriber::class,
+            static fn () => new Event\BeforeFirstTestMethodFinishedSubscriber($testLifecycle),
+        );
+
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\AfterLastTestMethodCalledSubscriber::class,
+            static fn () => new Event\AfterLastTestMethodCalledSubscriber($testLifecycle),
+        );
+        $this->addFailedHookSubscriberIfSupported(
+            $subscribers,
+            'PHPUnit\\Event\\Test\\AfterLastTestMethodFailedSubscriber',
+            Event\AfterLastTestMethodFailedSubscriber::class,
+            $testLifecycle,
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\AfterLastTestMethodErroredSubscriber::class,
+            static fn () => new Event\AfterLastTestMethodErroredSubscriber($testLifecycle),
+        );
+        $this->addSubscriberIfSupported(
+            $subscribers,
+            \PHPUnit\Event\Test\AfterLastTestMethodFinishedSubscriber::class,
+            static fn () => new Event\AfterLastTestMethodFinishedSubscriber($testLifecycle),
+        );
+
+        return $subscribers;
+    }
+
+    /**
+     * Failed-hook subscriber interfaces exist only on PHPUnit >= 12.5.
+     * Build the implementing wrapper at runtime so Psalm on older PHPUnit
+     * does not see missing interface names in source.
+     *
+     * @param list<object> $subscribers
+     * @param non-empty-string $subscriberInterface
+     * @param class-string $implementationClass
+     *
+     * @psalm-suppress ForbiddenCode
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedArgument
+     * @psalm-suppress MixedMethodCall
+     * @psalm-suppress ReferenceConstraintViolation
+     */
+    private function addFailedHookSubscriberIfSupported(
+        array &$subscribers,
+        string $subscriberInterface,
+        string $implementationClass,
+        TestLifecycleInterface $testLifecycle,
+    ): void {
+        if (!interface_exists($subscriberInterface)) {
+            return;
+        }
+
+        /** @var object $inner */
+        $inner = new $implementationClass($testLifecycle);
+
+        /** @var object $wrapper */
+        $wrapper = eval(
+            'return new class ($inner) implements \\' . $subscriberInterface
+            . ' {
+                public function __construct(private readonly object $inner)
+                {
+                }
+
+                public function notify(object $event): void
+                {
+                    $this->inner->notify($event);
+                }
+            };'
+        );
+
+        $subscribers[] = $wrapper;
+    }
+
+    /**
+     * @param list<object> $subscribers
+     * @param class-string|non-empty-string $subscriberInterface
+     * @param callable():object $factory
+     */
+    private function addSubscriberIfSupported(array &$subscribers, string $subscriberInterface, callable $factory): void
+    {
+        if (!interface_exists($subscriberInterface) && !class_exists($subscriberInterface)) {
+            return;
+        }
+
+        $subscribers[] = $factory();
     }
 }

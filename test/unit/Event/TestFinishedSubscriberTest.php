@@ -50,10 +50,26 @@ final class TestFinishedSubscriberTest extends TestCase
             );
         $testLifecycle
             ->expects(self::once())
+            ->method('completeHookFixtureSuccess')
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    self::assertEquals("switchTo", $lastMethod);
+
+                    $lastMethod = "completeHookFixtureSuccess";
+
+                    return $testLifecycle;
+                }
+            );
+        $testLifecycle
+            ->expects(self::once())
             ->method('stop')
             ->willReturnCallback(
                 function () use (&$lastMethod, $testLifecycle) {
-                    self::assertEquals("switchTo", $lastMethod, "stop() was called before switchTo()");
+                    self::assertEquals(
+                        "completeHookFixtureSuccess",
+                        $lastMethod,
+                        "stop() was called before completeHookFixtureSuccess()",
+                    );
 
                     $lastMethod = "stop";
 
@@ -78,6 +94,18 @@ final class TestFinishedSubscriberTest extends TestCase
             ->willReturnCallback(
                 function () use (&$lastMethod, $testLifecycle) {
                     self::assertEquals("updateRunInfo", $lastMethod, "write() was called before updateRunInfo()");
+
+                    $lastMethod = "write";
+
+                    return $testLifecycle;
+                }
+            );
+        $testLifecycle
+            ->expects(self::once())
+            ->method('flushPendingFinalize')
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    self::assertEquals("write", $lastMethod);
 
                     return $testLifecycle;
                 }

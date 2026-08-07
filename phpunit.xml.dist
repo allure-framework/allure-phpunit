@@ -14,6 +14,9 @@
         <testsuite name="unit">
             <directory>test/unit/</directory>
         </testsuite>
+        <testsuite name="integration">
+            <file>test/integration/HookFailureIntegrationTest.php</file>
+        </testsuite>
     </testsuites>
     <source>
         <include>

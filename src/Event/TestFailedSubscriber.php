@@ -25,9 +25,15 @@ final class TestFailedSubscriber implements FailedSubscriber
             return;
         }
 
+        $throwable = $event->throwable();
         $this
             ->testLifecycle
             ->switchTo($test)
-            ->updateDetectedStatus($event->throwable()->message(), Status::failed(), Status::failed());
+            ->completeOrphanHookFailure(
+                Status::failed(),
+                $throwable->message(),
+                $throwable->asString(),
+            )
+            ->updateDetectedStatus($throwable->message(), Status::failed(), Status::failed());
     }
 }

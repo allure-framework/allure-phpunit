@@ -51,6 +51,21 @@ final class TestErroredSubscriberTest extends TestCase
             );
         $testLifecycle
             ->expects(self::once())
+            ->method('completeOrphanHookFailure')
+            ->with(
+                self::identicalTo(Status::broken()),
+                self::identicalTo('c'),
+                self::anything(),
+            )
+            ->willReturnCallback(
+                function () use (&$switched, $testLifecycle) {
+                    self::assertTrue($switched, "completeOrphanHookFailure() was called before switchTo()");
+
+                    return $testLifecycle;
+                }
+            );
+        $testLifecycle
+            ->expects(self::once())
             ->method('updateDetectedStatus')
             ->with(
                 self::identicalTo('c'),
@@ -58,9 +73,7 @@ final class TestErroredSubscriberTest extends TestCase
                 self::identicalTo(null),
             )
             ->willReturnCallback(
-                function () use (&$switched, $testLifecycle) {
-                    self::assertTrue($switched, "updateDetectedStatus() was called before switchTo()");
-
+                function () use ($testLifecycle) {
                     return $testLifecycle;
                 }
             );

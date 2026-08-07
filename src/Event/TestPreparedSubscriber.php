@@ -27,6 +27,7 @@ final class TestPreparedSubscriber implements PreparedSubscriber
         $this
             ->testLifecycle
             ->switchTo($test)
+            ->completeHookFixtureSuccess()
             ->updateInfo()
             ->start();
     }
