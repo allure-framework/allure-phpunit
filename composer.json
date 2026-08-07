@@ -56,16 +56,17 @@
       "Qameta\\Allure\\PHPUnit\\": "src/"
     }
   },
-  "autoload-dev": {
-    "psr-0": {
-      "Yandex": "test/"
+    "autoload-dev": {
+        "psr-0": {
+            "Yandex": "test/"
+        },
+        "psr-4": {
+            "Qameta\\Allure\\PHPUnit\\Test\\Unit\\": "test/unit/",
+            "Qameta\\Allure\\PHPUnit\\Test\\Report\\": "test/report/",
+            "Qameta\\Allure\\PHPUnit\\Test\\Integration\\": "test/integration/",
+            "Qameta\\Allure\\PHPUnit\\Scripts\\": "scripts/"
+        }
     },
-    "psr-4": {
-      "Qameta\\Allure\\PHPUnit\\Test\\Unit\\": "test/unit/",
-      "Qameta\\Allure\\PHPUnit\\Test\\Report\\": "test/report/",
-      "Qameta\\Allure\\PHPUnit\\Scripts\\": "scripts/"
-    }
-  },
   "scripts": {
     "test-cs": "vendor/bin/phpcs -sp",
     "test-unit": "vendor/bin/phpunit --coverage-text",

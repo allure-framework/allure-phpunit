@@ -51,6 +51,10 @@ final class TestFailedSubscriberTest extends TestCase
             );
         $testLifecycle
             ->expects(self::once())
+            ->method('completeOrphanHookFailure')
+            ->willReturn($testLifecycle);
+        $testLifecycle
+            ->expects(self::once())
             ->method('updateDetectedStatus')
             ->with(
                 self::identicalTo('c'),

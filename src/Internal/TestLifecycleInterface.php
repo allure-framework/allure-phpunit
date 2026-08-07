@@ -32,4 +32,41 @@ interface TestLifecycleInterface
     public function switchTo(TestMethod $test): TestLifecycleInterface;
 
     public function reset(): TestLifecycleInterface;
+
+    public function ensureClassContainer(string $className): TestLifecycleInterface;
+
+    public function writeClassContainer(?string $className = null): TestLifecycleInterface;
+
+    public function startBeforeHookFixture(string $hookName): TestLifecycleInterface;
+
+    public function startAfterHookFixture(string $hookName): TestLifecycleInterface;
+
+    public function completeHookFixtureSuccess(): TestLifecycleInterface;
+
+    public function completeHookFixtureFailure(
+        Status $status,
+        ?string $message = null,
+        ?string $trace = null,
+    ): TestLifecycleInterface;
+
+    /**
+     * Writes the current test/container when PHPUnit skips TestFinished
+     * (e.g. setUp throws before Prepared).
+     */
+    public function finalizeWithoutFinished(): TestLifecycleInterface;
+
+    public function markPendingFinalize(): TestLifecycleInterface;
+
+    public function flushPendingFinalize(): TestLifecycleInterface;
+
+    /**
+     * Completes an active hook fixture when dedicated hook Failed/Errored events
+     * are missing (older PHPUnit) and the failure surfaces as TestFailed/TestErrored
+     * before the test body starts.
+     */
+    public function completeOrphanHookFailure(
+        Status $status,
+        ?string $message = null,
+        ?string $trace = null,
+    ): TestLifecycleInterface;
 }

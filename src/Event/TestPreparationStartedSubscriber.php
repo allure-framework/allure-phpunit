@@ -26,6 +26,7 @@ final class TestPreparationStartedSubscriber implements PreparationStartedSubscr
 
         $this
             ->testLifecycle
+            ->flushPendingFinalize()
             ->switchTo($test)
             ->reset()
             ->create();

@@ -27,8 +27,10 @@ final class TestFinishedSubscriber implements FinishedSubscriber
         $this
             ->testLifecycle
             ->switchTo($test)
+            ->completeHookFixtureSuccess()
             ->stop()
             ->updateRunInfo()
-            ->write();
+            ->write()
+            ->flushPendingFinalize();
     }
 }

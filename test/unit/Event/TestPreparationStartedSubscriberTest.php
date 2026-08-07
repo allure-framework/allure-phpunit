@@ -39,10 +39,22 @@ final class TestPreparationStartedSubscriberTest extends TestCase
         $lastMethod = null;
         $testLifecycle
             ->expects(self::once())
+            ->method('flushPendingFinalize')
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    $lastMethod = "flushPendingFinalize";
+
+                    return $testLifecycle;
+                }
+            );
+        $testLifecycle
+            ->expects(self::once())
             ->method('switchTo')
             ->with(self::identicalTo($test))
             ->willReturnCallback(
                 function () use (&$lastMethod, $testLifecycle) {
+                    self::assertEquals("flushPendingFinalize", $lastMethod);
+
                     $lastMethod = "switchTo";
 
                     return $testLifecycle;
@@ -55,7 +67,7 @@ final class TestPreparationStartedSubscriberTest extends TestCase
                 function () use (&$lastMethod, $testLifecycle) {
                     self::assertEquals("switchTo", $lastMethod, "reset() was called before switchTo()");
 
-                    $lastMethod = true;
+                    $lastMethod = "reset";
 
                     return $testLifecycle;
                 }

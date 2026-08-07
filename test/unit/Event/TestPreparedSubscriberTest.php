@@ -50,12 +50,28 @@ final class TestPreparedSubscriberTest extends TestCase
             );
         $testLifecycle
             ->expects(self::once())
+            ->method('completeHookFixtureSuccess')
+            ->willReturnCallback(
+                function () use (&$lastMethod, $testLifecycle) {
+                    self::assertEquals("switchTo", $lastMethod);
+
+                    $lastMethod = "completeHookFixtureSuccess";
+
+                    return $testLifecycle;
+                }
+            );
+        $testLifecycle
+            ->expects(self::once())
             ->method('updateInfo')
             ->willReturnCallback(
                 function () use (&$lastMethod, $testLifecycle) {
-                    self::assertEquals("switchTo", $lastMethod, "updateInfo() was called before switchTo()");
+                    self::assertEquals(
+                        "completeHookFixtureSuccess",
+                        $lastMethod,
+                        "updateInfo() was called before completeHookFixtureSuccess()",
+                    );
 
-                    $lastMethod = true;
+                    $lastMethod = "updateInfo";
 
                     return $testLifecycle;
                 }

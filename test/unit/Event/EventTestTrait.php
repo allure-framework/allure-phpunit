@@ -9,12 +9,18 @@ use PHPUnit\Event\Code\Test;
 use PHPUnit\Event\Code\TestDox;
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\Code\Throwable;
+use PHPUnit\Event\Code\ClassMethod;
 use PHPUnit\Event\Telemetry\Duration;
 use PHPUnit\Event\Telemetry\GarbageCollectorStatus;
 use PHPUnit\Event\Telemetry\HRTime;
 use PHPUnit\Event\Telemetry\Info;
 use PHPUnit\Event\Telemetry\MemoryUsage;
 use PHPUnit\Event\Telemetry\Snapshot;
+use PHPUnit\Event\Test\BeforeFirstTestMethodCalled;
+use PHPUnit\Event\Test\BeforeFirstTestMethodErrored;
+use PHPUnit\Event\Test\BeforeTestMethodCalled;
+use PHPUnit\Event\Test\BeforeTestMethodErrored;
+use PHPUnit\Event\Test\BeforeTestMethodFailed;
 use PHPUnit\Event\Test\ConsideredRisky;
 use PHPUnit\Event\Test\Errored;
 use PHPUnit\Event\Test\Failed;
@@ -33,6 +39,8 @@ use function method_exists;
 
 /**
  * Implementation-dependent helpers to test event subscribers.
+ *
+ * @psalm-suppress InternalMethod
  */
 trait EventTestTrait
 {
@@ -243,6 +251,151 @@ trait EventTestTrait
             1,
             false,
             false,
+        );
+    }
+
+    /**
+     * @psalm-suppress InternalMethod
+     * @psalm-suppress ArgumentTypeCoercion
+     */
+    protected function createClassMethod(
+        ?string $className = null,
+        ?string $methodName = null,
+    ): ClassMethod {
+        /**
+         * @var class-string $class
+         * @var non-empty-string $method
+         */
+        $class = $className ?? 'class';
+        $method = $methodName ?? 'setUp';
+
+        return new ClassMethod($class, $method);
+    }
+
+    /**
+     * PHPUnit < 12.5: (Info, class-string, ClassMethod)
+     * PHPUnit >= 12.5: (Info, TestMethod, ClassMethod)
+     *
+     * @psalm-suppress InternalMethod
+     * @psalm-suppress ArgumentTypeCoercion
+     * @psalm-suppress TooManyArguments
+     * @psalm-suppress InvalidArgument
+     */
+    protected function createBeforeTestMethodCalledEvent(
+        TestMethod $test,
+        ?string $hookName = null,
+    ): BeforeTestMethodCalled {
+        $calledMethod = $this->createClassMethod($test->className(), $hookName ?? 'setUp');
+        if (method_exists(BeforeTestMethodCalled::class, 'test')) {
+            return new BeforeTestMethodCalled(
+                $this->createTelemetryInfo(),
+                $test,
+                $calledMethod,
+            );
+        }
+
+        return new BeforeTestMethodCalled(
+            $this->createTelemetryInfo(),
+            $test->className(),
+            $calledMethod,
+        );
+    }
+
+    /**
+     * @psalm-suppress InternalMethod
+     * @psalm-suppress ArgumentTypeCoercion
+     * @psalm-suppress TooManyArguments
+     * @psalm-suppress InvalidArgument
+     * @psalm-suppress UndefinedClass
+     */
+    protected function createBeforeTestMethodFailedEvent(
+        TestMethod $test,
+        ?string $message = null,
+        ?string $hookName = null,
+    ): BeforeTestMethodFailed {
+        $calledMethod = $this->createClassMethod($test->className(), $hookName ?? 'setUp');
+        $throwable = $this->createThrowable(message: $message ?? 'message');
+        if (method_exists(BeforeTestMethodFailed::class, 'test')) {
+            return new BeforeTestMethodFailed(
+                $this->createTelemetryInfo(),
+                $test,
+                $calledMethod,
+                $throwable,
+            );
+        }
+
+        return new BeforeTestMethodFailed(
+            $this->createTelemetryInfo(),
+            $test->className(),
+            $calledMethod,
+            $throwable,
+        );
+    }
+
+    /**
+     * PHPUnit < 12.5: (Info, class-string, ClassMethod, Throwable)
+     * PHPUnit >= 12.5: (Info, TestMethod, ClassMethod, Throwable)
+     *
+     * @psalm-suppress InternalMethod
+     * @psalm-suppress ArgumentTypeCoercion
+     * @psalm-suppress TooManyArguments
+     * @psalm-suppress InvalidArgument
+     */
+    protected function createBeforeTestMethodErroredEvent(
+        TestMethod $test,
+        ?string $message = null,
+        ?string $hookName = null,
+    ): BeforeTestMethodErrored {
+        $calledMethod = $this->createClassMethod($test->className(), $hookName ?? 'setUp');
+        $throwable = $this->createThrowable(message: $message ?? 'message');
+        if (method_exists(BeforeTestMethodErrored::class, 'test')) {
+            return new BeforeTestMethodErrored(
+                $this->createTelemetryInfo(),
+                $test,
+                $calledMethod,
+                $throwable,
+            );
+        }
+
+        return new BeforeTestMethodErrored(
+            $this->createTelemetryInfo(),
+            $test->className(),
+            $calledMethod,
+            $throwable,
+        );
+    }
+
+    /**
+     * @param class-string $testClassName
+     * @psalm-suppress InternalMethod
+     * @psalm-suppress ArgumentTypeCoercion
+     */
+    protected function createBeforeFirstTestMethodCalledEvent(
+        string $testClassName,
+        ?string $hookName = null,
+    ): BeforeFirstTestMethodCalled {
+        return new BeforeFirstTestMethodCalled(
+            $this->createTelemetryInfo(),
+            $testClassName,
+            $this->createClassMethod($testClassName, $hookName ?? 'setUpBeforeClass'),
+        );
+    }
+
+    /**
+     * @param class-string $testClassName
+     * @psalm-suppress InternalMethod
+     * @psalm-suppress ArgumentTypeCoercion
+     */
+    protected function createBeforeFirstTestMethodErroredEvent(
+        string $testClassName,
+        ?string $message = null,
+        ?string $hookName = null,
+    ): BeforeFirstTestMethodErrored {
+        return new BeforeFirstTestMethodErrored(
+            $this->createTelemetryInfo(),
+            $testClassName,
+            $this->createClassMethod($testClassName, $hookName ?? 'setUpBeforeClass'),
+            $this->createThrowable(message: $message ?? 'message'),
         );
     }
 

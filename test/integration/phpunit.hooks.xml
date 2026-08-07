@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.1/phpunit.xsd"
+        colors="true"
+        displayDetailsOnIncompleteTests="true"
+        displayDetailsOnSkippedTests="true"
+        displayDetailsOnTestsThatTriggerDeprecations="true"
+        displayDetailsOnTestsThatTriggerWarnings="true"
+        displayDetailsOnTestsThatTriggerNotices="true"
+        displayDetailsOnTestsThatTriggerErrors="true"
+        defaultTestSuite="fixtures">
+    <testsuites>
+        <testsuite name="fixtures">
+            <directory>Fixture/</directory>
+        </testsuite>
+    </testsuites>
+    <extensions>
+        <bootstrap class="Qameta\Allure\PHPUnit\AllureExtension">
+            <parameter name="config" value="allure.config.php"/>
+        </bootstrap>
+    </extensions>
+</phpunit>

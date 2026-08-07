@@ -5,6 +5,7 @@
         findUnusedCode="false"
         findUnusedPsalmSuppress="false"
         findUnusedVariablesAndParams="false"
+        findUnusedIssueHandlerSuppression="false"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="https://getpsalm.org/schema/config"
         xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd">
@@ -18,4 +19,13 @@
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
     </plugins>
+    <issueHandlers>
+        <!-- Test helpers intentionally construct PHPUnit @internal event types.
+             Not reported on all PHPUnit versions, so unused-handler checks are off. -->
+        <InternalMethod>
+            <errorLevel type="suppress">
+                <file name="test/unit/Event/EventTestTrait.php"/>
+            </errorLevel>
+        </InternalMethod>
+    </issueHandlers>
 </psalm>
