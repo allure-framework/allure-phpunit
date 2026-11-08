@@ -15,6 +15,8 @@ use Qameta\Allure\Setup\LinkTemplateInterface;
 use RuntimeException;
 use stdClass;
 
+use function preg_quote;
+
 #[CoversClass(Config::class)]
 final class ConfigTest extends TestCase
 {
@@ -46,7 +48,7 @@ final class ConfigTest extends TestCase
     {
         $config = new Config(['outputDirectory' => 1]);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Config key "outputDirectory" should contain a string');
+        $this->expectExceptionMessageMatches('~Config key "outputDirectory" should contain a string~');
         $config->getOutputDirectory();
     }
 
@@ -73,7 +75,7 @@ final class ConfigTest extends TestCase
     {
         $config = new Config(['linkTemplates' => 1]);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Config key "linkTemplates" should contain an array');
+        $this->expectExceptionMessageMatches('~Config key "linkTemplates" should contain an array~');
         $config->getLinkTemplates();
     }
 
@@ -84,7 +86,9 @@ final class ConfigTest extends TestCase
         ];
         $config = new Config($data);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Config key "linkTemplates" should contain an array with string keys only');
+        $this->expectExceptionMessageMatches(
+            '~Config key "linkTemplates" should contain an array with string keys only~',
+        );
         $config->getLinkTemplates();
     }
 
@@ -107,8 +111,9 @@ final class ConfigTest extends TestCase
         ];
         $config = new Config($data);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(
-            'Config key "linkTemplates/tms" contains invalid source of Qameta\Allure\Setup\LinkTemplateInterface',
+        $this->expectExceptionMessageMatches(
+            '~Config key "linkTemplates/tms" contains invalid source of ' .
+            preg_quote(LinkTemplateInterface::class, '~') . '~',
         );
         $config->getLinkTemplates();
     }
@@ -131,9 +136,9 @@ final class ConfigTest extends TestCase
         ];
         $config = new Config($data);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(
-            'Config key "linkTemplates/tms" contains ' .
-            'invalid source of Qameta\Allure\Setup\LinkTemplateInterface',
+        $this->expectExceptionMessageMatches(
+            '~Config key "linkTemplates/tms" contains invalid source of ' .
+            preg_quote(LinkTemplateInterface::class, '~') . '~',
         );
         $config->getLinkTemplates();
     }
@@ -171,7 +176,7 @@ final class ConfigTest extends TestCase
     {
         $config = new Config($data);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Config key "setupHook" should contain a callable');
+        $this->expectExceptionMessageMatches('~Config key "setupHook" should contain a callable~');
         $config->getSetupHook();
     }
 
@@ -221,9 +226,9 @@ final class ConfigTest extends TestCase
     {
         $config = new Config(['threadDetector' => 1]);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(
-            'Config key "threadDetector" contains ' .
-            'invalid source of Qameta\Allure\PHPUnit\Setup\ThreadDetectorInterface',
+        $this->expectExceptionMessageMatches(
+            '~Config key "threadDetector" contains invalid source of ' .
+            preg_quote(ThreadDetectorInterface::class, '~') . '~',
         );
         $config->getThreadDetector();
     }
@@ -246,9 +251,9 @@ final class ConfigTest extends TestCase
     {
         $config = new Config(['threadDetector' => stdClass::class]);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(
-            'Config key "threadDetector" contains ' .
-            'invalid source of Qameta\Allure\PHPUnit\Setup\ThreadDetectorInterface',
+        $this->expectExceptionMessageMatches(
+            '~Config key "threadDetector" contains invalid source of ' .
+            preg_quote(ThreadDetectorInterface::class, '~') . '~',
         );
         $config->getThreadDetector();
     }
@@ -287,8 +292,8 @@ final class ConfigTest extends TestCase
         ];
         $config = new Config($data);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(
-            'Config key "lifecycleHooks" should contain an array with integer keys only',
+        $this->expectExceptionMessageMatches(
+            '~Config key "lifecycleHooks" should contain an array with integer keys only~',
         );
         $config->getLifecycleHooks();
     }
@@ -317,9 +322,9 @@ final class ConfigTest extends TestCase
     {
         $config = new Config(['lifecycleHooks' => [1]]);
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage(
-            'Config key "lifecycleHooks/0" contains ' .
-            'invalid source of Qameta\Allure\Hook\LifecycleHookInterface',
+        $this->expectExceptionMessageMatches(
+            '~Config key "lifecycleHooks/0" contains invalid source of ' .
+            preg_quote(LifecycleHookInterface::class, '~') . '~',
         );
         $config->getLifecycleHooks();
     }

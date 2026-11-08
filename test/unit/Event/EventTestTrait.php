@@ -9,6 +9,7 @@ use PHPUnit\Event\Code\Test;
 use PHPUnit\Event\Code\TestDox;
 use PHPUnit\Event\Code\TestMethod;
 use PHPUnit\Event\Code\Throwable;
+use PHPUnit\Event\Telemetry\CpuTime;
 use PHPUnit\Event\Telemetry\Duration;
 use PHPUnit\Event\Telemetry\GarbageCollectorStatus;
 use PHPUnit\Event\Telemetry\HRTime;
@@ -40,8 +41,21 @@ trait EventTestTrait
     {
         $garbageCollectorStatus = self::createGarbageCollectorStatus();
 
+        // PHPUnit 13 added CPU times to the snapshot and telemetry info.
+        $cpuTimes = [];
+        $cpuTimeDeltas = [];
+        if (class_exists(CpuTime::class)) {
+            /** @psalm-suppress MixedAssignment CpuTime is unavailable on older PHPUnit versions. */
+            $zeroCpuTime = CpuTime::fromSecondsAndNanoseconds(0, 0);
+            $cpuTimes = [$zeroCpuTime, $zeroCpuTime, $zeroCpuTime];
+            $cpuTimeDeltas = [...$cpuTimes, ...$cpuTimes];
+        }
+
         /**
+         * @psalm-suppress TooFewArguments
          * @psalm-suppress TooManyArguments
+         * @psalm-suppress InvalidArgument PHPUnit 13 requires the CPU time arguments.
+         * @psalm-suppress InternalMethod
          * @psalm-suppress PossiblyNullArgument
          */
         $snapshot = new Snapshot(
@@ -49,14 +63,22 @@ trait EventTestTrait
             MemoryUsage::fromBytes(0),
             MemoryUsage::fromBytes(0),
             $garbageCollectorStatus,
+            ...$cpuTimes,
         );
 
+        /**
+         * @psalm-suppress TooFewArguments
+         * @psalm-suppress TooManyArguments
+         * @psalm-suppress InvalidArgument PHPUnit 13 requires the CPU time arguments.
+         * @psalm-suppress InternalMethod
+         */
         return new Info(
             $snapshot,
             Duration::fromSecondsAndNanoseconds(0, 0),
             MemoryUsage::fromBytes(0),
             Duration::fromSecondsAndNanoseconds(0, 0),
             MemoryUsage::fromBytes(0),
+            ...$cpuTimeDeltas,
         );
     }
 
@@ -76,6 +98,7 @@ trait EventTestTrait
          * @var non-empty-string $methodName
          * @var TestDox $testDox
          * @psalm-suppress InaccessibleMethod
+         * @psalm-suppress InternalMethod
          */
         $testDox = method_exists(TestDox::class, 'fromClassNameAndMethodName')
             ? TestDox::fromClassNameAndMethodName($class, $methodName) // early PHPUnit 10
@@ -111,6 +134,7 @@ trait EventTestTrait
         /**
          * @var Throwable
          * @psalm-suppress InaccessibleMethod
+         * @psalm-suppress InternalMethod
          */
         return method_exists(Throwable::class, 'from')
             ? Throwable::from($throwable) // early PHPUnit 10
@@ -129,7 +153,10 @@ trait EventTestTrait
     ): ConsideredRisky {
         $message ??= 'message';
 
-        /** @var non-empty-string $message */
+        /**
+         * @var non-empty-string $message
+         * @psalm-suppress InternalMethod
+         */
         return new ConsideredRisky(
             $this->createTelemetryInfo(),
             $test,
@@ -141,6 +168,7 @@ trait EventTestTrait
         Test $test,
         ?string $message = null,
     ): Errored {
+        /** @psalm-suppress InternalMethod */
         return new Errored(
             $this->createTelemetryInfo(),
             $test,
@@ -154,6 +182,7 @@ trait EventTestTrait
         Test $test,
         ?string $message = null,
     ): Failed {
+        /** @psalm-suppress InternalMethod */
         return new Failed(
             $this->createTelemetryInfo(),
             $test,
@@ -167,6 +196,7 @@ trait EventTestTrait
     protected function createTestFinishedEvent(
         Test $test,
     ): Finished {
+        /** @psalm-suppress InternalMethod */
         return new Finished(
             $this->createTelemetryInfo(),
             $test,
@@ -178,6 +208,7 @@ trait EventTestTrait
         Test $test,
         ?string $message = null,
     ): MarkedIncomplete {
+        /** @psalm-suppress InternalMethod */
         return new MarkedIncomplete(
             $this->createTelemetryInfo(),
             $test,
@@ -190,6 +221,7 @@ trait EventTestTrait
     protected function createTestPassesEvent(
         Test $test,
     ): Passed {
+        /** @psalm-suppress InternalMethod */
         return new Passed(
             $this->createTelemetryInfo(),
             $test,
@@ -199,6 +231,7 @@ trait EventTestTrait
     protected function createTestPreparationStartedEvent(
         Test $test,
     ): PreparationStarted {
+        /** @psalm-suppress InternalMethod */
         return new PreparationStarted(
             $this->createTelemetryInfo(),
             $test,
@@ -208,6 +241,7 @@ trait EventTestTrait
     protected function createTestPreparedEvent(
         Test $test,
     ): Prepared {
+        /** @psalm-suppress InternalMethod */
         return new Prepared(
             $this->createTelemetryInfo(),
             $test,
@@ -218,6 +252,7 @@ trait EventTestTrait
         Test $test,
         ?string $message = null,
     ): Skipped {
+        /** @psalm-suppress InternalMethod */
         return new Skipped(
             $this->createTelemetryInfo(),
             $test,
@@ -234,6 +269,7 @@ trait EventTestTrait
         /**
          * @var non-empty-string $message
          * @psalm-suppress TooManyArguments
+         * @psalm-suppress InternalMethod
          */
         return new WarningTriggered(
             $this->createTelemetryInfo(),
@@ -258,6 +294,7 @@ trait EventTestTrait
             if (isset($ctorInfo)) {
                 /**
                  * @psalm-suppress InvalidArgument
+                 * @psalm-suppress InternalMethod
                  * @psalm-suppress TooFewArguments
                  * @psalm-suppress TooManyArguments
                  */

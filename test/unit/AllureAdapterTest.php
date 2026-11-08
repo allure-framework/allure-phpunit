@@ -84,7 +84,7 @@ final class AllureAdapterTest extends TestCase
             thread: null,
         );
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Container not registered: a');
+        $this->expectExceptionMessageMatches('~Container not registered: a~');
         $adapter->getContainerId($info);
     }
 
@@ -115,7 +115,7 @@ final class AllureAdapterTest extends TestCase
             thread: null,
         );
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('Test not registered: a');
+        $this->expectExceptionMessageMatches('~Test not registered: a~');
         $adapter->getTestId($info);
     }
 
