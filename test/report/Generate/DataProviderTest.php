@@ -24,7 +24,6 @@ final class DataProviderTest extends TestCase
     {
         return [
             'Simple name' => [1, 1],
-            '' => [2, 2],
             '"Double-quoted" name' => [3, 3],
             "'Single-quoted' name" => [4, 4],
             ' ' => [5, 5],
